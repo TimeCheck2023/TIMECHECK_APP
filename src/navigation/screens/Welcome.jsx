@@ -2,15 +2,16 @@ import { View, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
-import {data} from "../../utils/data";
+import { data } from "../../utils/data";
 import CardWelcome from '../../components/CardWelcome';
+
 
 const { width, height } = Dimensions.get('window')
 
 // console.log(`Ancho de la ventana: ${windowWidth}, Alto de la ventana: ${windowHeight}, plataforma:  ${Platform.OS}`);
 
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const ref = React.useRef();
   const updateSliderCurrentIndex = (e) => {
@@ -53,32 +54,32 @@ const Welcome = () => {
         currentSlideIndex !== data.length - 1 ?
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='w-96 h-20 mb-9 flex-row justify-between items-center rounded-full bg-purple-800'
+            className='w-72 h-16 mb-9 flex-row justify-between items-center rounded-full bg-purple-800'
             onPress={handleNext}
           >
-            <View className='justify-center items-center left-28'>
+            <View className='justify-center items-center left-12'>
               <Text className='font-bold text-2xl text-white'>
                 GET STARTED
               </Text>
 
             </View>
-            <View className='w-16 h-16 bg-slate-200 justify-center items-center rounded-full right-4'>
+            <View className='w-12 h-12 bg-slate-200 justify-center items-center rounded-full right-4'>
               <AntDesign name="arrowright" size={24} color="black" />
             </View>
           </TouchableOpacity>)
           :
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='w-96 h-20 mb-9 flex-row justify-between items-center rounded-full bg-purple-800'
-            onPress={handleNext}
+            className='w-72 h-16 mb-9 flex-row justify-between items-center rounded-full bg-purple-800'
+            onPress={() => navigation.navigate('Sign_In')}
           >
-            <View className='justify-center items-center left-36'>
+            <View className='justify-center items-center left-24'>
               <Text className='font-bold text-2xl text-white'>
                 Login
               </Text>
 
             </View>
-            <View className='w-16 h-16 bg-slate-200 justify-center items-center rounded-full right-4'>
+            <View className='w-12 h-12 bg-slate-200 justify-center items-center rounded-full right-4'>
               <AntDesign name="arrowright" size={24} color="black" />
             </View>
           </TouchableOpacity>)
