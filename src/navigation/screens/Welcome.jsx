@@ -54,7 +54,7 @@ const Welcome = ({ navigation }) => {
         currentSlideIndex !== data.length - 1 ?
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='w-72 h-16 mb-9 flex-row justify-between items-center rounded-full bg-purple-800'
+            className='w-72 h-16 mb-9 flex-row justify-between items-center rounded-2xl bg-purple-800'
             onPress={handleNext}
           >
             <View className='justify-center items-center left-12'>
