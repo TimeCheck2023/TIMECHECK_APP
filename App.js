@@ -9,6 +9,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthNavigator />
+      <StatusBar style='auto' />
     </NavigationContainer>
   );
 }

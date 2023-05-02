@@ -1,16 +1,17 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 
 const Input = ({ placeholder, label, iconName, password, ...props }) => {
+  const { height, width } = Dimensions.get('window')
+
   const [hidePassword, setHidePassword] = useState(password);
-  const [isOpend, setIsOpend] = useState(false);
 
   return (
     <>
       <View className='space-y-2'>
-        <Text className='text-slate-600 font-bold text-base ml-4'>{label}</Text>
-        <View className='flex-row items-center p-3 h-14  bg-gray-300 rounded-2xl'>
+        <Text className='text-slate-600 font-bold text-base ml-4 top-2'>{label}</Text>
+        <View className={`flex-row items-center p-3 ${width > 392.72727272727275 ? 'h-14' : 'h-12'}  bg-gray-300 rounded-2xl`}>
           <Icon.Feather
             name={iconName}
             size={20}

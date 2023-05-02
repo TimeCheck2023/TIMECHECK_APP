@@ -1,90 +1,29 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import * as Yup from "yup";
 
-const validate = (data, num) => {
-    switch (num) {
-        case 1:
-            if (data.documentType === 'Tipo de documento') {
-                return {
-                    message: 'Debes ecoger un tipo de documento',
-                    isvalid: false
-                }
-            } else if (!data.documentNumber) {
-                return {
-                    message: 'Debes ecoger un numero de documento',
-                    isvalid: false
-                }
-            } else if (!data.fullName) {
-                return {
-                    message: 'Please input fullname',
-                    isvalid: false
-                }
-            } else if (!data.address) {
-                return {
-                    message: 'Please input address',
-                    isvalid: false
-                }
-            } else if (!data.emailAddress) {
-                return {
-                    message: 'Please input email',
-                    isvalid: false
-                }
-            } else if (!data.emailAddress.match(/\S+@\S+\.\S+/)) {
-                return {
-                    message: 'Please input a valid email',
-                    isvalid: false
-                }
-            } else if (!data.password) {
-                return {
-                    message: 'Please input password',
-                    isvalid: false
-                }
-            } else if (data.password.length < 5) {
-                return {
-                    message: 'Min password length of 5',
-                    isvalid: false
-                }
-            }
-            break;
-        case 2:
-            if (!data.fullNameOrg) {
-                return {
-                    message: 'Please input fullname',
-                    isvalid: false
-                }
-            } else if (!data.addressOrg) {
-                return {
-                    message: 'Please input address',
-                    isvalid: false
-                }
-            } else if (!data.emailAddressOrg) {
-                return {
-                    message: 'Please input email',
-                    isvalid: false
-                }
-            } else if (!data.emailAddressOrg.match(/\S+@\S+\.\S+/)) {
-                return {
-                    message: 'Please input a valid email',
-                    isvalid: false
-                }
-            } else if (!data.passwordOrg) {
-                return {
-                    message: 'Please input password',
-                    isvalid: false
-                }
-            } else if (data.passwordOrg.length < 5) {
-                return {
-                    message: 'Min password length of 5',
-                    isvalid: false
-                }
-            }
-            break;
-        default:
-            break;
-    }
-    return {
-        isvalid: true,
-    };
-}
+// En este caso, utilizamos abortEarly: false para asegurarnos de que todas las validaciones se ejecuten y así obtener todos los mensajes de error.
 
-export default validate
+
+// Shema del login
+export const userSchema = Yup.object().shape({
+  emailAddress: Yup.string().email('Correo electrónico no válido').required('El correo electrónico es requerido'),
+  password: Yup.string().required('La contraseña es requerida').min(8, 'La contraseña debe tener al menos 8 caracteres'),
+})
+
+
+// Shema del registro seccion del User
+export const validationSchemaUser = Yup.object().shape({
+  documentType: Yup.string().required('El tipo de documento es requerido'),
+  documentNumber: Yup.string().required('El número de documento es requerido'),
+  fullName: Yup.string().required('El nombre completo es requerido'),
+  emailAddress: Yup.string().email('Introduce un email válido').required('El email es requerido'),
+  password: Yup.string().required('La contraseña es requerida'),
+});
+
+// Shema del registro seccion del org
+export const validationSchemaOrg = Yup.object().shape({
+  fullName: Yup.string().required('El nombre completo es requerido'),
+  address: Yup.string().required('El direccion es requerido'),
+  emailAddress: Yup.string().email('Introduce un email válido').required('El email es requerido'),
+  password: Yup.string().required('La contraseña es requerida'),
+});
+
