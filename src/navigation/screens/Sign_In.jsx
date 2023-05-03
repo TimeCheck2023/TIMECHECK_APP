@@ -53,6 +53,7 @@ const Sign_In = ({ navigation }) => {
       documentType: '',
       documentNumber: '',
       fullName: '',
+      address: '',
       emailAddress: '',
       password: '',
     });
@@ -75,17 +76,27 @@ const Sign_In = ({ navigation }) => {
     try {
       if (isOpen) {
         await validationSchemaOrg.validate(values_org, { abortEarly: false })
-        console.log(values_org);
       } else if (!isOpen) {
-        await validationSchemaUser.validate(values_us, { abortEarly: false });
-        await axios.post('http://10.199.17.84:3003/v1/api/user/Register', values_us)
-        .then((response) =>{
-          console.log(response);
-        }).catch(err => {
-          console.log(err);
-        })
+        if (await validationSchemaUser.validate(values_us, { abortEarly: false })) {
+          fetch('https://backend-timecheck.onrender.com/user/register', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(values_us),
+          }).then((response) => response.json())
+            .then((json) => {
+              console.log('Respuesta:');
+              console.log('Respuesta:', json);
+            }).catch((error) => {
+              console.log('Error:');
+              console.log('Error:', error);
+            });
+        }
       }
     } catch (error) {
+      console.log("holaa desde error");
       const errorMessage = error.errors[0];
       setErrors(errorMessage)
     }
