@@ -9,14 +9,14 @@ const Input = ({ placeholder, label, iconName, password, ...props }) => {
 
   return (
     <>
-      <View className='space-y-2'>
-        <Text className='font-bold text-lg ml-4 top-2' style={{color:'#202020'}}>{label}</Text>
-        <View className={`flex-row items-center p-3 ${width > 392.72727272727275 ? 'h-14' : 'h-12'}  bg-gray-300 rounded-2xl`}>
+      <View className='sm:my-1 lg:my-3'>
+        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{color:'#202020'}}>{label}</Text>
+        <View className={`flex-row items-center p-3 sm:h-12 sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-2xl`}>
           <Icon.Feather
             name={iconName}
-            size={20}
+            // size={20}
             color='#8A2BE2'
-            className='mr-2'
+            className='mr-2 sm:text-xl lg:text-3xl'
           />
           <TextInput
             className='flex-1 font-bold text-xl pl-2'

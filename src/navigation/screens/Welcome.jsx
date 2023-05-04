@@ -54,32 +54,32 @@ const Welcome = ({ navigation }) => {
         currentSlideIndex !== data.length - 1 ?
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='w-72 h-16 mb-9 flex-row justify-between items-center rounded-2xl bg-purple-800'
+            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-9 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-purple-800'
             onPress={handleNext}
           >
-            <View className='justify-center items-center left-12'>
-              <Text className='font-bold text-2xl text-white'>
+            <View className='justify-center items-center sm:left-20 lg:left-24'>
+              <Text className='font-bold sm:text-lg lg:text-2xl text-white'>
                 GET STARTED
               </Text>
 
             </View>
-            <View className='w-12 h-12 bg-slate-200 justify-center items-center rounded-full right-4'>
+            <View className='sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
               <AntDesign name="arrowright" size={24} color="black" />
             </View>
           </TouchableOpacity>)
           :
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='w-72 h-16 mb-9 flex-row justify-between items-center rounded-full bg-purple-800'
+            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-9 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-purple-800'
             onPress={() => navigation.navigate('Sign_In')}
           >
-            <View className='justify-center items-center left-24'>
-              <Text className='font-bold text-2xl text-white'>
+            <View className='justify-center items-center sm:left-28 lg:left-36'>
+              <Text className='font-bold sm:text-xl lg:text-3xl text-white'>
                 Login
               </Text>
 
             </View>
-            <View className='w-12 h-12 bg-slate-200 justify-center items-center rounded-full right-4'>
+            <View className='sm:w-10 sm:h-10 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
               <AntDesign name="arrowright" size={24} color="black" />
             </View>
           </TouchableOpacity>)
