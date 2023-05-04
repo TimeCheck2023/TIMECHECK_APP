@@ -1,6 +1,6 @@
 import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import imgGame from "../../../assets/game.png";
+import imgGame from "../../../assets/Sing_Up.png";
 import Input from '../../components/Input';
 import { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
@@ -11,8 +11,11 @@ import { userSchema } from '../../utils/validate';
 const Sign_up = ({ navigation }) => {
   const { height, width } = Dimensions.get('window')
 
-  //hook para capturar los errores
+  //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
+  const [message, setMessage] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false);
 
   //estado para controlar los input
   const [values_us, setValues_us] = useState({
@@ -36,25 +39,39 @@ const Sign_up = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView className='flex-1 ' style={{ backgroundColor: '#202020' }}>
-      {/* ir al register */}
-      <View className='flex-row justify-start top-2'>
-        <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center ${width > 392.72727272727275 ? 'p-4' : 'p-3'} rounded-tr-2xl rounded-bl-2xl ml-4`} style={{ backgroundColor: '#642AB8' }} onPress={() => navigation.navigate('Sign_In')}>
-          <Icon.AntDesign name="arrowleft" size={15} color="white" />
-          <Text className='text-white font-bold text-base left-1'>Register</Text>
-        </TouchableOpacity>
-      </View>
+    <View className='flex-1'>
+      {/* loading al enviar los datos */}
+      <Loading visible={isLoading} />
 
-      {/* imagen del login */}
-      <View className='items-center top-10'>
-        <View className={`flex items-center justify-center ${width > 392.72727272727275 ? 'w-24 h-20' : 'w-56 h-36'} border-2 border-white rounded-lg`}>
-          <Image source={imgGame} resizeMode='contain' className='w-full h-full rounded-lg' />
+      {/* style={{ paddingBottom: 44, paddingStart: 16, paddingEnd: 16 }} */}
+
+      {/* header de form purple */}
+      <View className='flex-row h-52 pb-16 pl-10 pr-10 rounded-b-2xl' style={{ backgroundColor: '#202020' }}>
+        {/* ir al login */}
+        <View className='flex-1 flex-row items-center justify-between'>
+          <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center ${width > 392.72727272727275 ? 'p-4' : 'p-3'} rounded-tr-2xl rounded-bl-2xl ml-4`} style={{ backgroundColor: '#642AB8' }} onPress={() => navigation.navigate('Sign_In')}>
+            <Icon.AntDesign name="arrowleft" size={15} color="white" />
+            <Text className='text-white font-bold text-lg left-1'>Register</Text>
+          </TouchableOpacity>
+
+          {/* message */}
+          <Text className='font-bold text-2xl text-white right-4'>Welcome Login</Text>
         </View>
       </View>
 
-      {/* form */}
-      <Animatable.View animation='fadeInUpBig' className='flex-1 bg-slate-100 px-8 pt-8 top-20' style={{ borderTopRightRadius: 50, borderTopLeftRadius: 50 }}>
-        <ScrollView className='h-full' showsVerticalScrollIndicator={false}>
+      {/* formlario */}
+      <Animatable.View animation='fadeInUpBig' className='bg-white flex-1 pl-[18] pr-[18] -mt-20 ml-5 mr-5 rounded-3xl'>
+
+        {/* seleciona tipo de usuario */}
+        <View className='bg-black items-center'>
+          <TouchableOpacity activeOpacity={0.7} className={`flex-col items-center ${width > 392.72727272727275 ? 'w-24 h-20' : 'w-20 h-16'} bg-purple-800`}>
+            <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded' />
+          </TouchableOpacity>
+        </View>
+
+        {/* View de input */}
+        <View className='flex-1 top-12'>
+
           {/* input */}
           <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
           <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
@@ -63,14 +80,19 @@ const Sign_up = ({ navigation }) => {
           <View className='items-center mt-4'>
             {errors && <Text className={`text-red-800 ml-3  ${width > 392.72727272727275 ? 'text-xl' : 'text-base'} font-bold`}>{errors}</Text>}
           </View>
+          <View className='items-center mt-4'>
+            {message && <Text className={`text-green-800 ml-3  ${width > 392.72727272727275 ? 'text-xl' : 'text-base'} font-bold`}>{message}</Text>}
+          </View>
 
           {/* button */}
-          <TouchableOpacity activeOpacity={0.7} className={`${width > 392.72727272727275 ? 'mt-6 py-4' : 'mt-2 py-3'}  rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateForm}>
-            <Text className='text-xl font-bold text-center text-white'>Registrar</Text>
-          </TouchableOpacity>
-        </ScrollView>
+          <>
+            <TouchableOpacity activeOpacity={0.7} className={`${width > 392.72727272727275 ? 'mt-1 py-4' : 'mt-2 py-3'}  rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateForm}>
+              <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
+            </TouchableOpacity>
+          </>
+        </View>
       </Animatable.View>
-    </SafeAreaView>
+    </View>
   )
 }
 

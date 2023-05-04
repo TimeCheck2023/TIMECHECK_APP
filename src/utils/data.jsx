@@ -2,7 +2,7 @@ import imgHome from "../../assets/undraw_Date_picker_re_r0p8.png";
 import imgHome2 from "../../assets/undraw_Date_picker_re_r0p8.png";
 import imgHome3 from "../../assets/undraw_Events_re_98ue.png";
 import imgHome4 from "../../assets/undraw_Newspaper_re_syf5.png";
-import imgHome5 from "../../assets/undraw_Schedule_re_2vro.png";
+import imgHome5 from "../../assets/Sing_Up.png";
 import imgGame from "../../assets/game.png";
 
 export const data = [

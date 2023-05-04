@@ -10,7 +10,7 @@ const Input = ({ placeholder, label, iconName, password, ...props }) => {
   return (
     <>
       <View className='space-y-2'>
-        <Text className='text-slate-600 font-bold text-base ml-4 top-2'>{label}</Text>
+        <Text className='font-bold text-lg ml-4 top-2' style={{color:'#202020'}}>{label}</Text>
         <View className={`flex-row items-center p-3 ${width > 392.72727272727275 ? 'h-14' : 'h-12'}  bg-gray-300 rounded-2xl`}>
           <Icon.Feather
             name={iconName}
@@ -19,7 +19,8 @@ const Input = ({ placeholder, label, iconName, password, ...props }) => {
             className='mr-2'
           />
           <TextInput
-            className='flex-1 text-slate-600 font-bold text-lg pl-2'
+            className='flex-1 font-bold text-xl pl-2'
+            style={{color:'#202020'}}
             {...props}
             cursorColor='#8A2BE2'
             autoCorrect={false}

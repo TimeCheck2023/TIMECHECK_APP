@@ -6,7 +6,9 @@ const CardWelcome = ({ item }) => {
     return (
         <View className='flex-1 justify-center items-center w-screen'>
             <View className='w-screen items-center'>
-                <Animatable.Image animation='bounce' duration={1500} source={item.image} className='w-[80%] h-80 mb-3 rounded-full' resizeMode='cover' />
+                <View className='w-[80%] h-80 mb-3 rounded-full items-center justify-center'>
+                    <Animatable.Image animation='bounce' duration={1500} source={item.image} className='w-full h-full' resizeMode='cover' />
+                </View>
             </View>
             <View className='mt-12'>
                 <Text className='text-3xl text-center font-semibold	dark:text-white'>{item.title}</Text>
