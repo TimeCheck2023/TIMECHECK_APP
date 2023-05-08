@@ -7,6 +7,7 @@ import * as Icon from '@expo/vector-icons';
 import Loading from '../../components/Loading';
 import * as Animatable from "react-native-animatable";
 import { userSchema } from '../../utils/validate';
+import { auth } from "../../api/api";
 
 const Sign_up = ({ navigation }) => {
   const { height, width } = Dimensions.get('window')
@@ -31,8 +32,18 @@ const Sign_up = ({ navigation }) => {
   //validamos los campos si hay error se lo mandamos al handleError
   const validateForm = async () => {
     try {
-      const validate = await userSchema.validate(values_us, { abortEarly: false })
-      console.log(validate);
+      await userSchema.validate(values_us, { abortEarly: false })
+      setIsLoading(true)
+      await auth(values_us)
+      .then((response) => {
+        const message = response.data.message;
+        console.log(message)
+        setIsLoading(false)
+      }).catch((error) => {
+        const errorMessage1 = error.response.data.error;
+        setErrors(errorMessage1)
+        setIsLoading(false)
+      });
     } catch (error) {
       setErrors(error.errors[0])
     }

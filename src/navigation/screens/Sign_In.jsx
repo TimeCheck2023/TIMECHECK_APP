@@ -8,13 +8,14 @@ import Loading from '../../components/Loading';
 import * as Animatable from "react-native-animatable";
 import { validationSchemaUser, validationSchemaOrg } from '../../utils/validate';
 import { saveUser } from "../../api/api"
+import Splash from '../../components/Splash';
 
 
 const Sign_In = ({ navigation }) => {
   const { height, width } = Dimensions.get('window')
   const pixelWidth = PixelRatio.getPixelSizeForLayoutSize(width);
 
-  console.log(pixelWidth);
+  // console.log(pixelWidth);
 
   //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
@@ -46,6 +47,7 @@ const Sign_In = ({ navigation }) => {
   const handleOnChageText_us = (value, fieldName) => {
     setValues_us({ ...values_us, [fieldName]: value })
   }
+
   const handleOnChageText_org = (value, fieldName) => {
     setValues_org({ ...values_org, [fieldName]: value })
   }
@@ -89,6 +91,9 @@ const Sign_In = ({ navigation }) => {
           setErrors(errorMessage1)
           setIsLoading(false)
         });
+      setTimeout(() => {
+        setMessage('')
+      }, 3500);
     } catch (error) {
       const errorMessage = error.errors[0];
       setErrors(errorMessage)
@@ -110,7 +115,7 @@ const Sign_In = ({ navigation }) => {
   return (
     <View className='flex-1'>
       {/* loading al enviar los datos */}
-      <Loading visible={isLoading} />
+      <Splash visible={isLoading} />
 
       {/* ventada de escoger tipo de documento */}
       {Open &&
@@ -143,20 +148,20 @@ const Sign_In = ({ navigation }) => {
       </View>
 
       {/* formlario */}
-      <Animatable.View animation='fadeInUpBig' className='bg-white flex-1 pl-[18] pr-[18] -mt-20 ml-5 mr-5 rounded-3xl'>
+      <Animatable.View animation='fadeInUpBig' className='bg-white sm:h-[688px] pl-[18] pr-[18] -mt-20 ml-5 mr-5 rounded-3xl'>
 
         {/* seleciona tipo de usuario */}
-        <Text className='sm:text-base lg:text-3xl font-bold text-center sm:top-1 lg:top-4' style={{color:'#202020'}}>Tipo de Cuenta</Text>
-        
+        <Text className='sm:text-base lg:text-3xl font-bold text-center sm:top-1 lg:top-4' style={{ color: '#202020' }}>Tipo de Cuenta</Text>
+
         <View className='flex-row justify-around sm:top-3 lg:mt-10'>
-        {/* ${width > 392.72727272727275 ? 'w-24 h-20' : 'w-20 h-16'} */}
+          {/* ${width > 392.72727272727275 ? 'w-24 h-20' : 'w-20 h-16'} */}
           <TouchableOpacity activeOpacity={0.7} className={`flex-col items-center sm:w-20 sm:h-16 lg:w-60 lg:h-40  ${!isOpen && 'sm:border-2 lg:border-4 border-purple-800 rounded-lg'}`} onPress={ViewUser}>
             <Image source={user} resizeMode='contain' className='w-full h-full rounded' />
-            <Text className={`top-2 sm:text-xs lg:text-2xl font-bold`} style={{color:'#202020'}}>User</Text>
+            <Text className={`top-2 sm:text-xs lg:text-2xl font-bold`} style={{ color: '#202020' }}>User</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.7} className={`flex-col items-center sm:w-20 sm:h-16 lg:w-60 lg:h-40 ${isOpen && 'sm:border-2 smborder-purple-800 rounded-lg'}`} onPress={ViewOrg}>
             <Image source={organizacion} resizeMode='contain' className='w-full h-full rounded' />
-            <Text className={`top-2 sm:text-xs lg:text-2xl font-bold`} style={{color:'#202020'}}>Organization</Text>
+            <Text className={`top-2 sm:text-xs lg:text-2xl font-bold`} style={{ color: '#202020' }}>Organization</Text>
           </TouchableOpacity>
         </View>
 
@@ -166,15 +171,15 @@ const Sign_In = ({ navigation }) => {
             <>
 
               {/* Select tipo de documento */}
-              <Text className='font-bold sm:text-base lg:text-xl ml-4' style={{color:'#202020'}}>Tipo Documento</Text>
+              <Text className='font-bold sm:text-base lg:text-xl ml-4' style={{ color: '#202020' }}>Tipo Documento</Text>
               <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center p-3 sm:h-12 sm:top-1 lg:h-16 lg:mt-3 bg-gray-300 text-gray-700 rounded-2xl`}
                 onPress={() => { setOpen(!Open) }}>
-                <Icon.Feather name='users' color='#642AB8' className='sm:text-xl lg:text-3xl'/>
-                <Text className='font-bold text-lg rounded-lg ml-4' style={{color:'#202020'}}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
+                <Icon.Feather name='users' color='#642AB8' className='sm:text-xl lg:text-3xl' />
+                <Text className='font-bold text-lg rounded-lg ml-4' style={{ color: '#202020' }}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
               </TouchableOpacity>
 
               {/* input */}
-              <Input label='document number' value={values_us.documentNumber} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
+              <Input label='document number' value={values_us.documentNumber} keyboardType="decimal-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
               <Input label='fullName' value={values_us.fullName} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'fullName')} iconName='user' placeholder='Enter Nombre Completo' />
               <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
               <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
@@ -199,12 +204,12 @@ const Sign_In = ({ navigation }) => {
 
           {/* button */}
           {!isOpen ?
-            <>
-            {/* ${width > 392.72727272727275 ? 'mt-1 py-4' : 'mt-2 py-3'} */}
-              <TouchableOpacity activeOpacity={0.7} className={`sm:mt-2 sm:py-3 lg:mt-2 lg:py-6   rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateDateUser}>
+            <View className='items-center'>
+              {/* ${width > 392.72727272727275 ? 'mt-1 py-4' : 'mt-2 py-3'} */}
+              <TouchableOpacity activeOpacity={0.7} className={`sm:mt-24 sm:py-3 sm:w-80 lg:mt-2 lg:py-6 rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateDateUser}>
                 <Text className='sm:text-xl lg:text-2xl font-bold text-center text-white'>Registrar_user</Text>
               </TouchableOpacity>
-            </>
+            </View>
             :
             <>
               <TouchableOpacity activeOpacity={0.7} className={`sm:mt-2 sm:py-3 lg:mt-2 lg:py-6   rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateDateOrg}>

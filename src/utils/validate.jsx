@@ -6,7 +6,7 @@ import * as Yup from "yup";
 // Shema del login
 export const userSchema = Yup.object().shape({
   emailAddress: Yup.string().email('Correo electrónico no válido').required('El correo electrónico es requerido'),
-  password: Yup.string().required('La contraseña es requerida').min(8, 'La contraseña debe tener al menos 8 caracteres'),
+  password: Yup.string().required('La contraseña es requerida').min(3, 'La contraseña debe tener al menos 8 caracteres'),
 })
 
 
