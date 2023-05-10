@@ -9,7 +9,7 @@ const Splash = ({ visible }) => {
 
     return (
         visible && (
-            <View className='absolute flex-col justify-center items-center z-10 bg-white' style={{ height, width }}>
+            <View className='absolute flex-col left-0 right-0 bottom-0 top-0 justify-center items-center z-10 bg-[#6C5CE7]'>
                 <StatusBar translucent backgroundColor='rgba(0,0,0,0.2)' />
                 <Animatable.Image animation='pulse'
                     easing='ease-out'
@@ -20,7 +20,7 @@ const Splash = ({ visible }) => {
                         margin: 100
                     }}
                     source={user} />
-                <ActivityIndicator size='large' color='purple' />
+                <ActivityIndicator  color='white' />
             </View>
         )
     )

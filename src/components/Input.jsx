@@ -15,7 +15,7 @@ const Input = ({ placeholder, label, iconName, password, ...props }) => {
           <Icon.Feather
             name={iconName}
             // size={20}
-            color='#8A2BE2'
+            color='#6C5CE7'
             className='mr-2 sm:text-xl lg:text-3xl'
           />
           <TextInput
@@ -32,7 +32,7 @@ const Input = ({ placeholder, label, iconName, password, ...props }) => {
             <Icon.Feather
               name={hidePassword ? 'eye-off' : 'eye'}
               size={18}
-              color='#8A2BE2'
+              color='#6C5CE7'
               onPress={() => setHidePassword(!hidePassword)}
             />
           }

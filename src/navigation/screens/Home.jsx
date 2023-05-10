@@ -18,7 +18,7 @@ const Home = () => {
         getEvent().then((response) => {
             setData(response.data.response);
         }).catch((error) => {
-            console.log(error.response.data);
+            console.log(error.response);
         })
     }, [])
 

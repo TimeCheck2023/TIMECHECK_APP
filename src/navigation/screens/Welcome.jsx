@@ -12,6 +12,7 @@ const { width, height } = Dimensions.get('window')
 
 
 const Welcome = ({ navigation }) => {
+
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const ref = React.useRef();
   const updateSliderCurrentIndex = (e) => {
@@ -30,31 +31,36 @@ const Welcome = ({ navigation }) => {
     }
   }
   return (
-    <SafeAreaView className='flex-1 items-center justify-center'>
-      <View className='flex-row h-4 items-center mt-12'>
-        {
-          data.map((_, index) => {
-            return <View className={`${currentSlideIndex === index ? 'bg-purple-600 w-7 h-[5] rounded-xl ml-1' : 'w-5 h-[5] rounded-xl bg-slate-400 ml-1'}`} key={index} />
-          })
-        }
+    <View className='flex-1'>
+      <View className='flex-row h-[450px] pb-16 pl-10 pr-10 bg-[#6C63FF]' style={{
+        borderBottomRightRadius: 170,
+      }}>
       </View>
-      <View className='flex-1 justify-center items-center'>
-        <FlatList
-          ref={ref}
-          onMomentumScrollEnd={updateSliderCurrentIndex}
-          keyExtractor={item => item.id}
-          data={data}
-          renderItem={({ item }) => <CardWelcome item={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-        />
-      </View>
+      <View className='absolute top-0 bottom-0 left-0 right-0 items-center'>
+        <View className='flex-row h-4 items-center top-12'>
+          {
+            data.map((_, index) => {
+              return <View className={`${currentSlideIndex === index ? 'bg-[#57585b] w-7 h-[5] rounded-xl ml-1' : 'w-5 h-[5] rounded-xl bg-white ml-1'}`} key={index} />
+            })
+          }
+        </View>
+        <View className='flex-1 justify-center items-center bottom-12'>
+          <FlatList
+            ref={ref}
+            onMomentumScrollEnd={updateSliderCurrentIndex}
+            keyExtractor={item => item.id}
+            data={data}
+            renderItem={({ item }) => <CardWelcome item={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled
+          />
+        </View>
       {
         currentSlideIndex !== data.length - 1 ?
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-9 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-purple-800'
+            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-20 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
             onPress={handleNext}
           >
             <View className='justify-center items-center sm:left-20 lg:left-24'>
@@ -70,7 +76,7 @@ const Welcome = ({ navigation }) => {
           :
           (<TouchableOpacity
             activeOpacity={0.9}
-            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-9 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-purple-800'
+            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-20 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
             onPress={() => navigation.navigate('Sign_In')}
           >
             <View className='justify-center items-center sm:left-28 lg:left-36'>
@@ -84,7 +90,9 @@ const Welcome = ({ navigation }) => {
             </View>
           </TouchableOpacity>)
       }
-    </SafeAreaView>
+      </View>
+
+    </View>
   )
 }
 

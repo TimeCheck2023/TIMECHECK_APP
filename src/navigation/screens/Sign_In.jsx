@@ -135,10 +135,10 @@ const Sign_In = ({ navigation }) => {
       {/* style={{ paddingBottom: 44, paddingStart: 16, paddingEnd: 16 }} */}
 
       {/* header de form purple */}
-      <View className='flex-row h-52 pb-16 pl-10 pr-10 rounded-b-2xl' style={{ backgroundColor: '#202020' }}>
+      <View className='flex-row h-52 pb-16 pl-10 pr-10 rounded-b-2xl bg-[#6C5CE7]'>
         {/* ir al login */}
         <View className='flex-1 flex-row items-center justify-between'>
-          <TouchableOpacity activeOpacity={0.7} className={`sm:p-3 lg:p-4 flex-row items-center rounded-tr-2xl rounded-bl-2xl sm:ml-4 lg:ml-16`} style={{ backgroundColor: '#642AB8' }} onPress={() => navigation.navigate('Sign_up')}>
+          <TouchableOpacity activeOpacity={0.7} className={`sm:p-3 lg:p-4 flex-row items-center rounded-tr-2xl rounded-bl-2xl sm:ml-4 lg:ml-16 bg-[#5A6170]`} onPress={() => navigation.navigate('Sign_up')}>
             <Icon.AntDesign name="arrowleft" size={15} color="white" />
             <Text className='text-white font-bold text-lg left-1'>Login</Text>
           </TouchableOpacity>
@@ -194,10 +194,10 @@ const Sign_In = ({ navigation }) => {
           }
 
           {/* campo para mostrar el error */}
-          <View className='items-center mt-4'>
+          <View className='items-center top-4'>
             {errors && <Text className={`text-red-800 ml-3  ${width > 392.72727272727275 ? 'text-xl' : 'text-base'} font-bold`}>{errors}</Text>}
           </View>
-          <View className='items-center mt-4'>
+          <View className='items-center top-4'>
             {message && <Text className={`text-green-800 ml-3  ${width > 392.72727272727275 ? 'text-xl' : 'text-base'} font-bold`}>{message}</Text>}
           </View>
 
@@ -206,13 +206,13 @@ const Sign_In = ({ navigation }) => {
           {!isOpen ?
             <View className='items-center'>
               {/* ${width > 392.72727272727275 ? 'mt-1 py-4' : 'mt-2 py-3'} */}
-              <TouchableOpacity activeOpacity={0.7} className={`sm:mt-24 sm:py-3 sm:w-80 lg:mt-2 lg:py-6 rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateDateUser}>
+              <TouchableOpacity activeOpacity={0.7} className={`sm:top-16 sm:py-3 sm:w-80 lg:mt-2 lg:py-6 rounded-xl bg-[#6C5CE7]`} onPress={validateDateUser}>
                 <Text className='sm:text-xl lg:text-2xl font-bold text-center text-white'>Registrar_user</Text>
               </TouchableOpacity>
             </View>
             :
             <>
-              <TouchableOpacity activeOpacity={0.7} className={`sm:mt-2 sm:py-3 lg:mt-2 lg:py-6   rounded-xl`} style={{ backgroundColor: '#642AB8' }} onPress={validateDateOrg}>
+              <TouchableOpacity activeOpacity={0.7} className={`sm:mt-2 sm:py-3 lg:mt-2 lg:py-6   rounded-xl bg-[#6C5CE7]`} onPress={validateDateOrg}>
                 <Text className='sm:text-xl lg:text-2xl font-bold text-center text-white'>Registrar_org</Text>
               </TouchableOpacity>
             </>

@@ -10,10 +10,10 @@ const CardWelcome = ({ item }) => {
                     <Animatable.Image animation='bounce' duration={1500} source={item.image} className='w-full h-full rounded-full' resizeMode='contain' />
                 </View>
             </View>
-            <View className='sm:bottom-12 lg:bottom-2'>
-                <Text className='sm:text-3xl lg:text-5xl text-center font-semibold	dark:text-white'>{item.title}</Text>
+            <View className='sm:top-3 lg:bottom-2'>
+                <Text className='sm:text-4xl lg:text-5xl text-center font-bold	dark:text-white'>{item.title}</Text>
                 {/* <Text className='text-3xl text-center font-semibold	dark:text-white'>{item.title2}</Text> */}
-                <Text className='mt-3 sm:w-96 lg:w-[700px] sm:text-lg lg:text-4xl text-center dark:text-white'>{item.description}</Text>
+                <Text className='top-3 sm:w-96 lg:w-[700px] sm:text-xl lg:text-4xl font-bold text-center dark:text-white'>{item.description}</Text>
             </View>
         </View>
     )
