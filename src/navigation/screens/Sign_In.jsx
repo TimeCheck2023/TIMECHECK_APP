@@ -7,14 +7,12 @@ import * as Icon from '@expo/vector-icons';
 import Loading from '../../components/Loading';
 import * as Animatable from "react-native-animatable";
 import { validationSchemaUser, validationSchemaOrg } from '../../utils/validate';
-import { saveUser } from "../../api/api"
+import { saveUser, saveOrg } from "../../api/api"
 import Splash from '../../components/Splash';
 
 
 const Sign_In = ({ navigation }) => {
-  const { height, width } = Dimensions.get('window')
-  const pixelWidth = PixelRatio.getPixelSizeForLayoutSize(width);
-
+  const { height, width } = Dimensions.get('window');
   // console.log(pixelWidth);
 
   //hook para capturar los errores y respuestas http
@@ -36,10 +34,10 @@ const Sign_In = ({ navigation }) => {
   });
 
   const [values_org, setValues_org] = useState({
-    fullName: '',
-    address: '',
-    emailAddress: '',
-    password: '',
+    organization_name: '',
+    address_organization: '',
+    email_organization: '',
+    organization_password: '',
   })
 
 
@@ -68,10 +66,10 @@ const Sign_In = ({ navigation }) => {
   const ViewOrg = () => {
     setIsOpen(true);
     setValues_org({
-      fullName: '',
-      address: '',
-      emailAddress: '',
-      password: '',
+      organization_name: '',
+      address_organization: '',
+      email_organization: '',
+      organization_password: '',
     });
     setErrors('');
   }
@@ -93,6 +91,7 @@ const Sign_In = ({ navigation }) => {
         });
       setTimeout(() => {
         setMessage('')
+        setErrors('')
       }, 3500);
     } catch (error) {
       const errorMessage = error.errors[0];
@@ -104,10 +103,26 @@ const Sign_In = ({ navigation }) => {
   const validateDateOrg = async () => {
     try {
       await validationSchemaOrg.validate(values_org, { abortEarly: false })
-
+      await saveOrg(values_org)
+        .then((response) => {
+          const message = response.data.message;
+          setMessage(message)
+          setIsLoading(false)
+        }).catch((error) => {
+          const errorMessage1 = error.response.data.error;
+          setErrors(errorMessage1)
+          setIsLoading(false)
+        });
+        setTimeout(() => {
+          setMessage('')
+          setErrors('')
+        }, 3000);
     } catch (error) {
       const errorMessage = error.errors[0];
       setErrors(errorMessage)
+      setTimeout(() => {
+        setErrors('')
+      }, 3000);
     }
   }
 
@@ -132,7 +147,6 @@ const Sign_In = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       }
-      {/* style={{ paddingBottom: 44, paddingStart: 16, paddingEnd: 16 }} */}
 
       {/* header de form purple */}
       <View className='flex-row h-52 pb-16 pl-10 pr-10 rounded-b-2xl bg-[#6C5CE7]'>
@@ -186,10 +200,10 @@ const Sign_In = ({ navigation }) => {
             </>
             :
             <>
-              <Input label='organization name`s' value={values_org.fullName} onChangeText={(value) => handleOnChageText_org(value, 'fullName')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
-              <Input label='adress' value={values_org.address} onChangeText={(value) => handleOnChageText_org(value, 'address')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
-              <Input label='mail' value={values_org.emailAddress} onChangeText={(value) => handleOnChageText_org(value, 'emailAddress')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
-              <Input label='password' value={values_org.password} onChangeText={(value) => handleOnChageText_org(value, 'password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
+              <Input label='organization name`s' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
+              <Input label='adress' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
+              <Input label='mail' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
+              <Input label='password' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
             </>
           }
 
@@ -205,14 +219,13 @@ const Sign_In = ({ navigation }) => {
           {/* button */}
           {!isOpen ?
             <View className='items-center'>
-              {/* ${width > 392.72727272727275 ? 'mt-1 py-4' : 'mt-2 py-3'} */}
-              <TouchableOpacity activeOpacity={0.7} className={`sm:top-16 sm:py-3 sm:w-80 lg:mt-2 lg:py-6 rounded-xl bg-[#6C5CE7]`} onPress={validateDateUser}>
+              <TouchableOpacity activeOpacity={0.7} className={` sm:py-3 sm:w-80 sm:top-8 lg:mt-2 lg:py-6 rounded-xl bg-[#6C5CE7]`} onPress={validateDateUser}>
                 <Text className='sm:text-xl lg:text-2xl font-bold text-center text-white'>Registrar_user</Text>
               </TouchableOpacity>
             </View>
             :
             <>
-              <TouchableOpacity activeOpacity={0.7} className={`sm:mt-2 sm:py-3 lg:mt-2 lg:py-6   rounded-xl bg-[#6C5CE7]`} onPress={validateDateOrg}>
+              <TouchableOpacity activeOpacity={0.7} className={`sm:py-3  sm:top-8  lg:mt-2 lg:py-6   rounded-xl bg-[#6C5CE7]`} onPress={validateDateOrg}>
                 <Text className='sm:text-xl lg:text-2xl font-bold text-center text-white'>Registrar_org</Text>
               </TouchableOpacity>
             </>

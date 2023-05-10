@@ -21,9 +21,8 @@ export const validationSchemaUser = Yup.object().shape({
 
 // Shema del registro seccion del org
 export const validationSchemaOrg = Yup.object().shape({
-  fullName: Yup.string().required('El nombre completo es requerido'),
-  address: Yup.string().required('El direccion es requerido'),
-  emailAddress: Yup.string().email('Introduce un email válido').required('El email es requerido'),
-  password: Yup.string().required('La contraseña es requerida'),
+  organization_name: Yup.string().required('El nombre completo es requerido'),
+  address_organization: Yup.string().required('El direccion es requerido'),
+  email_organization: Yup.string().email('Introduce un email válido').required('El email es requerido'),
+  organization_password: Yup.string().required('La contraseña es requerida'),
 });
-

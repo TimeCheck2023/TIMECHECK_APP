@@ -13,6 +13,7 @@ import { auth } from "../../api/api";
 const Sign_up = ({ navigation }) => {
   const { height, width } = Dimensions.get('window')
 
+
   //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
   const [message, setMessage] = useState(false)
@@ -36,15 +37,16 @@ const Sign_up = ({ navigation }) => {
       await userSchema.validate(values_us, { abortEarly: false })
       setIsLoading(true)
       await auth(values_us)
-      .then(async(response) => {
-        const message = response.data.message;
-        await AsyncStorage.setItem('token', message.token);
-        setIsLoading(false)
-      }).catch((error) => {
-        const errorMessage1 = error.response.data.error;
-        setErrors(errorMessage1)
-        setIsLoading(false)
-      });
+        .then(async (response) => {
+          const message = response.data.message;
+          await AsyncStorage.setItem('token', message.token);
+          setIsLoading(false)
+          navigation.navigate('HomeTab');
+        }).catch((error) => {
+          const errorMessage1 = error.response.data.error;
+          setErrors(errorMessage1)
+          setIsLoading(false)
+        });
     } catch (error) {
       setErrors(error.errors[0])
     }
@@ -75,9 +77,9 @@ const Sign_up = ({ navigation }) => {
       <Animatable.View animation='fadeInUpBig' className='bg-white flex-1 pl-[18] pr-[18] -mt-20 ml-5 mr-5 rounded-3xl shadow-[#6C5CE7]'>
 
         {/* seleciona tipo de usuario */}
-          <TouchableOpacity activeOpacity={0.7} className={`items-center top-2 w-full h-44 shadow-lg shadow-[#6C5CE7]`}>
-            <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded' />
-          </TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.7} className={`items-center top-2 w-full h-44 shadow-lg shadow-[#6C5CE7]`}>
+          <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded' />
+        </TouchableOpacity>
 
         {/* View de input */}
         <View className='flex-1 top-12'>
@@ -95,9 +97,9 @@ const Sign_up = ({ navigation }) => {
 
           {/* button */}
           <Text className='text-xl font-bold text-black mt-2 left-2'>forgot password?</Text>
-            <TouchableOpacity activeOpacity={0.7} className={`mt-1 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
-              <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
-            </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.7} className={`mt-1 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
+            <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
+          </TouchableOpacity>
 
         </View>
       </Animatable.View>

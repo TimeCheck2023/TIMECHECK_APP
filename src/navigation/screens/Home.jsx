@@ -6,6 +6,7 @@ import * as Icon from '@expo/vector-icons';
 import * as Animatable from "react-native-animatable";
 import BottomNavbar from '../../components/BottomNavbar'
 import { getEvent } from '../../api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 {/* <BottomNavbar /> */ }
 
 const Home = () => {
@@ -21,7 +22,6 @@ const Home = () => {
             console.log(error.response);
         })
     }, [])
-
     const filtro = select === 'All' ? data : data.filter((item) => item.tipoEvento === select)
 
     return (
@@ -57,7 +57,7 @@ const Home = () => {
                 </View>
             </View>
             {/* Over lay View....  */}
-            <Animatable.View 
+            <Animatable.View
                 className={`flex-grow bg-white absolute ${showMenu ? 'top-16 sm:left-56 sm:bottom-16 w-full rounded-l-3xl' : 'top-0 bottom-0 right-0 left-0'} pl-3 pr-3`}>
 
                 <SafeAreaView className={`flex-1 ${showMenu && 'bottom-12'}`}>
@@ -147,8 +147,10 @@ const CardEvent = ({ items }) => {
 
 const TabButton = (currentTab, setCurrentTab, title, icon) => {
     return (
-        <TouchableOpacity onPress={() => {
+        <TouchableOpacity onPress={async() => {
             if (title === 'logout') {
+                await AsyncStorage.removeItem('token')
+                navigation.navigate('Welcome');
                 //Do your Stuff...
             } else {
                 setCurrentTab(title)
