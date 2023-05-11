@@ -2,8 +2,8 @@ import { View, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
-import { data } from "../../utils/data";
-import CardWelcome from '../../components/CardWelcome';
+import { data } from "../utils/data";
+import CardWelcome from '../components/CardWelcome';
 
 
 const { width, height } = Dimensions.get('window')

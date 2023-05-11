@@ -1,14 +1,14 @@
 import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import imgGame from "../../../assets/Sing_Up.png";
-import Input from '../../components/Input';
+import imgGame from "../../assets/Sing_Up.png";
+import Input from '../components/Input';
 import { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Loading from '../../components/Loading';
+import Loading from '../components/Loading';
 import * as Animatable from "react-native-animatable";
-import { userSchema } from '../../utils/validate';
-import { auth } from "../../api/api";
+import { userSchema } from '../utils/validate';
+import { auth } from "../api/api";
 
 const Sign_up = ({ navigation }) => {
   const { height, width } = Dimensions.get('window')

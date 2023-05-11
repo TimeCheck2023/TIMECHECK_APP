@@ -3,7 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 
 
 import AuthNavigator from './src/navigation/AuthNavigator';
-import AppStack from './src/navigation/AppStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';

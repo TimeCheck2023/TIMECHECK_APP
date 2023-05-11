@@ -1,13 +1,12 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useRef, useState, useEffect } from 'react'
-import Avatar from "../../../assets/Avatar.png";
+import Avatar from "../../assets/Avatar.png";
 import * as Icon from '@expo/vector-icons';
 import * as Animatable from "react-native-animatable";
-import BottomNavbar from '../../components/BottomNavbar'
-import { getEvent } from '../../api/api';
+import BottomNavbar from '../components/BottomNavbar'
+import { getEvent } from '../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-{/* <BottomNavbar /> */ }
 
 const Home = () => {
     const [currentTab, setCurrentTab] = useState('Home')

@@ -1,14 +1,13 @@
 import { View, Text, Dimensions, TouchableOpacity, Image, PixelRatio } from 'react-native'
-import user from "../../../assets/User.png";
-import organizacion from "../../../assets/organizacion.png";
-import Input from '../../components/Input';
+import user from "../../assets/User.png";
+import organizacion from "../../assets/organizacion.png";
+import Input from '../components/Input';
 import { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import Loading from '../../components/Loading';
 import * as Animatable from "react-native-animatable";
-import { validationSchemaUser, validationSchemaOrg } from '../../utils/validate';
-import { saveUser, saveOrg } from "../../api/api"
-import Splash from '../../components/Splash';
+import { validationSchemaUser, validationSchemaOrg } from '../utils/validate';
+import { saveUser, saveOrg } from "../api/api"
+import Splash from '../components/Splash';
 
 
 const Sign_In = ({ navigation }) => {
@@ -113,10 +112,10 @@ const Sign_In = ({ navigation }) => {
           setErrors(errorMessage1)
           setIsLoading(false)
         });
-        setTimeout(() => {
-          setMessage('')
-          setErrors('')
-        }, 3000);
+      setTimeout(() => {
+        setMessage('')
+        setErrors('')
+      }, 3000);
     } catch (error) {
       const errorMessage = error.errors[0];
       setErrors(errorMessage)
