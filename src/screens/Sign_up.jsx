@@ -41,7 +41,7 @@ const Sign_up = ({ navigation }) => {
           const message = response.data.message;
           await AsyncStorage.setItem('token', message.token);
           setIsLoading(false)
-          navigation.navigate('HomeTab');
+          navigation.navigate('Main');
         }).catch((error) => {
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)

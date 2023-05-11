@@ -16,6 +16,7 @@ export default function App() {
     const checkUserRole = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
+        console.log(token);
         setUserRole(token);
       } catch (error) {
         console.log('Error al obtener el rol del usuario', error);

@@ -1,24 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Ionicons } from '@expo/vector-icons';
 import { Image, View } from 'react-native';
-import Home from '../screens/Home';
+import Home from '../screens/HomeDrawer';
 import HomeUser from '../screens/HomeUser';
 import AddButton from '../components/AddButton';
 
 
 const Tab = createBottomTabNavigator();
-
-const BottomTabFloat = () => {
-    return (
-        <View className='bg-[#7560EE] w-16 h-16 rounded-full items-center justify-center bottom-7'>
-            <Ionicons
-                name='add-sharp'
-                size={35}
-                color='white'
-            />
-        </View>
-    )
-}
 
 const BottomTabNavigator = () => {
     return (
@@ -59,7 +47,7 @@ const BottomTabNavigator = () => {
                     )
                 }}
             />
-            <Tab.Screen name='HomeUser1' component={HomeUser}
+            <Tab.Screen name='HomeUser1' component={Home}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (

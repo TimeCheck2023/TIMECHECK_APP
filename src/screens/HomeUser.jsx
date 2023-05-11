@@ -6,9 +6,10 @@ import React, { useEffect, useState } from 'react'
 
 import Avatar from '../../assets/Avatar.png'
 import { getEvent } from '../api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const HomeUser = () => {
+const HomeUser = ({ navigation }) => {
 
   const [data, setData] = useState([])
   const [select, setSelect] = useState('All')
@@ -21,6 +22,10 @@ const HomeUser = () => {
     })
   }, [])
 
+  const navegar = async() => {
+    await AsyncStorage.removeItem('token')
+  }
+
   const filtro = select === 'All' ? data : data.filter((item) => item.tipoEvento === select)
 
   return (
@@ -28,7 +33,9 @@ const HomeUser = () => {
       <View className='pt-7 pb-16 pl-10 pr-10 bg-[#7560EE] rounded-b-2xl'>
         <View className='flex-row justify-between items-center sm:top-7'>
           <Text className='text-2xl text-white font-bold'>TIMECHECK</Text>
-          <Image source={Avatar} className='w-14 h-14 rounded-full' />
+          <TouchableOpacity onPress={navegar}>
+            <Image source={Avatar} className='w-14 h-14 rounded-full' />
+          </TouchableOpacity>
         </View>
         <View className='flex-row items-center p-3 sm:h-11 sm:top-12 lg:h-16 lg:top-3 bg-gray-300 rounded-2xl'>
           <Icon.FontAwesome name='search' size={16} />
@@ -58,7 +65,7 @@ const HomeUser = () => {
         showsVerticalScrollIndicator={false}
       />
 
-    </View>
+    </View >
   )
 }
 
