@@ -36,7 +36,7 @@ const HomeUser = ({ navigation }) => {
         </View>
         <View className='flex-row items-center p-3 sm:h-11 sm:top-12 lg:h-16 lg:top-3 bg-gray-300 rounded-2xl'>
           <Icon.FontAwesome name='search' size={16} />
-          <TextInput placeholder='Busca un evento...' className='flex-1 font-bold text-xl pl-3' />
+          <TextInput placeholder='Busca un evento...' className='flex-1 font-bold top-1 text-xl pl-3' />
         </View>
       </View>
       <View className=' rounded-2xl top-1'>

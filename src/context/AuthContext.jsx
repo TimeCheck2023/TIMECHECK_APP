@@ -10,14 +10,14 @@ export const AuthProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState(null)
 
     const login = (message) => {
+        setIsLoading(true);
         setUserInfo(message.EsUsuario)
         setUserToken(message.token)
         AsyncStorage.setItem('userInfo', JSON.stringify(message.EsUsuario));
         AsyncStorage.setItem('userToken', message.token);
-        // setIsLoading(true);
-        // setUserToken('sdsfsdf');
-        // setIsLoading(false);
+        setIsLoading(false);
     }
+    
     const logout = () => {
         setIsLoading(true);
         setUserToken(null);
@@ -36,8 +36,6 @@ export const AuthProvider = ({ children }) => {
                 setUserInfo(Info)
             }
             setIsLoading(false)
-            // console.log(token);
-            console.log(Info);
         } catch (error) {
             console.log(`islogging in error: ${error}`);
         }
@@ -49,7 +47,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ login, logout, isLoading, userToken }}>
+        <AuthContext.Provider value={{ login, logout, isLoading, userToken, userInfo }}>
             {children}
         </AuthContext.Provider>
     )
