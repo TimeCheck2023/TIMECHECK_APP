@@ -2,17 +2,19 @@ import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imgGame from "../../assets/Sing_Up.png";
 import Input from '../components/Input';
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import * as Icon from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from '../components/Loading';
 import * as Animatable from "react-native-animatable";
 import { userSchema } from '../utils/validate';
 import { auth } from "../api/api";
+import { AuthContext } from '../context/AuthContext';
 
 const Sign_up = ({ navigation }) => {
   const { height, width } = Dimensions.get('window')
 
+  const { login } = useContext(AuthContext)
 
   //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
@@ -39,9 +41,8 @@ const Sign_up = ({ navigation }) => {
       await auth(values_us)
         .then(async (response) => {
           const message = response.data.message;
-          await AsyncStorage.setItem('token', message.token);
+          login(message);
           setIsLoading(false)
-          navigation.navigate('Main');
         }).catch((error) => {
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)

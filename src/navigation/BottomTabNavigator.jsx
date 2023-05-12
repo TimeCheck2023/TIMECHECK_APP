@@ -22,6 +22,7 @@ const BottomTabNavigator = () => {
                     borderRadius: 16
                 }
             }}
+            initialRouteName='Home'
         >
             <Tab.Screen name='Home' component={HomeUser}
                 options={{
@@ -35,7 +36,7 @@ const BottomTabNavigator = () => {
                     )
                 }}
             />
-            <Tab.Screen name='HomeUser' component={Home}
+            {/* <Tab.Screen name='HomeUser' component={Home}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
@@ -46,8 +47,8 @@ const BottomTabNavigator = () => {
                         />
                     )
                 }}
-            />
-            <Tab.Screen name='HomeUser1' component={Home}
+            /> */}
+            <Tab.Screen name='Home1' component={Home}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
@@ -55,9 +56,9 @@ const BottomTabNavigator = () => {
                             <AddButton />
                         </View>
                     )
-                }}
+                }} Home
             />
-            <Tab.Screen name='HomeUser2' component={Home}
+            {/* <Tab.Screen name='HomeUser2' component={Home}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
@@ -68,7 +69,7 @@ const BottomTabNavigator = () => {
                         />
                     )
                 }}
-            />
+            /> */}
 
             <Tab.Screen name='HomeUser3' component={Home}
                 options={{

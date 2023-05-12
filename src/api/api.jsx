@@ -13,14 +13,11 @@ export const saveUser = async (newUser) => {
 }
 
 export const auth = async (user) => {
-    console.log(user);
     const result = await axios({
         url: `${API_Node}/Auth/login`,
         method: 'POST',
         data: user
     })
-
-    console.log(result);
     return result;
 }
 
