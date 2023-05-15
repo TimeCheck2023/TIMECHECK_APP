@@ -46,7 +46,7 @@ const Welcome = ({ navigation }) => {
             })
           }
         </View>
-        <View className='flex-1 justify-center items-center sm:bottom-8'>
+        <View className='flex-1 justify-center items-center sm:bottom-14'>
           <FlatList
             ref={ref}
             onMomentumScrollEnd={updateSliderCurrentIndex}
@@ -58,40 +58,49 @@ const Welcome = ({ navigation }) => {
             pagingEnabled
           />
         </View>
-      {
-        currentSlideIndex !== data.length - 1 ?
-          (<TouchableOpacity
-            activeOpacity={0.9}
-            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-16 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
-            onPress={handleNext}
-          >
-            <View className='justify-center items-center sm:left-[63] lg:left-24'>
-              <Text className='font-bold sm:text-xl lg:text-2xl text-white'>
-                GET STARTED
-              </Text>
+        {
+          currentSlideIndex !== data.length - 1 ?
+            (<TouchableOpacity
+              activeOpacity={0.9}
+              className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-16 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
+              onPress={handleNext}
+            >
+              <View className='justify-center items-center sm:left-[63] lg:left-24'>
+                <Text className='font-bold sm:text-xl lg:text-2xl text-white'>
+                  GET STARTED
+                </Text>
 
-            </View>
-            <View className='sm:w-11 sm:h-11 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
-              <AntDesign name="arrowright" size={24} color="black" />
-            </View>
-          </TouchableOpacity>)
-          :
-          (<TouchableOpacity
-            activeOpacity={0.9}
-            className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-16 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
-            onPress={() => navigation.navigate('Sign_In')}
-          >
-            <View className='justify-center items-center sm:left-28 lg:left-36'>
-              <Text className='font-bold sm:text-xl lg:text-3xl text-white'>
-                Login
-              </Text>
-
-            </View>
-            <View className='sm:w-11 sm:h-11 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
-              <AntDesign name="arrowright" size={24} color="black" />
-            </View>
-          </TouchableOpacity>)
-      }
+              </View>
+              <View className='sm:w-11 sm:h-11 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
+                <AntDesign name="arrowright" size={24} color="black" />
+              </View>
+            </TouchableOpacity>)
+            :
+            (
+              <>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-16 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
+                  onPress={() => navigation.navigate('Sign_Up')}
+                >
+                  <View className='justify-center items-center sm:left-28 lg:left-36'>
+                    <Text className='font-bold sm:text-xl lg:text-3xl text-white'>
+                      Register
+                    </Text>
+                  </View>
+                  <View className='sm:w-11 sm:h-11 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
+                    <AntDesign name="arrowright" size={24} color="black" />
+                  </View>
+                </TouchableOpacity>
+                <View className='flex-row justify-center sm:bottom-12'>
+                  <Text className='text-xl font-bold'>Already have an account?  </Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
+                    <Text className='text-[#6C5CE7] text-xl font-bold'>Login</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )
+        }
       </View>
 
     </View>

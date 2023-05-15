@@ -1,8 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Ionicons } from '@expo/vector-icons';
+import * as Icon from '@expo/vector-icons';
 import { Image, View } from 'react-native';
-import Home from '../screens/HomeDrawer';
-import HomeUser from '../screens/HomeUser';
+import Home from '../screens/HomeUser';
 import AddButton from '../components/AddButton';
 
 
@@ -24,11 +23,11 @@ const BottomTabNavigator = () => {
             }}
             initialRouteName='Home'
         >
-            <Tab.Screen name='Home' component={HomeUser}
+            <Tab.Screen name='Home' component={Home}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons
+                        <Icon.Ionicons
                             name='home'
                             size={24}
                             color={focused ? '#7973ED' : 'gray'}
@@ -75,8 +74,8 @@ const BottomTabNavigator = () => {
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name='home'
+                        <Icon.FontAwesome
+                            name='user'
                             size={24}
                             color={focused ? '#7973ED' : 'gray'}
                         />

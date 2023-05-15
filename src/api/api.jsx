@@ -11,6 +11,14 @@ export const saveUser = async (newUser) => {
     })
     return result
 }
+export const saveOrg = async (newUser) => {
+    const result = await axios({
+        url: `${API_Node}/org/register`,
+        method: 'POST',
+        data: newUser
+    })
+    return result
+}
 
 export const auth = async (user) => {
     const result = await axios({

@@ -1,111 +1,213 @@
-import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import imgGame from "../../assets/Sing_Up.png";
+import { View, Text, Dimensions, TouchableOpacity, Image, PixelRatio, ScrollView } from 'react-native'
+import user from "../../assets/User.png";
+import organizacion from "../../assets/organizacion.png";
 import Input from '../components/Input';
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Loading from '../components/Loading';
 import * as Animatable from "react-native-animatable";
-import { userSchema } from '../utils/validate';
-import { auth } from "../api/api";
-import { AuthContext } from '../context/AuthContext';
+import { validationSchemaUser, validationSchemaOrg } from '../utils/validate';
+import { saveUser, saveOrg } from "../api/api"
+import Splash from '../components/Splash';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Sign_up = ({ navigation }) => {
-  const { height, width } = Dimensions.get('window')
 
-  const { login } = useContext(AuthContext)
+const Sign_Up = ({ navigation }) => {
+  const { height, width } = Dimensions.get('window');
+  // console.log(pixelWidth);
 
   //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
   const [message, setMessage] = useState(false)
 
+  //hook para abrir una ventana
+  const [isOpen, setIsOpen] = useState(false);
+  const [Open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   //estado para controlar los input
   const [values_us, setValues_us] = useState({
+    documentType: '',
+    documentNumber: '',
+    fullName: '',
     emailAddress: '',
     password: '',
   });
+
+  const [values_org, setValues_org] = useState({
+    organization_name: '',
+    address_organization: '',
+    email_organization: '',
+    organization_password: '',
+  })
+
 
   //para capturar los el valor de los input
   const handleOnChageText_us = (value, fieldName) => {
     setValues_us({ ...values_us, [fieldName]: value })
   }
 
-  //validamos los campos si hay error se lo mandamos al handleError
-  const validateForm = async () => {
+  const handleOnChageText_org = (value, fieldName) => {
+    setValues_org({ ...values_org, [fieldName]: value })
+  }
+
+  // funciones que controlar el mostrar el form de user o org
+  const ViewUser = () => {
+    setIsOpen(false);
+    setValues_us('')
+    setErrors('');
+  }
+
+  const ViewOrg = () => {
+    setIsOpen(true);
+    setValues_org('')
+    setErrors('');
+  }
+
+  //validamos los campos si hay error se lo mandamos al handleError y si nos hacemos el post
+  const validateDateUser = async () => {
     try {
-      await userSchema.validate(values_us, { abortEarly: false })
+      await validationSchemaUser.validate(values_us, { abortEarly: false });
       setIsLoading(true)
-      await auth(values_us)
-        .then(async (response) => {
+      await saveUser(values_us)
+        .then((response) => {
           const message = response.data.message;
-          login(message);
+          setMessage(message)
+          setValues_us('')
           setIsLoading(false)
         }).catch((error) => {
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)
           setIsLoading(false)
         });
+      setTimeout(() => {
+        setMessage('')
+        setErrors('')
+      }, 3500);
     } catch (error) {
-      setErrors(error.errors[0])
+      const errorMessage = error.errors[0];
+      setErrors(errorMessage)
+    };
+
+  }
+
+  const validateDateOrg = async () => {
+    try {
+      await validationSchemaOrg.validate(values_org, { abortEarly: false })
+      await saveOrg(values_org)
+        .then((response) => {
+          const message = response.data.message;
+          setMessage(message)
+          setIsLoading(false)
+        }).catch((error) => {
+          const errorMessage1 = error.response.data.error;
+          setErrors(errorMessage1)
+          setIsLoading(false)
+        });
+      setTimeout(() => {
+        setMessage('')
+        setErrors('')
+      }, 3000);
+    } catch (error) {
+      const errorMessage = error.errors[0];
+      setErrors(errorMessage)
+      setTimeout(() => {
+        setErrors('')
+      }, 3000);
     }
   }
 
+
   return (
-    <View className='flex-1'>
+    <SafeAreaView className='flex-1 bg-[#E8EAED]'>
       {/* loading al enviar los datos */}
-      <Loading visible={isLoading} />
+      <Splash visible={isLoading} />
 
-      {/* style={{ paddingBottom: 44, paddingStart: 16, paddingEnd: 16 }} */}
-
-      {/* header de form purple */}
-      <View className='flex-row h-52 pb-16 pl-10 pr-10 rounded-b-2xl bg-[#6C5CE7]'>
-        {/* ir al login */}
-        <View className='flex-1 flex-row items-center justify-between'>
-          <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center p-4 rounded-tr-2xl rounded-bl-2xl ml-4 bg-[#5A6170]`} onPress={() => navigation.navigate('Sign_In')}>
-            <Icon.AntDesign name="arrowleft" size={15} color="white" />
-            <Text className='text-white font-bold text-lg left-1'>Register</Text>
-          </TouchableOpacity>
-
-          {/* message */}
-          <Text className='font-bold text-2xl text-white right-4'>Welcome Login</Text>
-        </View>
-      </View>
-
-      {/* formlario */}
-      <Animatable.View animation='fadeInUpBig' className='bg-white flex-1 pl-[18] pr-[18] -mt-20 ml-5 mr-5 rounded-3xl shadow-[#6C5CE7]'>
-
-        {/* seleciona tipo de usuario */}
-        <TouchableOpacity activeOpacity={0.7} className={`items-center top-2 w-full h-44 shadow-lg shadow-[#6C5CE7]`}>
-          <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded' />
+      {/* ventada de escoger tipo de documento */}
+      {Open &&
+        <TouchableOpacity className='absolute justify-center  items-center z-40' style={{ height, width, backgroundColor: 'rgba(0,0,0,0.5)' }} onPress={() => setOpen(false)}>
+          <View className='sm:w-72 sm:h-32 lg:w-[500px] lg:h-72 justify-center items-center bg-white rounded-xl'>
+            <TouchableOpacity className='sm:w-32 sm:h-12 lg:w-96 lg:h-24 border-b border-gray-400'
+              onPress={() => { setValues_us({ ...values_us, documentType: 'Cedula Ciudadana' }), setOpen(false) }}>
+              <Text className=' text-gray-600 font-bold text-sm lg:text-2xl m-auto rounded-lg'>Cedula Ciudadana</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className='sm:w-32 sm:h-12 lg:w-96 lg:h-24 border-b border-gray-400'
+              onPress={() => { setValues_us({ ...values_us, documentType: 'Tarjeta de identidad' }), setOpen(false) }}>
+              <Text className=' text-gray-600 font-bold m-auto sm:text-sm lg:text-2xl rounded-lg'>Tarjeta de identidad</Text>
+            </TouchableOpacity>
+          </View>
         </TouchableOpacity>
-
-        {/* View de input */}
-        <View className='flex-1 top-12'>
-          {/* input */}
-          <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
-          <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
-
-          {/* campo para mostrar el error */}
-          <View className='items-center mt-4'>
-            {errors && <Text className={`text-red-800 ml-3  ${width > 392.72727272727275 ? 'text-xl' : 'text-base'} font-bold`}>{errors}</Text>}
-          </View>
-          <View className='items-center mt-4'>
-            {message && <Text className={`text-green-800 ml-3  ${width > 392.72727272727275 ? 'text-xl' : 'text-base'} font-bold`}>{message}</Text>}
-          </View>
-
-          {/* button */}
-          <Text className='text-xl font-bold text-black mt-2 left-2'>forgot password?</Text>
-          <TouchableOpacity activeOpacity={0.7} className={`mt-1 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
-            <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
+      }
+      <ScrollView
+        contentContainerStyle={{
+          paddingTop: 30,
+          paddingHorizontal: 20
+        }}>
+        <View className='flex-row items-center'>
+          <TouchableOpacity className='w-9 h-9 bg-slate-300 items-center justify-center rounded-lg' onPress={() => navigation.navigate('Welcome')}>
+            <Icon.AntDesign name='left' color='#6C5CE7' className='sm:text-xl lg:text-3xl' />
           </TouchableOpacity>
-
+          <Text className='text-3xl left-4 text-black ' style={{ fontWeight: '900' }}>Register</Text>
         </View>
-      </Animatable.View>
-    </View>
+
+        <Text className='text-xl text-center text-black font-bold mt-10'>Welcome select your account type</Text>
+
+        <View className='flex-row w-[100%] justify-between rounded-2xl mt-3'>
+          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] p-4 items-center left-6 ${!isOpen && 'bg-[#7560EE]'}  rounded-lg`} onPress={ViewUser}>
+            <Text className={`text-xl text-black ${!isOpen && 'text-white'} font-bold`}>usuario</Text>
+          </TouchableOpacity >
+          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] p-4 items-center right-6 ${isOpen && 'bg-[#7560EE]'} rounded-lg`} onPress={ViewOrg}>
+            <Text className={`text-xl text-black ${isOpen && 'text-white'} font-bold`}>organizacion</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className='flex-1 mt-6'>
+          {!isOpen ?
+            <>
+              <Text className='font-bold sm:text-base lg:text-xl ml-4' style={{ color: '#202020' }}>Tipo Documento</Text>
+              <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center p-3 sm:h-[54px] sm:top-1 lg:h-16 lg:mt-3 bg-gray-300 text-gray-700 rounded-lg`}
+                onPress={() => { setOpen(!Open) }}>
+                <Icon.Feather name='users' color='#642AB8' className='sm:text-xl lg:text-3xl' />
+                <Text className='font-bold text-lg rounded-lg ml-4' style={{ color: '#202020' }}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
+              </TouchableOpacity>
+              <Input label='document number' value={values_us.documentNumber} keyboardType="decimal-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
+              <Input label='fullName' value={values_us.fullName} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'fullName')} iconName='user' placeholder='Enter Nombre Completo' />
+              <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
+              <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
+            </> :
+            <>
+              <Input label='organization name`s' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
+              <Input label='adress' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
+              <Input label='mail' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
+              <Input label='password' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
+            </>
+          }
+
+          <View className='items-center top-7'>
+            {errors && <Text className={`text-red-800 ml-3  text-xl font-bold`}>{errors}</Text>}
+          </View>
+          <View className='items-center top-7'>
+            {message && <Text className={`text-green-800 ml-3 text-xl font-bold`}>{message}</Text>}
+          </View>
+
+          {!isOpen ?
+            <TouchableOpacity activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateUser}>
+              <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
+            </TouchableOpacity>
+            :
+            <TouchableOpacity activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateOrg}>
+              <Text className='text-xl font-bold text-center text-white'>Registrar_org</Text>
+            </TouchableOpacity>
+          }
+          <View className='flex-row justify-center mt-4'>
+            <Text className='text-xl font-bold'>Already have an account?  </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
+              <Text className='text-[#6C5CE7] text-xl font-bold'>Log in</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+
+    </SafeAreaView>
   )
 }
-
-export default Sign_up
+export default Sign_Up
