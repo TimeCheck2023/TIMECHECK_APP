@@ -149,18 +149,18 @@ const Sign_Up = ({ navigation }) => {
           <Text className='text-3xl left-4 text-black ' style={{ fontWeight: '900' }}>Register</Text>
         </View>
 
-        <Text className='text-xl text-center text-black font-bold mt-10'>Welcome select your account type</Text>
+        <Text className='text-xl text-center text-black font-bold sm:mt-6'>Welcome select your account type</Text>
 
-        <View className='flex-row w-[100%] justify-between rounded-2xl mt-3'>
-          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] p-4 items-center left-6 ${!isOpen && 'bg-[#7560EE]'}  rounded-lg`} onPress={ViewUser}>
+        <View className='flex-row w-[100%] sm:h-12 justify-between rounded-2xl mt-3'>
+          <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] sm:p-2 items-center left-6 ${!isOpen && 'bg-[#7560EE]'}  rounded-lg`} onPress={ViewUser}>
             <Text className={`text-xl text-black ${!isOpen && 'text-white'} font-bold`}>usuario</Text>
           </TouchableOpacity >
-          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] p-4 items-center right-6 ${isOpen && 'bg-[#7560EE]'} rounded-lg`} onPress={ViewOrg}>
+          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] sm:p-2 items-center right-6 ${isOpen && 'bg-[#7560EE]'} rounded-lg`} onPress={ViewOrg}>
             <Text className={`text-xl text-black ${isOpen && 'text-white'} font-bold`}>organizacion</Text>
           </TouchableOpacity>
         </View>
 
-        <View className='flex-1 mt-6'>
+        <View className='flex-1 sm:mt-4'>
           {!isOpen ?
             <>
               <Text className='font-bold sm:text-base lg:text-xl ml-4' style={{ color: '#202020' }}>Tipo Documento</Text>
@@ -182,23 +182,23 @@ const Sign_Up = ({ navigation }) => {
             </>
           }
 
-          <View className='items-center top-7'>
+          <View className='items-center sm:top-3'>
             {errors && <Text className={`text-red-800 ml-3  text-xl font-bold`}>{errors}</Text>}
           </View>
-          <View className='items-center top-7'>
+          <View className='items-center sm:top-3'>
             {message && <Text className={`text-green-800 ml-3 text-xl font-bold`}>{message}</Text>}
           </View>
 
           {!isOpen ?
-            <TouchableOpacity activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateUser}>
+            <TouchableOpacity activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateUser}>
               <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
             </TouchableOpacity>
             :
-            <TouchableOpacity activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateOrg}>
+            <TouchableOpacity activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateOrg}>
               <Text className='text-xl font-bold text-center text-white'>Registrar_org</Text>
             </TouchableOpacity>
           }
-          <View className='flex-row justify-center mt-4'>
+          <View className='flex-row justify-center sm:mt-3'>
             <Text className='text-xl font-bold'>Already have an account?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
               <Text className='text-[#6C5CE7] text-xl font-bold'>Log in</Text>

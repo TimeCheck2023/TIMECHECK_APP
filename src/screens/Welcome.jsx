@@ -1,9 +1,11 @@
-import { View, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, Dimensions, TouchableOpacity, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { data } from "../utils/data";
 import CardWelcome from '../components/CardWelcome';
+import { scale } from 'react-native-size-matters';
+
 
 
 const { width, height } = Dimensions.get('window')
@@ -46,18 +48,16 @@ const Welcome = ({ navigation }) => {
             })
           }
         </View>
-        <View className='flex-1 justify-center items-center sm:bottom-14'>
-          <FlatList
-            ref={ref}
-            onMomentumScrollEnd={updateSliderCurrentIndex}
-            keyExtractor={item => item.id}
-            data={data}
-            renderItem={({ item }) => <CardWelcome item={item} />}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-          />
-        </View>
+        <FlatList
+          ref={ref}
+          onMomentumScrollEnd={updateSliderCurrentIndex}
+          keyExtractor={item => item.id}
+          data={data}
+          renderItem={({ item }) => <CardWelcome item={item} />}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+        />
         {
           currentSlideIndex !== data.length - 1 ?
             (<TouchableOpacity
@@ -78,24 +78,12 @@ const Welcome = ({ navigation }) => {
             :
             (
               <>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-16 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
-                  onPress={() => navigation.navigate('Sign_Up')}
-                >
-                  <View className='justify-center items-center sm:left-28 lg:left-36'>
-                    <Text className='font-bold sm:text-xl lg:text-3xl text-white'>
-                      Register
-                    </Text>
-                  </View>
-                  <View className='sm:w-11 sm:h-11 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
-                    <AntDesign name="arrowright" size={24} color="black" />
-                  </View>
-                </TouchableOpacity>
-                <View className='flex-row justify-center sm:bottom-12'>
-                  <Text className='text-xl font-bold'>Already have an account?  </Text>
-                  <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
-                    <Text className='text-[#6C5CE7] text-xl font-bold'>Login</Text>
+                <View className='flex-row w-[100%] sm:h-16 sm:bottom-16 justify-between items-center rounded-2xl'>
+                  <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
+                    <Text className={`text-xl text-white font-bold`}>Register</Text>
+                  </TouchableOpacity >
+                  <TouchableOpacity activeOpacity={0.7} className={`w-[40%] bg-slate-400 sm:p-4 items-center right-6 rounded-lg`} onPress={() => navigation.navigate('Sign_In')}>
+                    <Text className={`text-xl text-white font-bold`}>Login</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -106,5 +94,11 @@ const Welcome = ({ navigation }) => {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  card: {
+    bottom: scale(4), // Ajusta el margen superior según el tamaño del dispositivo
+  },
+});
 
 export default Welcome
