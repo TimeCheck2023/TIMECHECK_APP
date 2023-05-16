@@ -5,10 +5,11 @@ import { useContext } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import HomeStack from "./HomeStack";
+import HomeStackOrg from "./HomeStackOrg";
 
 
 const MainApp = () => {
-    const { isLoading, userToken } = useContext(AuthContext);
+    const { isLoading, userToken, userInfo } = useContext(AuthContext);
 
     if (isLoading) {
         return (
@@ -19,7 +20,8 @@ const MainApp = () => {
     }
     return (
         <NavigationContainer>
-            {userToken !== null ? <HomeStack /> : <AuthNavigator />}
+            {/* {userToken !== null ? <HomeStack /> : <AuthNavigator />} */}
+            {userToken === null ? <AuthNavigator /> : userInfo === 1 ? <HomeStack /> : userInfo === 2 && <HomeStackOrg />}
             <StatusBar style='auto' />
         </NavigationContainer>
     )

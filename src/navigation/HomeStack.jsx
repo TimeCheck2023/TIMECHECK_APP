@@ -1,9 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeUser from "../screens/HomeUser";
-import Details from "../screens/Details";
+import Details from "../screens/User/Details";
 import BottomTabNavigator from "./BottomTabNavigator";
-import Profile from "../screens/Profile";
-import FormUpdateUSer from "../screens/FormUpdateUSer";
+import Profile from "../screens/User/Profile";
+import FormUpdateUSer from "../screens/User/FormUpdateUSer";
 
 
 

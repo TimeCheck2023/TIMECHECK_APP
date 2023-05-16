@@ -1,8 +1,8 @@
 import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react'
-import sena from "../../assets/eventoSena.jpg";
-import prueba from "../../assets/eventoSena.jpg";
+import sena from "../../../assets/eventoSena.jpg";
+import prueba from "../../../assets/eventoSena.jpg";
 import * as Icon from '@expo/vector-icons';
 
 const Details = ({ navigation, route }) => {

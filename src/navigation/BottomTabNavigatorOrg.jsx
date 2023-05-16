@@ -1,13 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { View, Text } from 'react-native'
 import * as Icon from '@expo/vector-icons';
-import { Image, View } from 'react-native';
-import Home from '../screens/User/HomeUser';
-import AddButton from '../components/AddButton';
 
+import React from 'react'
+import HomeOrg from '../screens/Org/HomeOrg';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+
+const BottomTabNavigatorOrg = () => {
     return (
         <Tab.Navigator
             screenOptions={{
@@ -23,7 +24,7 @@ const BottomTabNavigator = () => {
             }}
             initialRouteName='Home'
         >
-            <Tab.Screen name='Home' component={Home}
+            <Tab.Screen name='Home' component={HomeOrg}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
@@ -35,22 +36,12 @@ const BottomTabNavigator = () => {
                     )
                 }}
             />
-            <Tab.Screen name='Home1' component={Home}
-                options={{
-                    tabBarShowLabel: false,
-                    tabBarIcon: ({ focused }) => (
-                        <View className='items-center flex-1 h-0'>
-                            <AddButton />
-                        </View>
-                    )
-                }}
-            />
-            <Tab.Screen name='home111' component={Home}
-                options={{
+            <Tab.Screen name='Details' component={HomeOrg} 
+                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
                         <Icon.Ionicons
-                            name='notifications-sharp'
+                            name='home'
                             size={24}
                             color={focused ? '#7973ED' : 'gray'}
                         />
@@ -61,4 +52,4 @@ const BottomTabNavigator = () => {
     )
 }
 
-export default BottomTabNavigator
+export default BottomTabNavigatorOrg

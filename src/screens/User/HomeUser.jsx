@@ -1,13 +1,11 @@
 import { View, Text, Image, TextInput, ScrollView, TouchableOpacity, FlatList, RefreshControl, ImageBackground } from 'react-native'
-import { SafeAreaView } from "react-native-safe-area-context";
-import prueba from "../../assets/eventoSena.jpg";
 import * as Icon from '@expo/vector-icons';
 import React, { useEffect, useState, useContext } from 'react'
 
-import Avatar from '../../assets/Avatar.png'
-import { getEvent } from '../api/api';
-import BottonModals from '../components/BottonModals';
-import { AuthContext } from '../context/AuthContext';
+import Avatar from '../../../assets/Avatar.png'
+import { getEvent } from '../../api/api';
+import BottonModals from '../../components/BottonModals';
+import { AuthContext } from '../../context/AuthContext';
 
 const dataPrueba = [
   { idEvento: 1, name: 'sadsadas', description: 'fsds' },

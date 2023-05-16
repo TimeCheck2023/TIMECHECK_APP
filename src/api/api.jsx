@@ -3,6 +3,7 @@ import axios from "axios";
 const API_Node = 'https://timecheckbacknodejs-production.up.railway.app';
 const API_C = 'http://timecheck.somee.com';
 
+
 export const saveUser = async (newUser) => {
     const result = await axios({
         url: `${API_Node}/user/register`,
@@ -11,6 +12,8 @@ export const saveUser = async (newUser) => {
     })
     return result
 }
+
+
 export const saveOrg = async (newUser) => {
     const result = await axios({
         url: `${API_Node}/org/register`,
@@ -29,10 +32,20 @@ export const auth = async (user) => {
     return result;
 }
 
+
 export const getEvent = async () => {
     const result = await axios({
         url: `${API_C}/api/Event/List`,
         method: 'GET',
     })
     return result;
+}
+
+export const getUserId = async (id) => {
+    console.log(id);
+    // const result = await axios({
+    //     url: `${API_Node}/USER/`,
+    //     method: 'GET',
+    // })
+    // return result;
 }

@@ -1,12 +1,22 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
-import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as Icon from '@expo/vector-icons';
-import avatar from '../../assets/Avatar.png'
-import { AuthContext } from '../context/AuthContext';
+import avatar from '../../../assets/Avatar.png'
+import { AuthContext } from '../../context/AuthContext';
+import { getUserId } from '../../api/api';
 
 const Profile = ({ navigation }) => {
-    const { logout } = useContext(AuthContext)
+    const { logout, userInfo } = useContext(AuthContext)
+
+
+    const getUser = async() => {
+        await getUserId(userInfo)
+    }
+
+    useEffect(() => {
+      getUser();
+    }, [])
+    
     return (
         <View className='flex-1 bg-white'>
             <ScrollView

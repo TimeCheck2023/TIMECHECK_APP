@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import avatar from '../../assets/Avatar.png'
-import Input from '../components/Input';
+import avatar from '../../../assets/Avatar.png'
+import Input from '../../components/Input';
 
 const FormUpdateUSer = ({ navigation }) => {
 
