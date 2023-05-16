@@ -70,12 +70,12 @@ const BottomTabNavigator = () => {
                 }}
             /> */}
 
-            <Tab.Screen name='HomeUser3' component={Home}
+            <Tab.Screen name='home111' component={Home}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
-                        <Icon.FontAwesome
-                            name='user'
+                        <Icon.Ionicons
+                            name='notifications-sharp'
                             size={24}
                             color={focused ? '#7973ED' : 'gray'}
                         />

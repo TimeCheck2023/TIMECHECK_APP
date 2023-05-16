@@ -53,12 +53,12 @@ const HomeUser = ({ navigation }) => {
 
           <Text className='text-2xl text-white font-bold'>TIMECHECK</Text>
 
-          <TouchableOpacity className='w-10 h-10 items-center justify-center rounded-xl bg-white' onPress={() => logout()}>
-            <Icon.Ionicons name='notifications-sharp' className='text-[#7560EE]' size={18} />
-          </TouchableOpacity>
-          {/* <TouchableOpacity onPress={() => logout()}>
-            <Image source={Avatar} className='w-14 h-14 rounded-full' />
+          {/* <TouchableOpacity className='w-10 h-10 items-center justify-center rounded-xl bg-white' onPress={() => logout()}>
+            <Icon.Feather name='notifications-sharp' className='text-[#7560EE]' size={18} />
           </TouchableOpacity> */}
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <Image source={Avatar} className='w-14 h-14 rounded-full' />
+          </TouchableOpacity>
         </View>
 
         <View className='flex-row items-center p-3 sm:h-12 sm:top-12 lg:h-16 lg:top-3 bg-gray-100 rounded-2xl'>
