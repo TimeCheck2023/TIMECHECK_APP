@@ -14,10 +14,9 @@ export const AuthProvider = ({ children }) => {
     const login = (message) => {
         setIsLoading(true);
         var decoded = jwt_decode(message);
-        console.log(decoded.payload.EsUsuario);
-        setUserInfo(message.EsUsuario)
         setUserToken(message)
         AsyncStorage.setItem('userInfo', JSON.stringify(decoded.payload));
+        setUserInfo(decoded.payload.EsUsuario)
         AsyncStorage.setItem('userToken', message);
         setIsLoading(false);
     }
@@ -31,14 +30,14 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
     }
 
-    const isLoggedIn = async () => {
+    const isLoggedIn = async() => {
         try {
             setIsLoading(true)
             let token = await AsyncStorage.getItem('userToken');
             let Info = await AsyncStorage.getItem('userInfo');
             const objeto = JSON.parse(Info);
-            console.log(objeto.EsUsuario);
-            if (Info) {
+            if (objeto) {
+                console.log("este es tu id: " + objeto.EsUsuario);
                 setUserToken(token)
                 setUserInfo(objeto.EsUsuario)
             }
@@ -49,8 +48,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        isLoggedIn()
-    }, [])
+        isLoggedIn();
+    }, [])  
 
 
     return (

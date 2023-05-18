@@ -42,7 +42,7 @@ export const getEvent = async () => {
 }
 
 export const getUserId = async (id) => {
-    console.log(id);
+    // console.log(id);
     // const result = await axios({
     //     url: `${API_Node}/USER/`,
     //     method: 'GET',

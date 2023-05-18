@@ -9,13 +9,13 @@ const Profile = ({ navigation }) => {
     const { logout, userInfo } = useContext(AuthContext)
 
 
-    const getUser = async() => {
-        await getUserId(userInfo)
-    }
+    // const getUser = async() => {
+    //     await getUserId(userInfo)
+    // }
 
-    useEffect(() => {
-      getUser();
-    }, [])
+    // useEffect(() => {
+    //   getUser();
+    // }, [])
     
     return (
         <View className='flex-1 bg-white'>
