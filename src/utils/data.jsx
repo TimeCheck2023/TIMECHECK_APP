@@ -7,10 +7,7 @@ import imgGame from "../../assets/game.png";
 
 export const data = [
     { id: 1, image: imgHome, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' },
-    { id: 2, image: imgHome2, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' },
-    { id: 3, image: imgHome3, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' },
-    { id: 4, image: imgHome4, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' },
-    { id: 5, image: imgHome5, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' },
+    { id: 2, image: imgHome2, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' }
 ]
 
 export  const dataTipo = [

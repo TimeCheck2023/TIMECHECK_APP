@@ -1,19 +1,15 @@
-import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imgGame from "../../assets/Sing_Up.png";
 import Input from '../components/Input';
 import { useState, useContext } from 'react'
 import * as Icon from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-// import Loading from '../components/Loading';
-import * as Animatable from "react-native-animatable";
 import { userSchema } from '../utils/validate';
 import { auth } from "../api/api";
 import { AuthContext } from '../context/AuthContext';
 import Splash from '../components/Splash';
 
 const Sign_In = ({ navigation }) => {
-  const { height, width } = Dimensions.get('window')
 
   const { login } = useContext(AuthContext)
 
@@ -38,26 +34,31 @@ const Sign_In = ({ navigation }) => {
   const validateForm = async () => {
     try {
       await userSchema.validate(values_us, { abortEarly: false })
+      console.log(values_us);
       setIsLoading(true)
       await auth(values_us)
         .then(async (response) => {
-          const message = response.data.message;
-          login(message);
+          const message = response.data;
+          console.log(message);
+          // login(message);
           setIsLoading(false)
         }).catch((error) => {
+          console.log("error");
+          console.log(error);
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)
           setIsLoading(false)
         });
-    } catch (error) {
-      setErrors(error.errors[0])
+      } catch (error) {
+        setIsLoading(false)
+        setErrors(error.errors[0])
     }
   }
 
   return (
     <SafeAreaView className='flex-1 bg-[#E8EAED]'>
       {/* loading al enviar los datos */}
-      <Splash visible={isLoading} />
+      {/* <Splash visible={isLoading} /> */}
       <ScrollView
         contentContainerStyle={{
           paddingTop: 30,
@@ -92,8 +93,11 @@ const Sign_In = ({ navigation }) => {
             {message && <Text className={`text-green-800 ml-3 text-xl font-bold`}>{message}</Text>}
           </View>
 
-          <TouchableOpacity activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
-            <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
+          <TouchableOpacity disabled={isLoading} activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
+            {isLoading ?
+              <ActivityIndicator size="large" color='#ffff' /> :
+              <Text className='text-xl font-bold text-center text-white'>Login</Text>
+            }
           </TouchableOpacity>
 
           <View className='flex-row justify-center mt-4'>

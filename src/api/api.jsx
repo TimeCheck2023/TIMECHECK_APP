@@ -29,6 +29,7 @@ export const auth = async (user) => {
         method: 'POST',
         data: user
     })
+    // console.log(result);
     return result;
 }
 

@@ -31,13 +31,16 @@ export const AuthProvider = ({ children }) => {
     }
 
     const isLoggedIn = async() => {
+        // AsyncStorage.removeItem("userToken")
+        // AsyncStorage.removeItem("userInfo")
         try {
             setIsLoading(true)
             let token = await AsyncStorage.getItem('userToken');
             let Info = await AsyncStorage.getItem('userInfo');
+            console.log(Info);
             const objeto = JSON.parse(Info);
             if (objeto) {
-                console.log("este es tu id: " + objeto.EsUsuario);
+                console.log("este es tu id: " + objeto);
                 setUserToken(token)
                 setUserInfo(objeto.EsUsuario)
             }

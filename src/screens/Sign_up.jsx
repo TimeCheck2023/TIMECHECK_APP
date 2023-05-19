@@ -1,19 +1,14 @@
-import { View, Text, Dimensions, TouchableOpacity, Image, PixelRatio, ScrollView } from 'react-native'
-import user from "../../assets/User.png";
-import organizacion from "../../assets/organizacion.png";
+import { View, Text, Dimensions, TouchableOpacity, Image, PixelRatio, ScrollView, ActivityIndicator } from 'react-native'
 import Input from '../components/Input';
 import { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import * as Animatable from "react-native-animatable";
 import { validationSchemaUser, validationSchemaOrg } from '../utils/validate';
 import { saveUser, saveOrg } from "../api/api"
-import Splash from '../components/Splash';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const Sign_Up = ({ navigation }) => {
   const { height, width } = Dimensions.get('window');
-  // console.log(pixelWidth);
 
   //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
@@ -37,6 +32,7 @@ const Sign_Up = ({ navigation }) => {
     organization_name: '',
     address_organization: '',
     email_organization: '',
+    numero_telefono: '',
     organization_password: '',
   })
 
@@ -47,19 +43,32 @@ const Sign_Up = ({ navigation }) => {
   }
 
   const handleOnChageText_org = (value, fieldName) => {
+    console.log(value, fieldName);
     setValues_org({ ...values_org, [fieldName]: value })
   }
 
   // funciones que controlar el mostrar el form de user o org
   const ViewUser = () => {
     setIsOpen(false);
-    setValues_us('')
+    setValues_us({
+      documentType: '',
+      documentNumber: '',
+      fullName: '',
+      emailAddress: '',
+      password: '',
+    })
     setErrors('');
   }
 
   const ViewOrg = () => {
     setIsOpen(true);
-    setValues_org('')
+    setValues_org({
+      organization_name: '',
+      address_organization: '',
+      email_organization: '',
+      numero_telefono: '',
+      organization_password: '',
+    })
     setErrors('');
   }
 
@@ -92,7 +101,8 @@ const Sign_Up = ({ navigation }) => {
 
   const validateDateOrg = async () => {
     try {
-      await validationSchemaOrg.validate(values_org, { abortEarly: false })
+      const vali = await validationSchemaOrg.validate(values_org, { abortEarly: false })
+      setIsLoading(true)
       await saveOrg(values_org)
         .then((response) => {
           const message = response.data.message;
@@ -109,6 +119,7 @@ const Sign_Up = ({ navigation }) => {
       }, 3000);
     } catch (error) {
       const errorMessage = error.errors[0];
+      console.log(errorMessage);
       setErrors(errorMessage)
       setTimeout(() => {
         setErrors('')
@@ -119,8 +130,6 @@ const Sign_Up = ({ navigation }) => {
 
   return (
     <SafeAreaView className='flex-1 bg-[#E8EAED]'>
-      {/* loading al enviar los datos */}
-      <Splash visible={isLoading} />
 
       {/* ventada de escoger tipo de documento */}
       {Open &&
@@ -174,28 +183,35 @@ const Sign_Up = ({ navigation }) => {
               <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
               <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
             </> :
-            <>
+            <View className='bottom-4'>
               <Input label='organization name`s' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
               <Input label='adress' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
               <Input label='mail' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
+              <Input label='numero_telefono' value={values_org.numero_telefono} onChangeText={(value) => handleOnChageText_org(value, 'numero_telefono')} keyboardType='numeric' onFocus={() => setErrors('')} iconName='phone' placeholder='320145++++' />
               <Input label='password' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
-            </>
+            </View>
           }
 
-          <View className='items-center sm:top-3'>
+          <View className='items-center sm:top-1'>
             {errors && <Text className={`text-red-800 ml-3  text-xl font-bold`}>{errors}</Text>}
           </View>
-          <View className='items-center sm:top-3'>
+          <View className='items-center sm:top-1'>
             {message && <Text className={`text-green-800 ml-3 text-xl font-bold`}>{message}</Text>}
           </View>
 
           {!isOpen ?
-            <TouchableOpacity activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateUser}>
-              <Text className='text-xl font-bold text-center text-white'>Registrar_user</Text>
+            <TouchableOpacity disabled={isLoading} activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateUser}>
+              {isLoading ?
+                <ActivityIndicator size="large" color='#ffff' /> :
+                <Text className='text-xl font-bold text-center text-white'>Registrar</Text>
+              }
             </TouchableOpacity>
             :
-            <TouchableOpacity activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateOrg}>
-              <Text className='text-xl font-bold text-center text-white'>Registrar_org</Text>
+            <TouchableOpacity disabled={isLoading} activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateDateOrg}>
+              {isLoading ?
+                <ActivityIndicator size="large" color='#ffff' /> :
+                <Text className='text-xl font-bold text-center text-white'>Registrar</Text>
+              }
             </TouchableOpacity>
           }
           <View className='flex-row justify-center sm:mt-3'>
