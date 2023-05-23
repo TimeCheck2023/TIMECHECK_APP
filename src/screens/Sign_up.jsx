@@ -43,7 +43,6 @@ const Sign_Up = ({ navigation }) => {
   }
 
   const handleOnChageText_org = (value, fieldName) => {
-    console.log(value, fieldName);
     setValues_org({ ...values_org, [fieldName]: value })
   }
 
@@ -83,6 +82,9 @@ const Sign_Up = ({ navigation }) => {
           setMessage(message)
           setValues_us('')
           setIsLoading(false)
+          setTimeout(() => {
+            navigation.navigate('Sign_In')
+          }, 1000);
         }).catch((error) => {
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)
@@ -101,13 +103,16 @@ const Sign_Up = ({ navigation }) => {
 
   const validateDateOrg = async () => {
     try {
-      const vali = await validationSchemaOrg.validate(values_org, { abortEarly: false })
+      await validationSchemaOrg.validate(values_org, { abortEarly: false })
       setIsLoading(true)
       await saveOrg(values_org)
         .then((response) => {
           const message = response.data.message;
           setMessage(message)
           setIsLoading(false)
+          setTimeout(() => {
+            navigation.navigate('Sign_In')
+          }, 900);
         }).catch((error) => {
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)
@@ -116,10 +121,9 @@ const Sign_Up = ({ navigation }) => {
       setTimeout(() => {
         setMessage('')
         setErrors('')
-      }, 3000);
+      }, 1000);
     } catch (error) {
       const errorMessage = error.errors[0];
-      console.log(errorMessage);
       setErrors(errorMessage)
       setTimeout(() => {
         setErrors('')
@@ -155,7 +159,7 @@ const Sign_Up = ({ navigation }) => {
           <TouchableOpacity className='w-9 h-9 bg-slate-300 items-center justify-center rounded-lg' onPress={() => navigation.navigate('Welcome')}>
             <Icon.AntDesign name='left' color='#6C5CE7' className='sm:text-xl lg:text-3xl' />
           </TouchableOpacity>
-          <Text className='text-3xl left-4 text-black ' style={{ fontWeight: '900' }}>Register</Text>
+          <Text className='text-3xl left-4 text-black ' style={{ fontWeight: '900' }}>Sing Up</Text>
         </View>
 
         <Text className='text-xl text-center text-black font-bold sm:mt-6'>Welcome select your account type</Text>
@@ -178,7 +182,7 @@ const Sign_Up = ({ navigation }) => {
                 <Icon.Feather name='users' color='#642AB8' className='sm:text-xl lg:text-3xl' />
                 <Text className='font-bold text-lg rounded-lg ml-4' style={{ color: '#202020' }}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
               </TouchableOpacity>
-              <Input label='document number' value={values_us.documentNumber} keyboardType="decimal-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
+              <Input label='document number' value={values_us.documentNumber} keyboardType="phone-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
               <Input label='fullName' value={values_us.fullName} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'fullName')} iconName='user' placeholder='Enter Nombre Completo' />
               <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
               <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
@@ -192,10 +196,10 @@ const Sign_Up = ({ navigation }) => {
             </View>
           }
 
-          <View className='items-center sm:top-1'>
+          <View className='items-center sm:top-2'>
             {errors && <Text className={`text-red-800 ml-3  text-xl font-bold`}>{errors}</Text>}
           </View>
-          <View className='items-center sm:top-1'>
+          <View className='items-center sm:top-2'>
             {message && <Text className={`text-green-800 ml-3 text-xl font-bold`}>{message}</Text>}
           </View>
 
@@ -217,7 +221,7 @@ const Sign_Up = ({ navigation }) => {
           <View className='flex-row justify-center sm:mt-3'>
             <Text className='text-xl font-bold'>Already have an account?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
-              <Text className='text-[#6C5CE7] text-xl font-bold'>Log in</Text>
+              <Text className='text-[#6C5CE7] text-xl font-bold'>Sing In</Text>
             </TouchableOpacity>
           </View>
         </View>

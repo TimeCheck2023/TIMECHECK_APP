@@ -13,11 +13,12 @@ export const AuthProvider = ({ children }) => {
     //iniciar session
     const login = (message) => {
         setIsLoading(true);
-        var decoded = jwt_decode(message);
-        setUserToken(message)
+        const token_message = message.message;
+        var decoded = jwt_decode(message.message);
+        setUserToken(token_message)
         AsyncStorage.setItem('userInfo', JSON.stringify(decoded.payload));
-        setUserInfo(decoded.payload.EsUsuario)
-        AsyncStorage.setItem('userToken', message);
+        setUserInfo(decoded.payload)
+        AsyncStorage.setItem('userToken', token_message);
         setIsLoading(false);
     }
     
@@ -37,12 +38,11 @@ export const AuthProvider = ({ children }) => {
             setIsLoading(true)
             let token = await AsyncStorage.getItem('userToken');
             let Info = await AsyncStorage.getItem('userInfo');
-            console.log(Info);
             const objeto = JSON.parse(Info);
             if (objeto) {
-                console.log("este es tu id: " + objeto);
                 setUserToken(token)
-                setUserInfo(objeto.EsUsuario)
+                setUserInfo(objeto)
+                console.log(objeto);
             }
             setIsLoading(false)
         } catch (error) {

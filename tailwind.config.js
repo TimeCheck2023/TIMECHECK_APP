@@ -1,6 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-
-
 module.exports = {
   content: ["./App.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
@@ -13,9 +11,13 @@ module.exports = {
       'xl': { 'min': '1024px', 'max': '1279px' },
       '2xl': { 'min': '1280px' },
     },
+    Keyframes: {
+      shimmer: {
+        '100%' :  {transform: 'translateX(100%)'}
+      }
+    }
     // Otras configuraciones de tema aquí
   },
-  plugins: [],
 }
 
 // sm: Este tamaño de pantalla podría ser adecuado para teléfonos móviles con pantallas pequeñas.

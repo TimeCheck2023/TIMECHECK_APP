@@ -34,17 +34,13 @@ const Sign_In = ({ navigation }) => {
   const validateForm = async () => {
     try {
       await userSchema.validate(values_us, { abortEarly: false })
-      console.log(values_us);
       setIsLoading(true)
       await auth(values_us)
         .then(async (response) => {
           const message = response.data;
-          console.log(message);
-          // login(message);
+          login(message);
           setIsLoading(false)
         }).catch((error) => {
-          console.log("error");
-          console.log(error);
           const errorMessage1 = error.response.data.error;
           setErrors(errorMessage1)
           setIsLoading(false)
@@ -57,8 +53,6 @@ const Sign_In = ({ navigation }) => {
 
   return (
     <SafeAreaView className='flex-1 bg-[#E8EAED]'>
-      {/* loading al enviar los datos */}
-      {/* <Splash visible={isLoading} /> */}
       <ScrollView
         contentContainerStyle={{
           paddingTop: 30,
@@ -68,7 +62,7 @@ const Sign_In = ({ navigation }) => {
           <TouchableOpacity className='w-9 h-9 bg-slate-300 items-center justify-center rounded-lg' onPress={() => navigation.navigate('Welcome')}>
             <Icon.AntDesign name='left' color='#6C5CE7' className='sm:text-xl lg:text-3xl' />
           </TouchableOpacity>
-          <Text className='text-3xl left-4 text-black ' style={{ fontWeight: '900' }}>Log in</Text>
+          <Text className='text-3xl left-4 text-black ' style={{ fontWeight: '900' }}>Log In</Text>
         </View>
 
 
@@ -103,7 +97,7 @@ const Sign_In = ({ navigation }) => {
           <View className='flex-row justify-center mt-4'>
             <Text className='text-xl font-bold'>Already have an account?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_Up')}>
-              <Text className='text-[#6C5CE7] text-xl font-bold'>Log in</Text>
+              <Text className='text-[#6C5CE7] text-xl font-bold'>Sing Up</Text>
             </TouchableOpacity>
           </View>
         </View>

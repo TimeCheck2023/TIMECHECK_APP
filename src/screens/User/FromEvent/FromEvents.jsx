@@ -1,26 +1,28 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, ImageBackground, ScrollView, Dimensions, Alert } from 'react-native'
 import React, { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import avatar from '../../../assets/Avatar.png'
-import Input from '../../components/Input';
-import { updateUserId } from '../../api/api';
+import avatar from '../../../../assets/Avatar.png'
+import Input from '../../../components/Input';
+import { updateUserId } from '../../../api/api';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Camara from '../../../components/Camara';
 
-const FormUpdateUSer = ({ route, navigation }) => {
 
-    const { data } = route.params;
+
+const FromEvents = ({ navigation }) => {
 
     const { height, width } = Dimensions.get('window');
 
     const [Open, setOpen] = useState(false);
-    const [NumId, setNumId] = useState(data.nro_documento_usuario);
+    const [visibility, setVisibility] = useState(false);
 
     //estado para controlar los input
     const [values_us, setValues_us] = useState({
-        documentType: data.tipo_documento_usuario,
-        fullName: data.nombre_completo_usuario,
-        emailAddress: data.correo_usuario,
-        address: data.direccion_usuario,
-        typeofpopulation: data.tipo_poblacion_usuario,
+        documentType: '',
+        fullName: '',
+        emailAddress: '',
+        address: '',
+        typeofpopulation: '',
     });
 
     const handleOnChageText_us = (value, fieldName) => {
@@ -29,18 +31,17 @@ const FormUpdateUSer = ({ route, navigation }) => {
 
 
     const handleSubmit = async () => {
-        await updateUserId(data.nro_documento_usuario, values_us)
-            .then((response) => {
-                console.log(response.data.message);
-                Alert.alert(response.data.message)
-            }).catch((err) => {
-                console.log(err.response.data.error);
-            })
+        // await updateUserId(data.nro_documento_usuario, values_us)
+        //     .then((response) => {
+        //         console.log(response.data.message);
+        //         Alert.alert(response.data.message)
+        //     }).catch((err) => {
+        //         console.log(err.response.data.error);
+        //     })
     }
 
-
     return (
-        <View className='flex-1 bg-white'>
+        <SafeAreaView className='flex-1 bg-white'>
             {/* ventada de escoger tipo de documento */}
             {Open &&
                 <TouchableOpacity className='absolute justify-center  items-center z-40' style={{ height, width, backgroundColor: 'rgba(0,0,0,0.5)' }} onPress={() => setOpen(false)}>
@@ -56,8 +57,18 @@ const FormUpdateUSer = ({ route, navigation }) => {
                     </View>
                 </TouchableOpacity>
             }
-            <ScrollView>
-                <View className='pt-7 pb-14 pl-10 pr-10 bg-[#7560EE] rounded-b-2xl'>
+            <ScrollView >
+                <TouchableOpacity onPress={() => setVisibility(!visibility)}>
+                    <ImageBackground className='sm:h-[300px]' resizeMode='cover' source={avatar}>
+                        {/* <TouchableOpacity className='flex-row justify-between' style={{ marginTop: 40, paddingHorizontal: 20 }} onPress={() => navigation.goBack()}>
+                            <View className='w-[45px] h-[45px] rounded-2xl justify-center items-center' style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                                <Icon.AntDesign name="arrowleft" size={27} color="white" />
+                            </View>
+                        </TouchableOpacity> */}
+                    </ImageBackground>
+                </TouchableOpacity>
+
+                {/* <View className='pt-7 pb-14 pl-10 pr-10 bg-[#7560EE] rounded-b-2xl'>
                     <TouchableOpacity className='absolute w-[45px] h-[45px] left-4 top-10 items-center justify-center rounded-2xl'
                         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
                         onPress={() => navigation.navigate('Profile')}>
@@ -68,8 +79,8 @@ const FormUpdateUSer = ({ route, navigation }) => {
                             <Image source={avatar} className='w-[100%] h-[100%] rounded-full' />
                         </View>
                     </View>
-                </View>
-                <View className='flex-1 p-4' style={{ paddingHorizontal: 20 }}>
+                </View> */}
+                {/* <View className='flex-1 p-4' style={{ paddingHorizontal: 20 }}>
                     <Text className='font-bold sm:text-base lg:text-xl ml-4 sm:mt-3' style={{ color: '#202020' }}>Document Type</Text>
                     <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center p-3 sm:h-[54px] sm:top-1 lg:h-16 lg:mt-3 bg-gray-300 text-gray-700 rounded-lg`}
                         onPress={() => { setOpen(!Open) }}>
@@ -78,7 +89,7 @@ const FormUpdateUSer = ({ route, navigation }) => {
                     </TouchableOpacity>
 
                     <Input label='Document number'
-                        value={NumId}
+                        // value={NumId}
                         editable={false}
                         iconName='smartphone' placeholder='Enter correo'
                     />
@@ -109,10 +120,14 @@ const FormUpdateUSer = ({ route, navigation }) => {
                     <TouchableOpacity activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={handleSubmit}>
                         <Text className='text-xl font-bold text-center text-white'>Actualizar</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </ScrollView>
-        </View>
+            {
+                visibility &&
+                <Camara />
+            }
+        </SafeAreaView>
     )
 }
 
-export default FormUpdateUSer
+export default FromEvents
