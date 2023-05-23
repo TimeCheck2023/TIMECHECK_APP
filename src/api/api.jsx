@@ -72,6 +72,17 @@ export const getEvent = async () => {
     return result;
 }
 
+export const saveEvent = async (newEvent) => {
+    // console.log(newEvent);
+    const result = await axios({
+        url: `${API_C}/api/Event/Send`,
+        method: 'POST',
+        params: newEvent
+    })
+    // console.log(result.message);
+    return result;
+}
+
 export const getUserId = async (id) => {
     const result = await axios({
         url: `${API_Node}/user/${id}`,

@@ -6,14 +6,15 @@ import * as Icon from '@expo/vector-icons';
 
 
 
-const Camara = ({ }) => {
+const Camara = ({ image, setImage, setVisibility, visibility }) => {
     const { width, height } = Dimensions.get('window')
 
     const [hasCamaraPermission, setHasCamaraPermission] = useState(null)
-    const [image, setImage] = useState(null)
+    const [imageButton, setImageButton] = useState(false)
+    const [imageSave, setImageSave] = useState(null)
     const [type, setType] = useState(Camera.Constants.Type.back)
     const [flash, setFlash] = useState(Camera.Constants.FlashMode.off)
-    const [visibility, setVisibility] = useState(false)
+    // const [visibility, setVisibility] = useState(false)
     const cameraRef = useRef()
 
     useEffect(() => {
@@ -28,8 +29,10 @@ const Camara = ({ }) => {
         if (cameraRef) {
             try {
                 const data = await cameraRef.current.takePictureAsync();
-                console.log(data);
+                // console.log(data);
                 setImage(data.uri)
+                setImageSave(data.uri)
+                setImageButton(!imageButton)
             } catch (error) {
                 console.log(error);
             }
@@ -41,7 +44,8 @@ const Camara = ({ }) => {
             try {
                 await MediaLibrary.createAssetAsync(image);
                 alert('Picture saved successfully')
-                setImage(null)
+                setImageSave(null)
+                setVisibility(!visibility)
             } catch (error) {
                 console.log(error);
             }
@@ -54,8 +58,8 @@ const Camara = ({ }) => {
 
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', position: 'absolute', width, height, backgroundColor: '#000', paddingBottom: 30 }}>
-            {!image ?
+        <View style={{ flex: 1, justifyContent: 'center', position: 'absolute', width, height, backgroundColor: '#000' }}>
+            {!imageSave ?
                 <Camera
                     style={{ flex: 1 }}
                     type={type}
@@ -63,34 +67,39 @@ const Camara = ({ }) => {
                     ref={cameraRef}
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 30 }}>
-                        <TouchableOpacity style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => { setType(type === CameraType.back ? CameraType.front : CameraType.back) }}>
-                            <Icon.Entypo name="camera" size={27} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => { setFlash(flash === Camera.Constants.FlashMode.off ? Camera.Constants.FlashMode.on : Camera.Constants.FlashMode.off) }}>
-                            <Icon.Entypo name="camera" size={27} color={flash === Camera.Constants.FlashMode.off ? 'gray': '#f1f1f1'} />
+                        <TouchableOpacity style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => setVisibility(!visibility)}>
+                            <Icon.Feather name="arrow-left" size={30} color={flash === Camera.Constants.FlashMode.off ? 'gray' : '#f1f1f1'} />
                         </TouchableOpacity>
                     </View>
                 </Camera>
                 :
-                <Image source={{ uri: image }} style={{ flex: 1 }} />
+                <Image source={{ uri: imageSave }} style={{ flex: 1 }} />
             }
-            <View >
-                {image ?
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 50 }}>
-                        <TouchableOpacity style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => setImage(null)}>
-                            <Icon.Entypo name="camera" size={27} color="white" />
-                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f1f1f1', marginLeft: 10 }}>Re-take</Text>
+
+            <View style={{ height: 80 }}>
+                {imageSave ?
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 50 }}>
+                        <TouchableOpacity className='items-center justify-center' onPress={() => setImageSave(null)}>
+                            <Icon.Fontisto name="spinner-refresh" size={27} color="white" />
+                            {/* <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f1f1f1', marginLeft: 10 }}>Re-take</Text> */}
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={saveImage}>
-                            <Icon.Entypo name="camera" size={27} color="white" />
-                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f1f1f1', marginLeft: 10 }}>Save</Text>
+                        <TouchableOpacity className='items-center justify-center' onPress={saveImage}>
+                            <Icon.AntDesign name="save" size={27} color="white" />
+                            {/* <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f1f1f1', marginLeft: 10 }}>Save</Text> */}
                         </TouchableOpacity>
                     </View>
                     :
-                    <TouchableOpacity style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={takePicture}>
-                        <Icon.Entypo name="camera" size={27} color="white" />
-                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f1f1f1', marginLeft: 10 }}>Take a Picture</Text>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 50 }}>
+                        <TouchableOpacity className=' items-center justify-center' onPress={takePicture}>
+                            <Icon.Fontisto name="spinner-refresh" size={32} color="white" />
+                        </TouchableOpacity>
+                        <TouchableOpacity className='sm:w-[80px] sm:h-[80px] sm:bottom-8 rounded-full bg-white items-center justify-center' onPress={takePicture}>
+                            <Icon.Entypo name="camera" size={32} color="black" />
+                        </TouchableOpacity>
+                        <TouchableOpacity className=' items-center justify-center' onPress={takePicture}>
+                            <Icon.Entypo name="flash" size={32} color="white" />
+                        </TouchableOpacity>
+                    </View>
                 }
 
             </View>
