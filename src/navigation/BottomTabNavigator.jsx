@@ -53,7 +53,7 @@ const BottomTabNavigator = () => {
                     }}
                 />
                 {
-                    userInfo.rol === 2 &&
+                    userInfo.rol === 0 &&
                     <Tab.Screen name='Home1' component={Home}
                         options={{
                             tabBarShowLabel: false,
@@ -66,7 +66,7 @@ const BottomTabNavigator = () => {
                     />
                 }
                 {
-                    userInfo.rol === 2 &&
+                    userInfo.rol === 0 &&
                     <Tab.Screen name='Notification' component={Notification}
                         options={{
                             tabBarBadge: 5, // Cantidad a mostrar en el distintivo
