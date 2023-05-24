@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Dimensions, Alert, Platform, Button } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import avatar from '../../../../assets/addImageEvents.png'
 import Input from '../../../components/Input';
@@ -7,7 +7,9 @@ import { saveEvent, updateUserId } from '../../../api/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Camara from '../../../components/Camara';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from "moment";
+import { AuthContext } from '../../../context/AuthContext';
 // import 'moment/locale/es'; // Importa el idioma español para moment.js
 
 
@@ -16,9 +18,12 @@ const FromEvents = ({ navigation }) => {
 
     const { height, width } = Dimensions.get('window');
 
+    const { userInfo } = useContext(AuthContext)
+
     const [Open, setOpen] = useState(false);
     const [visibility, setVisibility] = useState(false);
     const [image, setImage] = useState(null)
+    const [error, setError] = useState('')
     const [tipo, setTipo] = useState('')
     const [nameEvent, setNameEvent] = useState('')
     const [nameDescription, setNameDescription] = useState('')
@@ -26,58 +31,33 @@ const FromEvents = ({ navigation }) => {
     const [precio, setPrecio] = useState('')
     const [Lugar, setLugar] = useState('')
 
-    const [dateInicial, setDateInicial] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false)
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isDatePickerVisibleFinal, setDatePickerVisibilityFinal] = useState(false);
 
 
-    const [hoursInicial, setHoursInicial] = useState(new Date());
-    const [showDatePicker2, setShowDatePicker2] = useState(false)
 
+    const [dateInicial, setDateInicial] = useState('');
+    const [dateFinal, setDateFinal] = useState('');
 
-    const [dateFinal, setDateFinal] = useState(new Date());
-    const [showDatePicker3, setShowDatePicker3] = useState(false)
-
-    const [hoursFinal, setHoursFinal] = useState(new Date());
-    const [showDatePicker4, setShowDatePicker4] = useState(false)
-
-
-    //estado para controlar los input
-    const [values_us, setValues_us] = useState({
-        documentType: '',
-        fullName: '',
-        emailAddress: '',
-        address: '',
-        typeofpopulation: '',
-    });
-
-    const handleOnChageText_us = (value, fieldName) => {
-        setValues_us({ ...values_us, [fieldName]: value })
-    }
-
-
-    const handleDateChangeDateInitial = (event, selectedDate) => {
-        const currentDate = selectedDate || dateInicial;
-        setShowDatePicker(!showDatePicker)
-        setDateInicial(currentDate);
+    const showDatePickerInicial = () => {
+        setDatePickerVisibility(!isDatePickerVisible);
     };
 
-    const handleDateChangeDateFinal = (event, selectedDate) => {
-        const currentDate = selectedDate || dateFinal;
-        setShowDatePicker3(!showDatePicker3)
-        setDateFinal(currentDate);
+    const showDatePickerFinal = () => {
+        setDatePickerVisibilityFinal(!isDatePickerVisibleFinal);
     };
 
+    const handleConfirmInical = (date) => {
+        console.log("A date has been picked: ", date);
+        setDateInicial(date)
+        // hideDatePicker();
+    };
+    const handleConfirmFinal = (date) => {
+        console.log("A date has been picked: ", date);
+        setDateFinal(date)
+        // hideDatePicker();
+    };
 
-    const handleDateChangeHoursInitial = (event, selectedDate) => {
-        const currentDate = selectedDate || hoursInicial;
-        setShowDatePicker2(!showDatePicker2);
-        setHoursInicial(currentDate);
-    };
-    const handleDateChangeHoursFinal = (event, selectedDate) => {
-        const currentDate = selectedDate || hoursFinal;
-        setShowDatePicker4(!showDatePicker4);
-        setHoursFinal(currentDate);
-    };
 
     const dataItem = [
         { id: 1, tipo: 'Educativo' },
@@ -91,28 +71,72 @@ const FromEvents = ({ navigation }) => {
         { id: 9, tipo: 'Exposición' },
     ]
 
+    const handleSelectImage = async (e) => {
+
+        if (image === null) {
+            setError('La imagen es requerida')
+            return
+        } else if (nameEvent === '') {
+            setError('La nombre es requerida')
+            return
+        } else if (dateInicial === '') {
+            setError('La fecha Inicio es requerida')
+            return
+        } else if (dateFinal === '') {
+            setError('La fecha Final es requerida')
+            return
+        } else if (Lugar === '') {
+            setError('La lugar es requerida')
+            return
+        } else if (aforo === '') {
+            setError('La aforo es requerida')
+            return
+        }
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("upload_preset", "time_check");
+        formData.append("cloud_name", "centroconveciones");
+        try {
+            const res = await fetch(
+                `https://api.cloudinary.com/v1_1/centroconveciones/image/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                }
+            );
+            const data = await res.json();
+            if (data.secure_url) {
+                handleSubmit(data.secure_url)
+            }
+        } catch (error) {
+            console.error(error);
+        };
+    }
 
 
-    const handleSubmit = async () => {
+
+    const handleSubmit = async (image) => {
 
         const data = {
             nombreEvento: nameEvent,
             descripcion: nameDescription,
             imagen: image,
-            fecha_inicio: moment(dateInicial).format('DD/MM/YYYY') + ':' + moment(hoursInicial).format('LT'),
-            fecha_final: moment(dateFinal).format('DD/MM/YYYY') + ':' + moment(hoursFinal).format('LT'),
+            fecha_inicio: dateInicial,
+            fecha_final: dateFinal,
             lugar: Lugar,
-            id_organizacion: '',
-            id_tipo_evento: ''
+            aforo: aforo,
+            id_suborganizacion: userInfo.id_suborganizacion,
+            id_tipo_evento: 9
         }
-
-        console.log(data);
 
         await saveEvent(data)
             .then((response) => {
+                console.log("response.data.message");
                 console.log(response.data.message);
             }).catch((err) => {
-                console.log(err.response.data.errors);
+                console.log("err.response");
+                console.log(err.response.data);
             })
     }
 
@@ -134,41 +158,19 @@ const FromEvents = ({ navigation }) => {
                 </TouchableOpacity>
             }
 
-            {showDatePicker && (
-                <DateTimePicker
-                    value={dateInicial}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChangeDateInitial}
-                />
-            )}
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="datetime"
+                onConfirm={handleConfirmInical}
+                onCancel={showDatePickerInicial}
+            />
 
-            {showDatePicker2 && (
-                <DateTimePicker
-                    value={hoursInicial}
-                    mode="time"
-                    display="default"
-                    onChange={handleDateChangeHoursInitial}
-                />
-            )}
-
-            {showDatePicker3 && (
-                <DateTimePicker
-                    value={dateFinal}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChangeDateFinal}
-                />
-            )}
-
-            {showDatePicker4 && (
-                <DateTimePicker
-                    value={hoursFinal}
-                    mode="time"
-                    display="default"
-                    onChange={handleDateChangeHoursFinal}
-                />
-            )}
+            <DateTimePickerModal
+                isVisible={isDatePickerVisibleFinal}
+                mode="datetime"
+                onConfirm={handleConfirmFinal}
+                onCancel={showDatePickerFinal}
+            />
 
             <ScrollView contentContainerStyle={{ padding: 20, justifyContent: 'center', alignItems: 'center' }}>
 
@@ -194,35 +196,18 @@ const FromEvents = ({ navigation }) => {
                             />
                         </View>
                     </View >
-
-                    <View className='sm:my-2 lg:my-3 flex-row justify-between'>
-                        <TouchableOpacity className='justify-center items-center' >
-                            <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha Inicial:</Text>
-                            <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:w-[180px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={() => setShowDatePicker(!showDatePicker)}>
-                                <Text className='text-lg font-bold'>{dateInicial.toLocaleDateString()}</Text>
-                            </TouchableOpacity>
-                        </TouchableOpacity>
-                        <TouchableOpacity className='justify-center items-center' >
-                            <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ' style={{ fontWeight: '900', color: '#202020' }}>Hora: </Text>
-                            <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:w-[180px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={() => setShowDatePicker2(!showDatePicker2)}>
-                                <Text className='text-lg font-bold'>{moment(hoursInicial).format('LT')}</Text>
-                            </TouchableOpacity>
+                    <View className='sm:my-2 lg:my-3'>
+                        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha: </Text>
+                        <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={showDatePickerInicial}>
+                            <Text>{dateInicial ? moment(dateInicial).format('DD/MM/YYYY HH:mm:ss') : 'DD/MM/YYYY HH:mm:ss'}</Text>
                         </TouchableOpacity>
                     </View >
 
-                    <View className='sm:my-2 lg:my-3 flex-row justify-between'>
-                        <View className='justify-center items-center'>
-                            <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha Final: </Text>
-                            <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:w-[180px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={() => setShowDatePicker3(!showDatePicker3)}>
-                                <Text className='text-lg font-bold'>{dateFinal.toLocaleDateString()}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className='justify-center items-center'>
-                            <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ' style={{ fontWeight: '900', color: '#202020' }}>Hora:</Text>
-                            <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:w-[180px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={() => setShowDatePicker4(!showDatePicker4)}>
-                                <Text className='text-lg font-bold'>{moment(hoursFinal).format('LT')}</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View className='sm:my-2 lg:my-3'>
+                        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha: </Text>
+                        <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={showDatePickerFinal}>
+                            <Text>{dateFinal ? moment(dateFinal).format('DD/MM/YYYY HH:mm:ss') : 'DD/MM/YYYY HH:mm:ss'}</Text>
+                        </TouchableOpacity>
                     </View >
 
                     <Text className='font-bold sm:text-base lg:text-xl ml-4 sm:mt-3' style={{ color: '#202020' }}>Tipo de Evento</Text>
@@ -299,13 +284,15 @@ const FromEvents = ({ navigation }) => {
                             />
                         </View>
                     </View >
-
-
+                    {
+                        error &&
+                        <Text>{error}</Text>
+                    }
                 </View>
             </ScrollView>
-            <View className={`absolute bottom-0 left-0 right-0 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`}>
-                <TouchableOpacity activeOpacity={0.7} className={``} onPress={handleSubmit}>
-                    <Text className='text-xl font-bold text-center text-white'>Actualizar</Text>
+            <View className={`absolute bottom-0 left-0 right-0 py-4 rounded-xl bg-[#7560EE] shadow-xl`}>
+                <TouchableOpacity activeOpacity={0.7} className={``} onPress={handleSelectImage}>
+                    <Text className='text-xl font-bold text-center text-white'>Crear Evento</Text>
                 </TouchableOpacity>
             </View>
             {

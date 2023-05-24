@@ -5,6 +5,7 @@ import moment from 'moment';
 
 
 import Avatar from '../../../../assets/Avatar.png'
+import esperando from '../../../../assets/esperando.png'
 import { getEvent } from '../../../api/api';
 import BottonModals from '../../../components/BottonModals';
 import { AuthContext } from '../../../context/AuthContext';
@@ -77,10 +78,10 @@ const HomeUser = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              <View className='flex-row items-center p-3 sm:h-12 sm:top-12 lg:h-16 lg:top-3 bg-gray-100 rounded-2xl'>
+              {/* <View className='flex-row items-center p-3 sm:h-12 sm:top-12 lg:h-16 lg:top-3 bg-gray-100 rounded-2xl'>
                 <Icon.FontAwesome name='search' size={16} />
                 <TextInput placeholder='Busca un evento...' className='flex-1 font-bold text-xl pl-3' />
-              </View>
+              </View> */}
             </View>
 
             <View className='rounded-2xl top-3'>
@@ -99,20 +100,30 @@ const HomeUser = ({ navigation }) => {
             </View>
 
             <View className='flex-1'>
-              <FlatList
-                data={filtro}
-                renderItem={({ item }) => <CardEvent items={item} isModals={isModals} setIsModals={setIsModals} navigation={navigation} />}
-                keyExtractor={item => item.idEvento}
-                refreshControl={
-                  <RefreshControl
-                    colors={['#7560EE']}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
-                contentContainerStyle={{ alignItems: 'center' }}
-                showsVerticalScrollIndicator={false}
-              />
+              {data.length === 0 ?
+                <View className='w-full items-center'>
+                  <Text className='text-xl text-center text-black font-bold mt-10'>Aún no hay eventos registrados.</Text>
+                  <View className='w-80 h-48 items-center mt-7 rounded-2xl'>
+                    {/* <Image source={imgGame}  className='' /> */}
+                    <Image source={esperando} resizeMode='cover' className='w-full h-full rounded-2xl' />
+                  </View>
+                </View>
+                :
+                <FlatList
+                  data={filtro}
+                  renderItem={({ item }) => <CardEvent items={item} isModals={isModals} setIsModals={setIsModals} navigation={navigation} />}
+                  keyExtractor={item => item.idEvento}
+                  refreshControl={
+                    <RefreshControl
+                      colors={['#7560EE']}
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                    />
+                  }
+                  contentContainerStyle={{ alignItems: 'center' }}
+                  showsVerticalScrollIndicator={false}
+                />
+              }
             </View>
             <BottonModals isModals={isModals} setIsModals={setIsModals} />
           </>

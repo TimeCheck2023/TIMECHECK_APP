@@ -68,7 +68,7 @@ const Sign_In = ({ navigation }) => {
 
 
         <View className='w-full items-center'>
-          <Text className='text-xl text-center text-black font-bold mt-10'>Welcome select your account type</Text>
+          <Text className='text-xl text-center text-black font-bold mt-10'>Welcome to our login</Text>
           <View className='w-80 h-48 items-center mt-7 rounded-2xl'>
             <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded-2xl' />
           </View>

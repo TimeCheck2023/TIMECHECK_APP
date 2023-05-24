@@ -4,6 +4,10 @@ import * as Icon from '@expo/vector-icons';
 
 import React from 'react'
 import HomeOrg from '../screens/Org/HomeOrg';
+import AddButtonOrg from '../components/AddButtonOrg';
+import ProfileOrg from '../screens/Org/ProfileOrg/ProfileOrg';
+
+
 
 const Tab = createBottomTabNavigator();
 
@@ -36,12 +40,25 @@ const BottomTabNavigatorOrg = () => {
                     )
                 }}
             />
-            <Tab.Screen name='Details' component={HomeOrg} 
-                 options={{
+
+            <Tab.Screen name='Home1' component={HomeOrg}
+                options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
-                        <Icon.Ionicons
-                            name='home'
+                        <View className='items-center flex-1 h-0'>
+                            <AddButtonOrg />
+                        </View>
+                    )
+                }}
+            />
+
+
+            <Tab.Screen name='ProfileOrg' component={ProfileOrg}
+                options={{
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ focused }) => (
+                        <Icon.AntDesign
+                            name='user'
                             size={24}
                             color={focused ? '#7973ED' : 'gray'}
                         />

@@ -37,14 +37,14 @@ const Welcome = ({ navigation }) => {
   return (
     <View className='flex-1'>
       <View className='flex-row h-[450px] pb-16 pl-10 pr-10 bg-[#6C63FF]' style={{
-        borderBottomRightRadius: 170,
+        borderBottomRightRadius: 90,
       }}>
       </View>
       <View className='absolute top-0 bottom-0 left-0 right-0 items-center'>
         <View className='flex-row h-4 items-center top-12'>
           {
             data.map((_, index) => {
-              return <View className={`${currentSlideIndex === index ? 'bg-[#57585b] w-7 h-[5] rounded-xl ml-1' : 'w-5 h-[5] rounded-xl bg-white ml-1'}`} key={index} />
+              return <View className={`w-7 h-[5] rounded-xl bg-white ml-1'`} key={index} />
             })
           }
         </View>
@@ -58,27 +58,30 @@ const Welcome = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
           pagingEnabled
         />
-        {
+        <View className='flex-row w-[100%] sm:h-16 sm:bottom-10 justify-between items-center rounded-2xl'>
+          <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
+            <Text className={`text-xl text-white font-bold`}>Register</Text>
+          </TouchableOpacity >
+          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] bg-slate-400 sm:p-4 items-center right-6 rounded-lg`} onPress={() => navigation.navigate('Sign_In')}>
+            <Text className={`text-xl text-white font-bold`}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        {/* {
           currentSlideIndex !== data.length - 1 ?
-            (<TouchableOpacity
-              activeOpacity={0.9}
-              className='sm:w-72 sm:h-16 lg:w-96 lg:h-20 sm:bottom-16 lg:bottom-14 flex-row justify-between items-center rounded-xl bg-[#6C63FF]'
-              onPress={handleNext}
-            >
-              <View className='justify-center items-center sm:left-[63] lg:left-24'>
-                <Text className='font-bold sm:text-xl lg:text-2xl text-white'>
-                  GET STARTED
-                </Text>
-
+            (<>
+              <View className='flex-row w-[100%] sm:h-16 sm:bottom-10 justify-between items-center rounded-2xl'>
+                <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
+                  <Text className={`text-xl text-white font-bold`}>Register</Text>
+                </TouchableOpacity >
+                <TouchableOpacity activeOpacity={0.7} className={`w-[40%] bg-slate-400 sm:p-4 items-center right-6 rounded-lg`} onPress={() => navigation.navigate('Sign_In')}>
+                  <Text className={`text-xl text-white font-bold`}>Login</Text>
+                </TouchableOpacity>
               </View>
-              <View className='sm:w-11 sm:h-11 lg:w-14 lg:h-14 bg-slate-200 justify-center items-center rounded-full right-4'>
-                <AntDesign name="arrowright" size={24} color="black" />
-              </View>
-            </TouchableOpacity>)
+            </>)
             :
             (
               <>
-                <View className='flex-row w-[100%] sm:h-16 sm:bottom-16 justify-between items-center rounded-2xl'>
+                <View className='flex-row w-[100%] sm:h-16 sm:bottom-10 justify-between items-center rounded-2xl'>
                   <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
                     <Text className={`text-xl text-white font-bold`}>Register</Text>
                   </TouchableOpacity >
@@ -88,7 +91,7 @@ const Welcome = ({ navigation }) => {
                 </View>
               </>
             )
-        }
+        } */}
       </View>
 
     </View>

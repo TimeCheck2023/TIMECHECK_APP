@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-
-const AddButton = ({  }) => {
-
+const AddButtonOrg = () => {
     const [icons_1] = useState(new Animated.Value(0))
     const [icons_2] = useState(new Animated.Value(0))
     const [icons_3] = useState(new Animated.Value(0))
@@ -54,7 +52,7 @@ const AddButton = ({  }) => {
     return (
         <View className='relative items-center h-12 w-16 '>
             <Animated.View className='absolute bg-[#7560EE] w-16 h-16 rounded-full items-center justify-center' style={{ bottom: icons_1 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('FromEvents')}>
+                <TouchableOpacity onPress={() => navigation.navigate('FormSubOrg')}>
                     <Ionicons
                         name='add-sharp'
                         size={35}
@@ -95,4 +93,4 @@ const AddButton = ({  }) => {
     )
 }
 
-export default AddButton
+export default AddButtonOrg

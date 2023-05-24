@@ -3,21 +3,23 @@ import React, { useContext, useEffect, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import avatar from '../../../../assets/Avatar.png'
 import { AuthContext } from '../../../context/AuthContext';
-import { getUserId } from '../../../api/api';
+import { getOrg, getUserId } from '../../../api/api';
 import Splash from '../../../components/Splash';
 import { useFocusEffect } from '@react-navigation/native';
-import ProfileSkeleton from './ProfileSkeleton';
+import ProfileSkeleton from '../../User/Profile/ProfileSkeleton';
 
-const Profile = ({ navigation }) => {
+
+const ProfileOrg = ({ navigation }) => {
     const { logout, userInfo } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
     const [user, setUser] = useState({})
 
     const getUser = async () => {
         setIsLoading(true)
-        await getUserId(userInfo.nro_documento_usuario)
+        await getOrg(userInfo.id_organización)
             .then((response) => {
                 setUser(response.data.message)
+                console.log(response.data.message)
                 setIsLoading(false)
             }).catch((err) => {
                 console.log(err);
@@ -34,7 +36,6 @@ const Profile = ({ navigation }) => {
             getUser();
         }, []),
     );
-
     return (
         <View className='flex-1 bg-white'>
             {
@@ -53,35 +54,35 @@ const Profile = ({ navigation }) => {
                                 <View className='sm:w-[130px] sm:h-[130px] rounded-full shadow-purple-400'>
                                     <Image source={avatar} className='w-[100%] h-[100%] rounded-full' />
                                 </View>
-                                <Text className='text-2xl text-white font-bold mt-3'>{user.correo_usuario}</Text>
-                                <Text className='text-xl text-white font-medium mt-2'>{user.nro_documento_usuario}</Text>
+                                <Text className='text-2xl text-white font-bold mt-3'>{user.correo_organizacion}</Text>
+                                <Text className='text-xl text-white font-medium mt-2'>{user.id_organización}</Text>
                             </View>
                         </View>
                         <View className='flex-1 h-full p-4 w-full space-y-4 mt-7'>
 
-                            <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
+                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
                                 <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
                                     <Icon.Entypo name="emoji-happy" size={25} color="white" />
                                 </View>
                                 <Text className='text-2xl text-black font-bold left-11'>Eventos asistidos</Text>
                                 <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.confirmados}</Text>
-                            </View>
-
-                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
-                                <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                                    <Icon.Entypo name="emoji-sad" size={25} color="white" />
-                                </View>
-                                <Text className='text-2xl text-black font-bold left-11'>Eventos no asistidos</Text>
-                                <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.pendientes}</Text>
                             </View> */}
 
-                            <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
+                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
+                        <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
+                            <Icon.Entypo name="emoji-sad" size={25} color="white" />
+                        </View>
+                        <Text className='text-2xl text-black font-bold left-11'>Eventos no asistidos</Text>
+                        <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.pendientes}</Text>
+                    </View> */}
+
+                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
                                 <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
                                     <Icon.Entypo name="emoji-neutral" size={25} color="white" />
                                 </View>
                                 <Text className='text-2xl text-black font-bold left-11'>Eventos pendientes</Text>
                                 <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.pendientes}</Text>
-                            </View>
+                            </View> */}
 
                             <TouchableOpacity className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'
                                 onPress={() => navigation.navigate('FormUpdateUSer', {
@@ -101,12 +102,12 @@ const Profile = ({ navigation }) => {
                                 <Icon.AntDesign name="right" size={27} className='absolute right-5 text-[#7560EE]' />
                             </TouchableOpacity>
                             {/* <TouchableOpacity className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
-                                <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                                    <Icon.AntDesign name="unlock" size={25} color="white" />
-                                </View>
-                                <Text className='text-2xl text-black font-bold left-9'>Delete</Text>
-                                <Icon.AntDesign name="right" size={27} className='absolute right-5 text-[#7560EE]' />
-                            </TouchableOpacity> */}
+                        <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
+                            <Icon.AntDesign name="unlock" size={25} color="white" />
+                        </View>
+                        <Text className='text-2xl text-black font-bold left-9'>Delete</Text>
+                        <Icon.AntDesign name="right" size={27} className='absolute right-5 text-[#7560EE]' />
+                    </TouchableOpacity> */}
                         </View>
                     </ScrollView>
             }
@@ -114,4 +115,4 @@ const Profile = ({ navigation }) => {
     )
 }
 
-export default Profile
+export default ProfileOrg

@@ -1,13 +1,9 @@
-import imgHome from "../../assets/undraw_Date_picker_re_r0p8.png";
-import imgHome2 from "../../assets/undraw_Date_picker_re_r0p8.png";
-import imgHome3 from "../../assets/undraw_Events_re_98ue.png";
-import imgHome4 from "../../assets/undraw_Newspaper_re_syf5.png";
-import imgHome5 from "../../assets/Sing_Up.png";
-import imgGame from "../../assets/game.png";
+import imgHome from "../../assets/welcome.jpg";
+import imgHome2 from "../../assets/welcome_sing.png";
 
 export const data = [
-    { id: 1, image: imgHome, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' },
-    { id: 2, image: imgHome2, title: 'Discover you', title2: 'Discover you', description: 'The purpose of SafeAreaView is to render content within the safe area boundaries of a device. It is currently only applicable to iOS devices with iOS version 11 or later.' }
+    { id: 1, image: imgHome, title: 'Bienvenidos a timecheck!', title2: 'Discover you', description: 'TimeCheck es una herramienta en línea que facilita el registro automatizado de asistentes a eventos. Permite a los usuarios registrarse en línea, a los organizadores monitorear la asistencia en tiempo real y generar informes de asistencia. Simplifica la gestión de eventos y mejora la experiencia tanto para los organizadores como para los participantes.' },
+    // { id: 2, image: imgHome2, title: 'Discover you', title2: 'Discover you', description: 'Aqui podras encontrar eventos como  Conferencias y seminarios, Ferias y exposiciones, Convenciones y ferias comerciales, Eventos corporativos, Eventos deportivos' }
 ]
 
 export  const dataTipo = [

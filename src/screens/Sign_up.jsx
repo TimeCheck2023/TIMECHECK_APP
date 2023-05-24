@@ -196,6 +196,11 @@ const Sign_Up = ({ navigation }) => {
             </View>
           }
 
+          {/* <View className='flex-row items-center justify-center sm:top-2 sm:w-full'>
+            <TouchableOpacity style={{ width: 25, height: 25, borderWidth: 2, marginRight: 10 }}></TouchableOpacity>
+            <Text className='text-lg font-bold sm:w-72'>He leido y acepto</Text><Text>los Términos y Condiciones</Text><Text>y la</Text><Text>Politíca de privacidad</Text>  
+          </View> */}
+
           <View className='items-center sm:top-2'>
             {errors && <Text className={`text-red-800 ml-3  text-xl font-bold`}>{errors}</Text>}
           </View>

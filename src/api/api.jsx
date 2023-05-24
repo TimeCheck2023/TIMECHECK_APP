@@ -1,6 +1,7 @@
 import axios from "axios";
 // const API_Node = 'https://backend-timecheck.onrender.com';
-const API_Node = 'https://timecheckbacknodejs-production.up.railway.app';
+// const API_Node = 'https://timecheckbacknodejs-production.up.railway.app';
+const API_Node = 'https://timecheck.up.railway.app';
 const API_C = 'https://time-check.azurewebsites.net';
 
 
@@ -64,6 +65,14 @@ export const auth = async (user) => {
 }
 
 
+export const getSubOrg = async (id) => {
+    const result = await axios({
+        url: `${API_Node}/SubOrg/${id}`,
+        method: 'GET',
+    })
+    return result;
+}
+
 export const getEvent = async () => {
     const result = await axios({
         url: `${API_C}/api/Event/List`,
@@ -79,7 +88,7 @@ export const saveEvent = async (newEvent) => {
         method: 'POST',
         params: newEvent
     })
-    // console.log(result.message);
+    // console.log(result.message.data.data);
     return result;
 }
 
@@ -90,12 +99,29 @@ export const getUserId = async (id) => {
     })
     return result;
 }
+export const getOrg = async (id) => {
+    const result = await axios({
+        url: `${API_Node}/org/${id}`,
+        method: 'GET',
+    })
+    return result;
+}
 
 export const updateUserId = async (id, data) => {
     // console.log(data);
     const result = await axios({
         url: `${API_Node}/user/update/${id}`,
         method: 'PUT',
+        data: data
+    })
+    return result;
+}
+
+export const saveSubOrg = async (id, data) => {
+    // console.log(data);
+    const result = await axios({
+        url: `${API_Node}/SubOrg/register/${id}`,
+        method: 'POST',
         data: data
     })
     return result;

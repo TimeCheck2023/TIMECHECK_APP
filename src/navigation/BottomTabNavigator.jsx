@@ -44,11 +44,11 @@ const BottomTabNavigator = () => {
                     options={{
                         tabBarShowLabel: false,
                         tabBarIcon: ({ focused }) => (
-                                <Icon.Ionicons
-                                    name='home'
-                                    size={27}
-                                    color={focused ? '#7973ED' : 'gray'}
-                                />
+                            <Icon.Ionicons
+                                name='home'
+                                size={27}
+                                color={focused ? '#7973ED' : 'gray'}
+                            />
                         )
                     }}
                 />
@@ -65,19 +65,22 @@ const BottomTabNavigator = () => {
                         }}
                     />
                 }
-                <Tab.Screen name='Notification' component={Notification}
-                    options={{
-                        tabBarBadge: 5, // Cantidad a mostrar en el distintivo
-                        tabBarShowLabel: false,
-                        tabBarIcon: ({ focused }) => (
-                            <Icon.Ionicons
-                                name='notifications-sharp'
-                                size={24}
-                                color={focused ? '#7973ED' : 'gray'}
-                            />
-                        )
-                    }}
-                />
+                {
+                    userInfo.rol === 2 &&
+                    <Tab.Screen name='Notification' component={Notification}
+                        options={{
+                            tabBarBadge: 5, // Cantidad a mostrar en el distintivo
+                            tabBarShowLabel: false,
+                            tabBarIcon: ({ focused }) => (
+                                <Icon.Ionicons
+                                    name='notifications-sharp'
+                                    size={24}
+                                    color={focused ? '#7973ED' : 'gray'}
+                                />
+                            )
+                        }}
+                    />
+                }
             </Tab.Navigator>
         </>
     )
