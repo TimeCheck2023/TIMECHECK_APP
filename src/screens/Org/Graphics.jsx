@@ -15,4 +15,26 @@ const data = [
 ];
 
 const Graphics = ({ items }) => {
+  <View style={styles.container}>
+              <VictoryChart theme={VictoryTheme.material}>
+                <VictoryBar style={{
+                  data: {
+                    fill: ({ index }) => colorScale[index % colorScale.length], // Asigna colores personalizados a cada barra
+                  },
+                }}
+                horizontal data={data} x='month' y='earnings' />
+              </VictoryChart>
+  </View>
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginBottom: 16,
+  },
+  text: {
+    fontSize: 20,
+  },
+});
+
+export default Graphics;
