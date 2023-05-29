@@ -21,7 +21,7 @@ const MainApp = () => {
     return (
         <NavigationContainer>
             {/* {userToken !== null ? <HomeStack /> : <AuthNavigator />} */}
-            {userToken === null ? <HomeStackOrg /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
+            {userToken === null ? <AuthNavigator /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
             <StatusBar style='auto' />
         </NavigationContainer>
     )

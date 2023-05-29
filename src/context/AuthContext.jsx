@@ -1,6 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
+import io from "socket.io-client";
+
+const socket = io('http://192.168.1.47:4000')
+
 
 export const AuthContext = createContext();
 
@@ -56,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ login, logout, isLoading, userToken, userInfo }}>
+        <AuthContext.Provider value={{ login, logout, isLoading, userToken, userInfo, socket }}>
             {children}
         </AuthContext.Provider>
     )

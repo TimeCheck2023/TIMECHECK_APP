@@ -5,6 +5,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { data } from "../utils/data";
 import CardWelcome from '../components/CardWelcome';
 import { scale } from 'react-native-size-matters';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 
 
@@ -36,8 +38,9 @@ const Welcome = ({ navigation }) => {
   }
   return (
     <View className='flex-1'>
-      <View className='flex-row h-[450px] pb-16 pl-10 pr-10 bg-[#6C63FF]' style={{
-        borderBottomRightRadius: 90,
+      <View className='flex-row pb-16 pl-10 pr-10 bg-[#6C63FF]' style={{
+        borderBottomRightRadius: 50,
+        height: hp('56%')
       }}>
       </View>
       <View className='absolute top-0 bottom-0 left-0 right-0 items-center'>
@@ -58,11 +61,11 @@ const Welcome = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
           pagingEnabled
         />
-        <View className='flex-row w-[100%] sm:h-16 sm:bottom-10 justify-between items-center rounded-2xl'>
-          <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
+        <View className='flex-row  justify-between items-center rounded-2xl' style={{ width: wp('100%'), height: hp('11%'), bottom: hp('6') }}>
+          <TouchableOpacity activeOpacity={0.7} className={`bg-[#6C63FF] items-center justify-center left-6  rounded-lg`} style={{ width: wp('40%'), height: hp('8.2%') }} onPress={() => navigation.navigate('Sign_Up')} >
             <Text className={`text-xl text-white font-bold`}>Register</Text>
           </TouchableOpacity >
-          <TouchableOpacity activeOpacity={0.7} className={`w-[40%] bg-slate-400 sm:p-4 items-center right-6 rounded-lg`} onPress={() => navigation.navigate('Sign_In')}>
+          <TouchableOpacity activeOpacity={0.7} className={`bg-slate-400 items-center justify-center right-6 rounded-lg`} style={{ width: wp('40%'), height: hp('8.2%') }} onPress={() => navigation.navigate('Sign_In')}>
             <Text className={`text-xl text-white font-bold`}>Login</Text>
           </TouchableOpacity>
         </View>

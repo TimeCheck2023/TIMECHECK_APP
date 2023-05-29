@@ -3,7 +3,6 @@ import * as Icon from '@expo/vector-icons';
 import React, { useEffect, useState, useContext } from 'react'
 import moment from 'moment';
 
-
 import Avatar from '../../../../assets/Avatar.png'
 import esperando from '../../../../assets/esperando.png'
 import { getEvent } from '../../../api/api';
@@ -13,7 +12,7 @@ import HomeSkeleton from './HomeSkeleton';
 
 const HomeUser = ({ navigation }) => {
 
-  const { logout } = useContext(AuthContext)
+  const { logout, socket, userInfo } = useContext(AuthContext)
   const [data, setData] = useState([])
   const [select, setSelect] = useState('All')
   const [isModals, setIsModals] = useState(false);
@@ -54,6 +53,17 @@ const HomeUser = ({ navigation }) => {
     setRefreshing(false);
   }
 
+  const likes = (num) => {
+    console.log("hola");
+    const objeto = new Object({
+      likes: num,
+      id_evento: 125,
+      numero_documento: userInfo.nro_documento_usuario
+    });
+    // console.log(objeto);
+    socket.emit('likes', objeto)
+  }
+
 
   const filtro = select === 'All' ? data : data.filter((item) => item.tipoEvento === select)
 
@@ -68,7 +78,9 @@ const HomeUser = ({ navigation }) => {
 
               <View className='flex-row justify-between items-center sm:top-7'>
 
-                <Text className='text-2xl text-white font-bold'>TIMECHECK</Text>
+                <TouchableOpacity onPress={() => likes(1)}>
+                  <Text className='text-2xl text-white font-bold'>TIMECHECK</Text>
+                </TouchableOpacity>
 
                 {/* <TouchableOpacity className='w-10 h-10 items-center justify-center rounded-xl bg-white' onPress={() => logout()}>
       <Icon.Feather name='notifications-sharp' className='text-[#7560EE]' size={18} />
@@ -132,7 +144,9 @@ const HomeUser = ({ navigation }) => {
   )
 }
 
+
 const CardEvent = ({ items, navigation, setIsModals, isModals }) => {
+
   return (
     <View className='p-5 my-1'>
       <TouchableOpacity className='w-96 h-72 z-30' onPress={() => navigation.navigate('Details', {

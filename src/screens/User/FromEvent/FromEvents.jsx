@@ -127,7 +127,7 @@ const FromEvents = ({ navigation }) => {
             lugar: Lugar,
             aforo: aforo,
             id_suborganizacion: userInfo.id_suborganizacion,
-            id_tipo_evento: 9
+            id_tipo_evento: 18
         }
 
         await saveEvent(data)

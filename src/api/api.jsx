@@ -28,13 +28,13 @@ export const getAsistencia = async (data) => {
     const result = await axios({
         url: `${API_C}/api/Attendance/CheckAttendance`,
         method: 'GET',
-        params: data 
+        params: data
     })
     // console.log(result.data);
     return result
 }
 
-export const saveAsistencia = async (newUser) => {    
+export const saveAsistencia = async (newUser) => {
     const result = await axios({
         url: `${API_C}/api/Attendance/send`,
         method: 'POST',
@@ -44,7 +44,7 @@ export const saveAsistencia = async (newUser) => {
 }
 
 
-export const updateAsistencia = async (data) => {    
+export const updateAsistencia = async (data) => {
     const result = await axios({
         url: `${API_C}/api/Attendance/CancelAttendance`,
         method: 'PUT',
@@ -121,6 +121,15 @@ export const saveSubOrg = async (id, data) => {
     // console.log(data);
     const result = await axios({
         url: `${API_Node}/SubOrg/register/${id}`,
+        method: 'POST',
+        data: data
+    })
+    return result;
+}
+export const verificarCodigo = async (data) => {
+    console.log(data);
+    const result = await axios({
+        url: `${API_Node}/Auth/verificacion`,
         method: 'POST',
         data: data
     })
