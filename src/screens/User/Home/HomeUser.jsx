@@ -14,6 +14,9 @@ const HomeUser = ({ navigation }) => {
 
   const { logout, socket, userInfo } = useContext(AuthContext)
   const [data, setData] = useState([])
+  const [dataComment, setDataComment] = useState([])
+  const [comment, setComment] = useState('')
+  const [eventId, setEventId] = useState(null)
   const [select, setSelect] = useState('All')
   const [isModals, setIsModals] = useState(false);
   const [refreshing, setRefreshing] = useState(false)
@@ -36,6 +39,9 @@ const HomeUser = ({ navigation }) => {
     setIsloading(true)
     getEvent().then((response) => {
       setData(response.data.response);
+      response.data.response.map((id) =>{
+        console.log(id.idEvento);
+      })
       setIsloading(false)
     }).catch((error) => {
       setIsloading(false)
@@ -62,6 +68,30 @@ const HomeUser = ({ navigation }) => {
     });
     // console.log(objeto);
     socket.emit('likes', objeto)
+  }
+
+  const handleTextInputChange = (text) => {
+    setComment(text);
+  };
+
+  const handleEventPress = (eventId) => {
+    setEventId(eventId);
+    socket.on('resultComments', (getComments) => {
+      setDataComment(getComments);
+    })
+
+    // Evento para obtener los registros del servidor al cargar la aplicación
+    socket.emit('getComments', eventId);
+  };
+
+  const submitComment = () => {
+    const objeto = new Object({
+      comentario: comment,
+      id_evento4: eventId,
+      nro_documento_usuario: userInfo.nro_documento_usuario
+    });
+
+    socket.emit('addComment', objeto)
   }
 
 
@@ -123,7 +153,7 @@ const HomeUser = ({ navigation }) => {
                 :
                 <FlatList
                   data={filtro}
-                  renderItem={({ item }) => <CardEvent items={item} isModals={isModals} setIsModals={setIsModals} navigation={navigation} />}
+                  renderItem={({ item }) => <CardEvent items={item} isModals={isModals} handleEventPress={handleEventPress} setIsModals={setIsModals} navigation={navigation} />}
                   keyExtractor={item => item.idEvento}
                   refreshControl={
                     <RefreshControl
@@ -137,7 +167,7 @@ const HomeUser = ({ navigation }) => {
                 />
               }
             </View>
-            <BottonModals isModals={isModals} setIsModals={setIsModals} />
+            <BottonModals dataComment={dataComment} isModals={isModals} setIsModals={setIsModals} comment={comment} handleTextInputChange={handleTextInputChange} submitComment={submitComment} />
           </>
       }
     </View >
@@ -145,7 +175,7 @@ const HomeUser = ({ navigation }) => {
 }
 
 
-const CardEvent = ({ items, navigation, setIsModals, isModals }) => {
+const CardEvent = ({ items, navigation, setIsModals, isModals, handleEventPress }) => {
 
   return (
     <View className='p-5 my-1'>
@@ -168,7 +198,7 @@ const CardEvent = ({ items, navigation, setIsModals, isModals }) => {
           <Icon.Feather name='heart' size={30} className=' text-white' />
           <Text className='left-2 text-xl text-white'>Me encanta</Text>
         </TouchableOpacity>
-        <TouchableOpacity className='w-[50%] flex-row p-3 justify-center items-center rounded-lg' onPress={() => setIsModals(!isModals)}>
+        <TouchableOpacity className='w-[50%] flex-row p-3 justify-center items-center rounded-lg' onPress={() => { setIsModals(!isModals), handleEventPress(items.idEvento) }}>
           <Icon.Feather name='message-circle' size={30} className=' text-[#6C63FF]' />
           <Text className='left-2 text-xl text-[#6C63FF]'> Comments</Text>
         </TouchableOpacity>
