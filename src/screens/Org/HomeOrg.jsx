@@ -6,12 +6,14 @@ import { getSubOrg } from '../../api/api';
 import esperando from '../../../assets/esperando.png'
 import { useFocusEffect } from '@react-navigation/native';
 import { Component } from 'react/cjs/react.production.min';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 const HomeOrg = ({ items }) => {
   const { logout, userInfo } = useContext(AuthContext);
   const [data, setData] = useState([])
+  const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -31,7 +33,10 @@ const HomeOrg = ({ items }) => {
   // useEffect(() => {
 
   // }, [])
-  
+
+  const handlePress = () =>{
+    navigation.navigate('Graphics')
+  }
 
   return (
     <SafeAreaView className='flex-1 justify-center items-center bg-slate-100'>
@@ -55,7 +60,7 @@ const HomeOrg = ({ items }) => {
           ))
         } */}
 
-            <TouchableOpacity className='w-72 h-72 z-30 my-4' >
+            <TouchableOpacity onPress={handlePress} className='w-72 h-72 z-30 my-4' >
               <View className="h-full w-full bg-purple-500 flex justify-around rounded-md shadow-md border border-gray-500">
                 <Text className='text-white text-center text-2xl font-bold'>Sena</Text>
                 <Text className='text-white text-justify px-8 space-y-4 font-semibold'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nihil voluptate porro libero? Labore culpa aliquid aperiam recusandae dolore itaque ipsum sed laboriosam fuga id. Quas aspernatur excepturi provident sapiente!</Text>
