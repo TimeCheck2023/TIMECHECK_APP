@@ -12,7 +12,7 @@ const BottonModals = ({ dataComment, isModals, setIsModals, comment, handleTextI
                 animationType="slide"
                 style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
             >
-                <View className='flex-1 bg-[#E8EAED] m-2 rounded-2xl' style={{ paddingTop: 40, paddingHorizontal: 10 }}>
+                <View className='flex-1 w-full bg-[#E8EAED] rounded-2xl' style={{ paddingTop: 12 ,paddingHorizontal: 20 }}>
                     <Text className='text-2xl font-bold'>comments</Text>
                     <TouchableOpacity className='absolute right-3 top-3 p-3 rounded-2xl bg-[#7560EE]' onPress={() => setIsModals(!isModals)}>
                         <Icon.AntDesign name="close" size={20} color="white" />

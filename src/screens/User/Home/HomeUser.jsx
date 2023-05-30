@@ -39,7 +39,7 @@ const HomeUser = ({ navigation }) => {
     setIsloading(true)
     getEvent().then((response) => {
       setData(response.data.response);
-      response.data.response.map((id) =>{
+      response.data.response.map((id) => {
         console.log(id.idEvento);
       })
       setIsloading(false)
@@ -111,19 +111,15 @@ const HomeUser = ({ navigation }) => {
                 <TouchableOpacity onPress={() => likes(1)}>
                   <Text className='text-2xl text-white font-bold'>TIMECHECK</Text>
                 </TouchableOpacity>
-
-                {/* <TouchableOpacity className='w-10 h-10 items-center justify-center rounded-xl bg-white' onPress={() => logout()}>
-      <Icon.Feather name='notifications-sharp' className='text-[#7560EE]' size={18} />
-    </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                   <Image source={Avatar} className='w-14 h-14 rounded-full' />
                 </TouchableOpacity>
               </View>
 
-              {/* <View className='flex-row items-center p-3 sm:h-12 sm:top-12 lg:h-16 lg:top-3 bg-gray-100 rounded-2xl'>
+              <View className='flex-row items-center p-3 sm:h-12 sm:top-12 lg:h-16 lg:top-3 bg-gray-100 rounded-2xl'>
                 <Icon.FontAwesome name='search' size={16} />
                 <TextInput placeholder='Busca un evento...' className='flex-1 font-bold text-xl pl-3' />
-              </View> */}
+              </View>
             </View>
 
             <View className='rounded-2xl top-3'>
@@ -167,9 +163,9 @@ const HomeUser = ({ navigation }) => {
                 />
               }
             </View>
-            <BottonModals dataComment={dataComment} isModals={isModals} setIsModals={setIsModals} comment={comment} handleTextInputChange={handleTextInputChange} submitComment={submitComment} />
           </>
       }
+      <BottonModals dataComment={dataComment} isModals={isModals} setIsModals={setIsModals} comment={comment} handleTextInputChange={handleTextInputChange} submitComment={submitComment} />
     </View >
   )
 }

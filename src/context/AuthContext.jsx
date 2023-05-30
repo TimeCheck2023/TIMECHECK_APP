@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
 
-const socket = io('http://192.168.1.47:4000')
+const socket = io('http://10.199.17.33:4000')
 
 
 export const AuthContext = createContext();
