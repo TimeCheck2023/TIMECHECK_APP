@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import * as Icon from '@expo/vector-icons';
 
 import React from 'react'
-import HomeOrg from '../screens/Org/HomeOrg';
+import HomeOrg from '../screens/Org/Home/HomeOrg';
 import AddButtonOrg from '../components/AddButtonOrg';
 import ProfileOrg from '../screens/Org/ProfileOrg/ProfileOrg';
 

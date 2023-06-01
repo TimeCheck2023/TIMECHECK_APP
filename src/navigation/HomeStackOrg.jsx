@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTabNavigatorOrg from "./BottomTabNavigatorOrg";
 import FormSubOrg from "../screens/Org/FormSubOrg/FormSubOrg";
 import ProfileOrg from "../screens/Org/ProfileOrg/ProfileOrg";
-import Graphics from "../screens/Org/Graphics";
+import Graphics from "../screens/Org/Home/Graphics";
 
 
 const Home = createNativeStackNavigator()
