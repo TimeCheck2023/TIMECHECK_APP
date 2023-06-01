@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import * as Icon from '@expo/vector-icons';
 import { Dimensions, Image, View } from 'react-native';
-import Home from '../screens/User/Home/HomeUser';
 import AddButton from '../components/AddButton';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Notification from '../screens/User/Notification/Notification';
+import HomeScreens from '../screens/User/Home/HomeScreens';
 
 
 const Tab = createBottomTabNavigator();
@@ -13,6 +13,8 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
 
     const { userInfo } = useContext(AuthContext)
+    const [showTabBar, setShowTabBar] = useState(true);
+
 
 
     return (
@@ -20,38 +22,41 @@ const BottomTabNavigator = () => {
             <Tab.Navigator
                 screenOptions={{
                     headerShown: false,
-                    tabBarStyle: {
-                        backgroundColor: 'white',
-                        position: 'absolute',
-                        bottom: 7,
-                        marginHorizontal: 20,
-                        // Max Height...
-                        height: 60,
-                        borderRadius: 10,
-                        // Shadow...
-                        shadowColor: '#000',
-                        shadowOpacity: 0.06,
-                        shadowOffset: {
-                            width: 10,
-                            height: 10
-                        },
-                        paddingHorizontal: 20,
-                    },
+                    // tabBarStyle: {
+                    //     backgroundColor: 'white',
+                    //     bottom: 7,
+                    //     marginHorizontal: 20,
+                    //     height: 60,
+                    //     borderRadius: 10,
+                    //     shadowColor: '#000',
+                    //     shadowOpacity: 0.06,
+                    //     shadowOffset: {
+                    //         width: 10,
+                    //         height: 10
+                    //     },
+                    //     paddingHorizontal: 20,
+                    // },
                 }}
-                initialRouteName='Home'
+
+                initialRouteName='HomeScreens'
             >
-                <Tab.Screen name='Home' component={Home}
+
+
+                <Tab.Screen name='HomeScreens' component={HomeScreens}
                     options={{
                         tabBarShowLabel: false,
                         tabBarIcon: ({ focused }) => (
-                            <Icon.Ionicons
-                                name='home'
-                                size={27}
-                                color={focused ? '#7973ED' : 'gray'}
-                            />
+                            <View >
+                                <Icon.Ionicons
+                                    name='home'
+                                    size={27}
+                                    color={focused ? '#7973ED' : 'gray'}
+                                />
+                            </View>
                         )
                     }}
                 />
+
                 {
                     userInfo.rol === 0 &&
                     <Tab.Screen name='Home1' component={Home}
@@ -65,7 +70,24 @@ const BottomTabNavigator = () => {
                         }}
                     />
                 }
-                {
+
+
+                <Tab.Screen name='HomeScreens12' component={HomeScreens}
+                    options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: ({ focused }) => (
+                            <View >
+                                <Icon.Ionicons
+                                    name='home'
+                                    size={27}
+                                    color={focused ? '#7973ED' : 'gray'}
+                                />
+                            </View>
+                        )
+                    }}
+                />
+
+                {/* {
                     userInfo.rol === 0 &&
                     <Tab.Screen name='Notification' component={Notification}
                         options={{
@@ -80,7 +102,7 @@ const BottomTabNavigator = () => {
                             )
                         }}
                     />
-                }
+                } */}
             </Tab.Navigator>
         </>
     )

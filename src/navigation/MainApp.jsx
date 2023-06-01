@@ -6,6 +6,8 @@ import { View, ActivityIndicator } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import HomeStack from "./HomeStack";
 import HomeStackOrg from "./HomeStackOrg";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 const MainApp = () => {
@@ -21,7 +23,12 @@ const MainApp = () => {
     return (
         <NavigationContainer>
             {/* {userToken !== null ? <HomeStack /> : <AuthNavigator />} */}
-            {userToken === null ? <HomeStackOrg /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
+            {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <BottomSheetModalProvider>
+                    {userToken === null ? <AuthNavigator /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
+                </BottomSheetModalProvider>
+            </GestureHandlerRootView>
             <StatusBar style='auto' />
         </NavigationContainer>
     )
