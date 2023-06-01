@@ -3,7 +3,6 @@ import Welcome from '../screens/Welcome';
 import Sign_up from '../screens/Sign_up'
 import Sign_In from '../screens/Sign_In';
 import VerificationScreen from '../screens/VerificationScreen';
-import Prueba_Bottom from '../screens/User/Home/HomeUser';
 
 
 const Stack = createNativeStackNavigator();

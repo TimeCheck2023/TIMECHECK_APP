@@ -15,7 +15,7 @@ const CardWelcome = ({ item }) => {
             <View className=''>
                 <Text className='text-center font-bold	dark:text-white' style={{fontSize: hp('3.5%'), marginTop: hp('5%')}}>{item.title}</Text>
                 {/* <Text className='text-3xl text-center font-semibold	dark:text-white'>{item.title2}</Text> */}
-                <Text className='text-justify dark:text-white' style={{ width: wp('92%') ,fontSize: hp('2.3%'), marginTop: hp('1%') }}>{item.description}</Text>
+                <Text className='text-justify dark:text-white' style={{ width: wp('92%') ,fontSize: hp('2.3%'), fontSize: wp('4.4%'), marginTop: hp('1%') }}>{item.description}</Text>
             </View>
         </View>
     )

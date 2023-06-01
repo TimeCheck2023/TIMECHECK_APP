@@ -7,7 +7,6 @@ import * as Icon from '@expo/vector-icons';
 import { userSchema } from '../utils/validate';
 import { auth } from "../api/api";
 import { AuthContext } from '../context/AuthContext';
-import Splash from '../components/Splash';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 

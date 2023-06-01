@@ -4,7 +4,6 @@ import * as Icon from '@expo/vector-icons';
 import avatar from '../../../../assets/Avatar.png'
 import { AuthContext } from '../../../context/AuthContext';
 import { getOrg, getUserId } from '../../../api/api';
-import Splash from '../../../components/Splash';
 import { useFocusEffect } from '@react-navigation/native';
 import ProfileSkeleton from '../../User/Profile/ProfileSkeleton';
 

@@ -2,10 +2,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import * as Icon from '@expo/vector-icons';
 import { Dimensions, Image, View } from 'react-native';
 import AddButton from '../components/AddButton';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Notification from '../screens/User/Notification/Notification';
 import HomeScreens from '../screens/User/Home/HomeScreens';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Profile from '../screens/User/Profile/Profile';
 
 
 const Tab = createBottomTabNavigator();
@@ -13,7 +15,6 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
 
     const { userInfo } = useContext(AuthContext)
-    const [showTabBar, setShowTabBar] = useState(true);
 
 
 
@@ -22,20 +23,9 @@ const BottomTabNavigator = () => {
             <Tab.Navigator
                 screenOptions={{
                     headerShown: false,
-                    // tabBarStyle: {
-                    //     backgroundColor: 'white',
-                    //     bottom: 7,
-                    //     marginHorizontal: 20,
-                    //     height: 60,
-                    //     borderRadius: 10,
-                    //     shadowColor: '#000',
-                    //     shadowOpacity: 0.06,
-                    //     shadowOffset: {
-                    //         width: 10,
-                    //         height: 10
-                    //     },
-                    //     paddingHorizontal: 20,
-                    // },
+                    tabBarStyle: {
+                        height: hp('7.2'),
+                    },
                 }}
 
                 initialRouteName='HomeScreens'
@@ -59,7 +49,7 @@ const BottomTabNavigator = () => {
 
                 {
                     userInfo.rol === 0 &&
-                    <Tab.Screen name='Home1' component={Home}
+                    <Tab.Screen name='Home1' component={HomeScreens}
                         options={{
                             tabBarShowLabel: false,
                             tabBarIcon: ({ focused }) => (
@@ -72,7 +62,7 @@ const BottomTabNavigator = () => {
                 }
 
 
-                <Tab.Screen name='HomeScreens12' component={HomeScreens}
+                <Tab.Screen name='Profile' component={Profile}
                     options={{
                         tabBarShowLabel: false,
                         tabBarIcon: ({ focused }) => (
@@ -83,7 +73,7 @@ const BottomTabNavigator = () => {
                                     color={focused ? '#7973ED' : 'gray'}
                                 />
                             </View>
-                        )
+                        ),
                     }}
                 />
 

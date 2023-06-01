@@ -5,7 +5,7 @@ import moment from 'moment';
 
 
 
-const CardEvent = ({ items, navigation, setIsModals, openBottomSheet, handleEventPress }) => {
+const CardEvent = ({ items, navigation, openBottomSheet }) => {
 
   return (
     <View className='p-5 my-1' style={{ flex: 1 }}>

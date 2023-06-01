@@ -61,7 +61,7 @@ const Welcome = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
           pagingEnabled
         />
-        <View className='flex-row  justify-between items-center rounded-2xl' style={{ width: wp('100%'), height: hp('11%'), bottom: hp('6') }}>
+        <View className='flex-row  justify-between items-center rounded-2xl' style={{ width: wp('100%'), height: hp('8%'), bottom: hp('6') }}>
           <TouchableOpacity activeOpacity={0.7} className={`bg-[#6C63FF] items-center justify-center left-6  rounded-lg`} style={{ width: wp('40%'), height: hp('8.2%') }} onPress={() => navigation.navigate('Sign_Up')} >
             <Text className={`text-xl text-white font-bold`}>Register</Text>
           </TouchableOpacity >
@@ -69,42 +69,10 @@ const Welcome = ({ navigation }) => {
             <Text className={`text-xl text-white font-bold`}>Login</Text>
           </TouchableOpacity>
         </View>
-        {/* {
-          currentSlideIndex !== data.length - 1 ?
-            (<>
-              <View className='flex-row w-[100%] sm:h-16 sm:bottom-10 justify-between items-center rounded-2xl'>
-                <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
-                  <Text className={`text-xl text-white font-bold`}>Register</Text>
-                </TouchableOpacity >
-                <TouchableOpacity activeOpacity={0.7} className={`w-[40%] bg-slate-400 sm:p-4 items-center right-6 rounded-lg`} onPress={() => navigation.navigate('Sign_In')}>
-                  <Text className={`text-xl text-white font-bold`}>Login</Text>
-                </TouchableOpacity>
-              </View>
-            </>)
-            :
-            (
-              <>
-                <View className='flex-row w-[100%] sm:h-16 sm:bottom-10 justify-between items-center rounded-2xl'>
-                  <TouchableOpacity activeOpacity={0.7} className={`sm:w-[40%] bg-[#6C63FF] sm:p-4 items-center left-6  rounded-lg`} onPress={() => navigation.navigate('Sign_Up')} >
-                    <Text className={`text-xl text-white font-bold`}>Register</Text>
-                  </TouchableOpacity >
-                  <TouchableOpacity activeOpacity={0.7} className={`w-[40%] bg-slate-400 sm:p-4 items-center right-6 rounded-lg`} onPress={() => navigation.navigate('Sign_In')}>
-                    <Text className={`text-xl text-white font-bold`}>Login</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            )
-        } */}
       </View>
 
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  card: {
-    bottom: scale(4), // Ajusta el margen superior según el tamaño del dispositivo
-  },
-});
 
 export default Welcome
