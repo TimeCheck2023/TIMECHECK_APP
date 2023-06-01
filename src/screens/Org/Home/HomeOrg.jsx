@@ -1,11 +1,11 @@
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext'
-import { getSubOrg } from '../../api/api';
-import esperando from '../../../assets/esperando.png'
+import { AuthContext } from '../../../context/AuthContext'
+import { getSubOrg } from '../../../api/api';
+// import esperando from '../../../assets/esperando.png'
 import { useFocusEffect } from '@react-navigation/native';
-import { Component } from 'react/cjs/react.production.min';
+// import { Component } from 'react/cjs/react.production.min';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -40,6 +40,8 @@ const HomeOrg = ({ items }) => {
 
   return (
     <SafeAreaView className='flex-1 justify-center items-center bg-slate-100'>
+      <Text style={styles.titulo} className="text-slate-950 text-2xl text-center font-bold">Panel de Tarjetas Estadísticas</Text>
+      <View style={styles.separator} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* {data.length === 0 ?
           <View className='w-full items-center'>
@@ -71,5 +73,18 @@ const HomeOrg = ({ items }) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#7560EE',
+    width: '90%',
+    marginBottom: 30,
+    marginTop:20,
+  },
+  titulo:{
+    paddingTop:20,
+  }
+})
 
 export default HomeOrg;
