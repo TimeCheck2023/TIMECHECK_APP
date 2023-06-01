@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
   },
   SearchTextInput: {
     flex: 1,
-    height: 52,
-    borderRadius: 52,
+    height: 40,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#000',
     alignItems: 'center',
