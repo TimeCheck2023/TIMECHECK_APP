@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./App.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        color1:'#0B1354'
+      }
+    },
     screens: {
       // 'sm': { 'max': '339px' }
       'sm': { 'max': '639px' },

@@ -25,7 +25,7 @@ const MainApp = () => {
             {/* {userToken !== null ? <HomeStack /> : <AuthNavigator />} */}
             <GestureHandlerRootView style={{ flex: 1 }}>
                 <BottomSheetModalProvider>
-                    {userToken === null ? <AuthNavigator /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
+                    {userToken === null ? <HomeStackOrg /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
                 </BottomSheetModalProvider>
             </GestureHandlerRootView>
             <StatusBar style='auto' />
