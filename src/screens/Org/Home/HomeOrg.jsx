@@ -40,7 +40,7 @@ const HomeOrg = ({ items }) => {
 
   return (
     <SafeAreaView className='flex-1 justify-center items-center bg-slate-100'>
-      <Text style={styles.titulo} className="text-slate-950 text-2xl text-center font-bold">Panel de Tarjetas Estadísticas</Text>
+      <Text style={styles.titulo} className="text-slate-950 text-3xl text-center font-bold">Panel de Estadísticas</Text>
       <View style={styles.separator} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* {data.length === 0 ?
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#7560EE',
     width: '90%',
     marginBottom: 30,
-    marginTop:20,
+    marginTop:15,
   },
   titulo:{
     paddingTop:20,
