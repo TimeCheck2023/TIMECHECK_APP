@@ -21,11 +21,14 @@ const HomeScreens = ({ navigation }) => {
     const [comment, setComment] = useState('')
     const [search, setSearch] = useState('')
     const [data, setData] = useState([])
-    const [filteredData, setFilteredData] = useState([]);
     const [dataComment, setDataComment] = useState([])
     const [eventId, setEventId] = useState(null)
     const [isloading, setIsloading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+    const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+
+
     // ref
     const bottomSheetModalRef = useRef(null);
 
@@ -33,13 +36,9 @@ const HomeScreens = ({ navigation }) => {
     const openBottomSheet = (eventId) => {
         bottomSheetModalRef.current?.present();
         setEventId(eventId);
-        socket.on('resultComments', (getComments) => {
-            setDataComment(getComments);
-            setComment('')
-        })
-
         // Evento para obtener los registros del servidor al cargar la aplicación
         socket.emit('getComments', eventId);
+        setIsBottomSheetOpen(true);
     };
 
 
@@ -47,7 +46,6 @@ const HomeScreens = ({ navigation }) => {
         setIsloading(true)
         getEvent().then((response) => {
             setData(response.data.response);
-            setFilteredData(response.data.response);
             setIsloading(false)
         }).catch((error) => {
             setIsloading(false)
@@ -65,6 +63,14 @@ const HomeScreens = ({ navigation }) => {
         loadEvent();
     }, [])
 
+    useEffect(() => {
+        socket.on('resultComments', (getComments) => {
+            setDataComment(getComments);
+            setComment('')
+            setBottomSheetOpen(!bottomSheetOpen)
+            console.log("hola desde escuchar");
+        })
+    }, [])
 
     const handleTextInputChange = (text) => {
         setComment(text);
@@ -96,6 +102,7 @@ const HomeScreens = ({ navigation }) => {
 
 
     const renderComment = ({ item }) => {
+        // console.log(item);
         const isMiComentario = item.correo_usuario === userInfo.correo;
 
         const fechaActual = moment().startOf('day');
@@ -134,6 +141,8 @@ const HomeScreens = ({ navigation }) => {
     const filt = search ? filtro2 : filtro;
 
 
+
+    // console.log(isBottomSheetOpen);
 
 
     return (

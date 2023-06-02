@@ -2,12 +2,12 @@ import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, Image, Dimen
 import * as Icon from '@expo/vector-icons';
 import React, { useEffect, useState, useContext, useRef } from 'react'
 import moment from 'moment';
-import { shadow } from 'react-native-paper';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const { width, height } = Dimensions.get('window')
 
-const CARD_WIDTH = width - 50;
-const CARD_HEIGHT = 370;
+const CARD_WIDTH = wp('90%');
+const CARD_HEIGHT = hp('42%');
 
 
 const CardEvent = ({ items, navigation, openBottomSheet }) => {
@@ -23,18 +23,18 @@ const CardEvent = ({ items, navigation, openBottomSheet }) => {
     <View style={{ marginBottom: 30 }} >
       <View style={styles.card}>
         <View style={styles.cardFechas}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }} >{moment(items.fechaInicioEvento).format('DD')}</Text>
-          <Text style={{ fontSize: 20, fontWeight: '600', color: 'white' }} >{moment(items.fechaInicioEvento).format('MMM')}</Text>
+          <Text style={{ fontSize: wp('7'), fontWeight: 'bold', color: 'white' }} >{moment(items.fechaInicioEvento).format('DD')}</Text>
+          <Text style={{ fontSize: wp('5'), fontWeight: '600', color: 'white' }} >{moment(items.fechaInicioEvento).format('MMM')}</Text>
         </View>
         <TouchableOpacity style={styles.iconLike} onPress={pruebaComent}>
-          <Icon.Feather name='heart' size={26} style={{ color: 'white' }} />
+          <Icon.Feather name='heart' size={wp('6')} style={{ color: 'white' }} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.imageBox} onPress={() => navigation.navigate('Details', { items: items })}>
           <Image style={styles.image} source={{ uri: items.imagenEvento }} />
         </TouchableOpacity>
         <View style={styles.footer}>
           <View style={styles.titleBox}>
-            <Text style={styles.title}>{items.nombreEvento}</Text>
+            <Text style={styles.title}  numberOfLines={1}>{items.nombreEvento}</Text>
             <Text style={styles.location}>{items.tipoEvento}</Text>
           </View>
           <TouchableOpacity style={styles.iconComment} onPress={() => { openBottomSheet(items.idEvento) }}>
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
+    borderRadius: 16,
   },
 
   imageBox: {
@@ -86,11 +87,11 @@ const styles = StyleSheet.create({
   },
   title: {
     marginVertical: 4,
-    fontSize: 24,
+    fontSize: hp('3'),
     fontWeight: 'bold'
   },
   location: {
-    fontSize: 22,
+    fontSize: hp('2.7'),
   },
   iconComment: {
     backgroundColor: '#6C63FF',
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
   },
   iconLike: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    width: 52,
+    width: wp('12'),
     aspectRatio: 1,
     borderRadius: 20,
     position: 'absolute',
@@ -122,8 +123,8 @@ const styles = StyleSheet.create({
   },
   cardFechas: {
     position: 'absolute',
-    width: 64,
-    height: 80,
+    width: wp('16'),
+    height: hp('12'),
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 20,
     top: 16,
