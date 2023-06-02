@@ -12,9 +12,6 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 const { width, height } = Dimensions.get('window')
 
-// console.log(`Ancho de la ventana: ${windowWidth}, Alto de la ventana: ${windowHeight}, plataforma:  ${Platform.OS}`);
-
-
 const Welcome = ({ navigation }) => {
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -28,14 +25,15 @@ const Welcome = ({ navigation }) => {
     const currentIndex = Math.round(contentOffSet / width);
     setCurrentSlideIndex(currentIndex);
   }
-  const handleNext = () => {
-    const nextSlideIndex = currentSlideIndex + 1;
-    if (nextSlideIndex != data.length) {
-      const offset = nextSlideIndex * width;
-      ref?.current.scrollToOffset({ offset });
-      setCurrentSlideIndex(currentSlideIndex + 1);
-    }
-  }
+  
+  // const handleNext = () => {
+  //   const nextSlideIndex = currentSlideIndex + 1;
+  //   if (nextSlideIndex != data.length) {
+  //     const offset = nextSlideIndex * width;
+  //     ref?.current.scrollToOffset({ offset });
+  //     setCurrentSlideIndex(currentSlideIndex + 1);
+  //   }
+  // }
   return (
     <View className='flex-1'>
       <View className='flex-row pb-16 pl-10 pr-10 bg-[#6C63FF]' style={{

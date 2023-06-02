@@ -1,37 +1,46 @@
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, Image, Dimensions } from 'react-native'
 import * as Icon from '@expo/vector-icons';
 import React, { useEffect, useState, useContext, useRef } from 'react'
 import moment from 'moment';
+import { shadow } from 'react-native-paper';
 
+const { width, height } = Dimensions.get('window')
+
+const CARD_WIDTH = width - 50;
+const CARD_HEIGHT = 370;
 
 
 const CardEvent = ({ items, navigation, openBottomSheet }) => {
 
+  const pruebaComent = () => {
+    console.log("aqui en coment");
+  }
+  const pruebaImage = () => {
+    console.log("aqui en pruebaImage");
+  }
+
   return (
-    <View className='p-5 my-1' style={{ flex: 1 }}>
-      <TouchableOpacity className='w-96 h-72 z-30' onPress={() => navigation.navigate('Details', {
-        items: items
-      })}>
-        <ImageBackground source={{ uri: items.imagenEvento }} resizeMode='cover' borderRadius={10} className='absolute top-0 bottom-0 left-0 right-0'>
-          <View className='absolute items-center justify-center w-16 h-20 right-2 top-3 rounded-2xl' style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
-            <Text className='text-2xl font-bold text-white'>{moment(items.fechaInicioEvento).format('DD')}</Text>
-            <Text className='text-xl font-semibold text-white'>{moment(items.fechaInicioEvento).format('MMM')}</Text>
-          </View>
-          <View className='absolute p-4 bottom-5 left-2 right-2 rounded-2xl ' style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
-            <Text className='text-2xl left-2 font-extrabold text-white'>{items.nombreEvento}</Text>
-            <Text className='text-xl left-2 font-bold text-white'>{items.tipoEvento}</Text>
-          </View>
-        </ImageBackground>
-      </TouchableOpacity >
-      <View className=' bg-[#fff9f9] h-[75px] flex-row items-center justify-around p-3 bottom-3 left-0 right-0'>
-        <TouchableOpacity className='w-[50%] bg-[#6C63FF] flex-row p-3 justify-center items-center rounded-bl-lg'>
-          <Icon.Feather name='heart' size={30} className=' text-white' />
-          <Text className='left-2 text-xl text-white'>Me encanta</Text>
+    <View style={{ marginBottom: 30 }} >
+      <View style={styles.card}>
+        <View style={styles.cardFechas}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }} >{moment(items.fechaInicioEvento).format('DD')}</Text>
+          <Text style={{ fontSize: 20, fontWeight: '600', color: 'white' }} >{moment(items.fechaInicioEvento).format('MMM')}</Text>
+        </View>
+        <TouchableOpacity style={styles.iconLike} onPress={pruebaComent}>
+          <Icon.Feather name='heart' size={26} style={{ color: 'white' }} />
         </TouchableOpacity>
-        <TouchableOpacity className='w-[50%] flex-row p-3 justify-center items-center rounded-lg' onPress={() => { openBottomSheet(items.idEvento) }}>
-          <Icon.Feather name='message-circle' size={30} className=' text-[#6C63FF]' />
-          <Text className='left-2 text-xl text-[#6C63FF]'> Comments</Text>
+        <TouchableOpacity style={styles.imageBox} onPress={() => navigation.navigate('Details', { items: items })}>
+          <Image style={styles.image} source={{ uri: items.imagenEvento }} />
         </TouchableOpacity>
+        <View style={styles.footer}>
+          <View style={styles.titleBox}>
+            <Text style={styles.title}>{items.nombreEvento}</Text>
+            <Text style={styles.location}>{items.tipoEvento}</Text>
+          </View>
+          <TouchableOpacity style={styles.iconComment} onPress={() => { openBottomSheet(items.idEvento) }}>
+            <Icon.Feather name='message-circle' size={24} style={{ color: 'white' }} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   )
@@ -41,11 +50,87 @@ export default CardEvent
 
 const styles = StyleSheet.create({
   card: {
-    height: 220,
-    marginHorizontal: 10,
-    marginBottom: 20,
-    marginTop: 50,
-    borderRadius: 15,
-    elevation: 13
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+  },
+
+  imageBox: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT - 88,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    overflow: 'hidden'
+  },
+  image: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    resizeMode: 'cover'
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    marginLeft: 16,
+    marginRight: 10,
+  },
+  titleBox: {
+    flex: 1
+  },
+  title: {
+    marginVertical: 4,
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+  location: {
+    fontSize: 22,
+  },
+  iconComment: {
+    backgroundColor: '#6C63FF',
+    width: 60,
+    aspectRatio: 1,
+    borderRadius: 20,
+    shadowColor: 'black',
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    marginLeft: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconLike: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    width: 52,
+    aspectRatio: 1,
+    borderRadius: 20,
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardFechas: {
+    position: 'absolute',
+    width: 64,
+    height: 80,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 20,
+    top: 16,
+    right: 16,
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
+
 })

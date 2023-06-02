@@ -9,6 +9,7 @@ import { AuthContext } from '../../../context/AuthContext';
 import { getEvent } from '../../../api/api';
 import CardEvent from './CardEvent';
 import moment from 'moment';
+import 'moment/locale/es';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
@@ -25,9 +26,6 @@ const HomeScreens = ({ navigation }) => {
     const [eventId, setEventId] = useState(null)
     const [isloading, setIsloading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
-
-
-
     // ref
     const bottomSheetModalRef = useRef(null);
 
@@ -44,35 +42,12 @@ const HomeScreens = ({ navigation }) => {
         socket.emit('getComments', eventId);
     };
 
-    const handleTextInputChange = (text) => {
-        setComment(text);
-    };
-
-    const submitComment = () => {
-        const objeto = new Object({
-            comentario: comment,
-            id_evento4: eventId,
-            nro_documento_usuario: userInfo.nro_documento_usuario
-        });
-
-        socket.emit('addComment', objeto)
-    }
-
-    const handleSearch = (text) => {
-        setSearch(text);
-    }
-    const handleSelect = (item) => {
-        setSelect(item);
-    }
-
-
-    const Category = ['All', 'Educativo', 'Religioso', 'Social', 'Cultural', 'Musical', 'Deportivo', 'Festival', 'Feria', 'Exposición']
-
 
     const loadEvent = () => {
         setIsloading(true)
         getEvent().then((response) => {
             setData(response.data.response);
+            setFilteredData(response.data.response);
             setIsloading(false)
         }).catch((error) => {
             setIsloading(false)
@@ -91,19 +66,49 @@ const HomeScreens = ({ navigation }) => {
     }, [])
 
 
-    const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
+    const handleTextInputChange = (text) => {
+        setComment(text);
+    };
 
-    
+    const submitComment = () => {
+        const objeto = new Object({
+            comentario: comment,
+            id_evento4: eventId,
+            nro_documento_usuario: userInfo.nro_documento_usuario
+        });
+
+        socket.emit('addComment', objeto)
+    }
+
+    const handleSearch = (text) => {
+        setSearch(text);
+        setSelect('All');
+    }
+
+    const handleSelect = (tipo) => {
+        setSelect(tipo);
+        setSearch('');
+    }
+
+
+    const Category = ['All', 'Educativo', 'Religioso', 'Social', 'Cultural', 'Musical', 'Deportivo', 'Festival', 'Feria', 'Exposición']
+
+
 
     const renderComment = ({ item }) => {
         const isMiComentario = item.correo_usuario === userInfo.correo;
 
-        const fechaFormateada = moment.utc(item.fecha_creacion).calendar(null, {
-            sameDay: '[Hoy] h:mm A',
-            lastDay: '[Ayer]',
-            lastWeek: 'DD/MM/YYYY',
-            sameElse: 'DD/MM/YYYY',
-        });
+        const fechaActual = moment().startOf('day');
+        const fechaComentario = moment.utc(item.fecha_creacion);
+        let fechaFormateada;
+
+        if (fechaComentario.isSame(fechaActual, 'day')) {
+            fechaFormateada = fechaComentario.format('[Hoy] h:mm A');
+        } else if (fechaComentario.isSame(fechaActual.clone().subtract(1, 'day'), 'day')) {
+            fechaFormateada = 'Ayer';
+        } else {
+            fechaFormateada = fechaComentario.format('DD/MM/YYYY');
+        }
 
 
 
@@ -123,6 +128,12 @@ const HomeScreens = ({ navigation }) => {
             </View>
         );
     };
+
+    const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
+    const filtro2 = search === '' ? data : data.filter((item) => (item.nombreEvento && item.nombreEvento.toLowerCase().includes(search.toLowerCase())))
+    const filt = search ? filtro2 : filtro;
+
+
 
 
     return (
@@ -161,8 +172,7 @@ const HomeScreens = ({ navigation }) => {
                     {
                         Category.map((item, index) => (
                             <Pressable key={index} onPress={() => { handleSelect(item) }}>
-                                <Text style={[styles.CategoryListText,
-                                (item == select && styles.activeCategory)]}>
+                                <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
                                     {item}
                                 </Text>
                             </Pressable>
@@ -174,7 +184,7 @@ const HomeScreens = ({ navigation }) => {
             {/* card */}
 
             <FlatList
-                data={filtro}
+                data={filt}
                 renderItem={({ item }) => <CardEvent items={item} openBottomSheet={openBottomSheet} navigation={navigation} />}
                 keyExtractor={item => item.idEvento}
                 refreshControl={
@@ -184,8 +194,14 @@ const HomeScreens = ({ navigation }) => {
                         onRefresh={onRefresh}
                     />
                 }
+                contentContainerStyle={{ alignItems: 'center', paddingVertical: 30 }}
                 showsVerticalScrollIndicator={false}
+                onEndReached={loadEvent}
+                onEndReachedThreshold={0.1}
             />
+
+            {/* BottomSheet */}
+
             <BottomSheetModal
                 ref={bottomSheetModalRef}
                 index={0}
@@ -200,37 +216,19 @@ const HomeScreens = ({ navigation }) => {
                     renderItem={renderComment}
                     contentContainerStyle={{ paddingHorizontal: 20 }}
                 />
-
-                <KeyboardAvoidingView style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderTopColor: '#ccc',
-                    backgroundColor: 'white',
-                }}
+                <KeyboardAvoidingView style={styles.KeyboardComment}
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 >
                     <TextInput
-                        style={{
-                            flex: 1,
-                            borderWidth: 1,
-                            borderColor: '#ccc',
-                            borderRadius: 5,
-                            padding: 8,
-                            marginRight: 5,
-                            maxHeight: 80,
-                        }}
+                        style={styles.textInputComment}
                         value={comment}
                         multiline={true}
-                        textAlignVertical="bottom"
-                        onChangeText={handleTextInputChange} placeholder='Write a Comments' />
+                        onChangeText={handleTextInputChange} placeholder='Write a Comments'
+                    />
                     <TouchableOpacity
                         onPress={submitComment}
-                        style={{
-                            backgroundColor: '#7560EE',
-                            padding: 13,
-                            borderRadius: 5,
-                            marginRight: 5,
-                        }}>
+                        style={styles.buttomSend}
+                    >
                         <Icon.Feather name="send" size={20} style={{ color: '#fff', textAlign: 'center', }} />
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
@@ -311,9 +309,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         color: 'grey'
     },
+
     activeCategory: {
         color: '#7560EE',
-        borderBottomWidth: 1,
+        borderBottomWidth: 2,
         paddingBottom: 5,
         borderColor: '#7560EE'
     },
@@ -354,5 +353,28 @@ const styles = StyleSheet.create({
         fontSize: 19,
         fontWeight: 'bold',
         bottom: 3
+    },
+    KeyboardComment: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderTopColor: '#ccc',
+        backgroundColor: 'white',
+    },
+    textInputComment: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        marginRight: 5,
+        maxHeight: 80,
+        paddingLeft: 30,
+        fontSize: 18
+    },
+    buttomSend: {
+        backgroundColor: '#7560EE',
+        padding: 13,
+        borderRadius: 5,
+        marginRight: 5,
     }
 })
