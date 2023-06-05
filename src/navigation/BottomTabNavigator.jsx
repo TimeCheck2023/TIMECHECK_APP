@@ -1,10 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import * as Icon from '@expo/vector-icons';
 import { Dimensions, Image, View } from 'react-native';
-import AddButton from '../components/AddButton';
+import AddButton from '../components/AddButton/AddButton';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import Notification from '../screens/User/Notification/Notification';
 import HomeScreens from '../screens/User/Home/HomeScreens';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Profile from '../screens/User/Profile/Profile';
@@ -26,6 +25,7 @@ const BottomTabNavigator = () => {
                     tabBarStyle: {
                         height: hp('7.2'),
                     },
+                    show: true
                 }}
 
                 initialRouteName='HomeScreens'
@@ -54,7 +54,7 @@ const BottomTabNavigator = () => {
                             tabBarShowLabel: false,
                             tabBarIcon: ({ focused }) => (
                                 <View className='items-center flex-1 h-0'>
-                                    <AddButton />
+                                    <AddButton routes='FromEvents'/>
                                 </View>
                             )
                         }}
@@ -74,6 +74,7 @@ const BottomTabNavigator = () => {
                                 />
                             </View>
                         ),
+                        tabBarVisible: false,
                     }}
                 />
 

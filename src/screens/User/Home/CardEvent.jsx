@@ -10,14 +10,11 @@ const CARD_WIDTH = wp('90%');
 const CARD_HEIGHT = hp('42%');
 
 
-const CardEvent = ({ items, navigation, openBottomSheet }) => {
+const CardEvent = ({ items, navigation, openBottomSheet, CreateLikes, dataLikes, DeleteLikes, userInfo }) => {
 
-  const pruebaComent = () => {
-    console.log("aqui en coment");
-  }
-  const pruebaImage = () => {
-    console.log("aqui en pruebaImage");
-  }
+  const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === items.idEvento)
+  // console.log(resultLikes);
+
 
   return (
     <View style={{ marginBottom: 30 }} >
@@ -26,15 +23,19 @@ const CardEvent = ({ items, navigation, openBottomSheet }) => {
           <Text style={{ fontSize: wp('7'), fontWeight: 'bold', color: 'white' }} >{moment(items.fechaInicioEvento).format('DD')}</Text>
           <Text style={{ fontSize: wp('5'), fontWeight: '600', color: 'white' }} >{moment(items.fechaInicioEvento).format('MMM')}</Text>
         </View>
-        <TouchableOpacity style={styles.iconLike} onPress={pruebaComent}>
-          <Icon.Feather name='heart' size={wp('6')} style={{ color: 'white' }} />
+        <TouchableOpacity style={styles.iconLike} onPress={() => { resultLikes ? DeleteLikes(items.idEvento) : CreateLikes(items.idEvento) }}>
+          {resultLikes ?
+            <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+            :
+            <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+          }
         </TouchableOpacity>
         <TouchableOpacity style={styles.imageBox} onPress={() => navigation.navigate('Details', { items: items })}>
           <Image style={styles.image} source={{ uri: items.imagenEvento }} />
         </TouchableOpacity>
         <View style={styles.footer}>
           <View style={styles.titleBox}>
-            <Text style={styles.title}  numberOfLines={1}>{items.nombreEvento}</Text>
+            <Text style={styles.title} numberOfLines={1}>{items.nombreEvento}</Text>
             <Text style={styles.location}>{items.tipoEvento}</Text>
           </View>
           <TouchableOpacity style={styles.iconComment} onPress={() => { openBottomSheet(items.idEvento) }}>
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     borderRadius: 16,
+    elevation: 5
   },
 
   imageBox: {

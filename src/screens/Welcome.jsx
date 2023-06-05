@@ -2,9 +2,8 @@ import { View, Text, FlatList, Dimensions, TouchableOpacity, StyleSheet } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
+import * as Animatable from "react-native-animatable";
 import { data } from "../utils/data";
-import CardWelcome from '../components/CardWelcome';
-import { scale } from 'react-native-size-matters';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
@@ -25,7 +24,7 @@ const Welcome = ({ navigation }) => {
     const currentIndex = Math.round(contentOffSet / width);
     setCurrentSlideIndex(currentIndex);
   }
-  
+
   // const handleNext = () => {
   //   const nextSlideIndex = currentSlideIndex + 1;
   //   if (nextSlideIndex != data.length) {
@@ -34,6 +33,25 @@ const Welcome = ({ navigation }) => {
   //     setCurrentSlideIndex(currentSlideIndex + 1);
   //   }
   // }
+
+  const CardWelcome = ({ item }) => {
+    return (
+      <View className='flex-1 items-center w-screen' style={{ top: hp('10%') }}>
+        {/* <View className='w-screen sm:h-96  bg-slate-500' style={{width: wp('100%')}}> */}
+        <View className='rounded-3xl items-center justify-center' style={{ width: wp('90%'), height: hp('40%') }}>
+          <Animatable.Image animation='bounce' duration={1500} source={item.image} className='w-full h-full rounded-3xl' resizeMode='contain' />
+        </View>
+        {/* </View> */}
+        <View className=''>
+          <Text className='text-center font-bold	dark:text-white' style={{ fontSize: hp('3.5%'), marginTop: hp('5%') }}>{item.title}</Text>
+          {/* <Text className='text-3xl text-center font-semibold	dark:text-white'>{item.title2}</Text> */}
+          <Text className='text-justify dark:text-white' style={{ width: wp('92%'), fontSize: hp('2.3%'), fontSize: wp('4.4%'), marginTop: hp('1%') }}>{item.description}</Text>
+        </View>
+      </View>
+    )
+  }
+
+
   return (
     <View className='flex-1'>
       <View className='flex-row pb-16 pl-10 pr-10 bg-[#6C63FF]' style={{

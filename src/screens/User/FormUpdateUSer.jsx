@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView, Dimensions, Alert } fr
 import React, { useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import avatar from '../../../assets/Avatar.png'
-import Input from '../../components/Input';
+import Input from '../../components/Input/Input';
 import { updateUserId } from '../../api/api';
 
 const FormUpdateUSer = ({ route, navigation }) => {

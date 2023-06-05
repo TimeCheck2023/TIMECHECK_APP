@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Dimensions,
 import React, { useContext, useEffect, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import avatar from '../../../../assets/addImageEvents.png'
-import Input from '../../../components/Input';
+import Input from '../../../components/Input/Input';
 import { saveEvent, updateUserId } from '../../../api/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Camara from '../../../components/Camara';

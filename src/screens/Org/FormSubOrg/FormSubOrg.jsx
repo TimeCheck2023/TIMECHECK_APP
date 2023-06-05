@@ -1,7 +1,7 @@
 import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imgGame from "../../../../assets/organization.png";
-import Input from '../../../components/Input';
+import Input from '../../../components/Input/Input';
 import { useState, useContext } from 'react'
 import * as Icon from '@expo/vector-icons';
 import { auth, saveSubOrg } from "../../../api/api";

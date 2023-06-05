@@ -1,5 +1,5 @@
 import { View, Text, Dimensions, TouchableOpacity, Image, PixelRatio, ScrollView, ActivityIndicator } from 'react-native'
-import Input from '../components/Input';
+import Input from '../components/Input/Input';
 import { useEffect, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import { validationSchemaUser, validationSchemaOrg } from '../utils/validate';

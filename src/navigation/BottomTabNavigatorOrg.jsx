@@ -4,7 +4,7 @@ import * as Icon from '@expo/vector-icons';
 
 import React from 'react'
 import HomeOrg from '../screens/Org/Home/HomeOrg';
-import AddButtonOrg from '../components/AddButtonOrg';
+import AddButton from '../components/AddButton/AddButton';
 import ProfileOrg from '../screens/Org/ProfileOrg/ProfileOrg';
 
 
@@ -46,7 +46,7 @@ const BottomTabNavigatorOrg = () => {
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
                         <View className='items-center flex-1 h-0'>
-                            <AddButtonOrg />
+                            <AddButton routes='FormSubOrg'/>
                         </View>
                     )
                 }}
