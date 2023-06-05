@@ -89,11 +89,28 @@ const HomeScreens = ({ navigation }) => {
         setRefreshing(false);
     }
 
-    const getToken = async () => {
-        // Solicitar permisos de notificación al cargar el componente
+    // useEffect para ejecutar el loadEvent
+    useEffect(() => {
+        registerForPushNotificationsAsync();
+        loadEvent();
+    }, [])
 
+    useEffect(() => {
+        // Solicitar permisos de notificación
+        const registerForPushNotifications = async () => {
+            const { status } = await Notifications.requestPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permisos de notificación no concedidos');
+                return;
+            }
+        };
+
+        registerForPushNotifications();
+    }, []);
+
+
+    const registerForPushNotificationsAsync = async () => {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
-
         let finalStatus = existingStatus;
 
         if (existingStatus !== 'granted') {
@@ -102,23 +119,39 @@ const HomeScreens = ({ navigation }) => {
         }
 
         if (finalStatus !== 'granted') {
-            Alert.alert('Permisos de notificación denegados');
+            console.log('Permiso de notificación denegado');
             return;
         }
 
-        // Obtener el token del dispositivo
-        const tokenData = await Notifications.getExpoPushTokenAsync();
-        const token = tokenData.data;
+        // Obtener el token de notificación del dispositivo
+        const token = (await Notifications.getExpoPushTokenAsync()).data;
 
-        console.log('Token del dispositivo:', token);
+        // Enviar el token de notificación al servidor
+        enviarTokenDeNotificacionAlServidor(token);
+    };
 
-    }
 
-    // useEffect para ejecutar el loadEvent
-    useEffect(() => {
-        getToken();
-        loadEvent();
-    }, [])
+
+    const enviarTokenDeNotificacionAlServidor = async (token) => {
+        try {
+            console.log(token);
+            const response = await fetch('https://timecheck.up.railway.app/Notification/enviar-notificacion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: token,
+                    mensaje: '¡Hola desde la aplicación móvil!',
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.log('Error al enviar el token de notificación al servidor', error);
+        }
+    };
 
     useEffect(() => {
 
@@ -128,8 +161,12 @@ const HomeScreens = ({ navigation }) => {
         });
 
 
-        socket.on('typing', (activo) => {
+        socket.on('activo', (activo) => {
             setisLoadings(activo);
+        });
+
+        socket.on('desactivo', (desactivo) => {
+            setisLoadings(desactivo);
         });
 
         socket.on('likes', (getLikes) => {
@@ -168,8 +205,9 @@ const HomeScreens = ({ navigation }) => {
         setComment(text);
         if (text.length < 0 || text === '') {
             setisLoadings(null);
+            socket.emit('desactivo')
         } else if (isLoadings === null) {
-            socket.emit('typing')
+            socket.emit('activo')
         }
     };
 
@@ -183,7 +221,7 @@ const HomeScreens = ({ navigation }) => {
         });
 
         socket.emit('addComment', objeto)
-        setisLoadings(false)
+        socket.emit('desactivo')
     }
 
     // funcion para guardar el valor del search
@@ -217,6 +255,7 @@ const HomeScreens = ({ navigation }) => {
         })
         socket.emit('createLikes', objeto);
     }
+
     const DeleteLikes = (id) => {
         const objeto = new Object({
             id_evento: id,
