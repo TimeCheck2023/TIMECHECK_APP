@@ -25,14 +25,14 @@ const Welcome = ({ navigation }) => {
     setCurrentSlideIndex(currentIndex);
   }
 
-  // const handleNext = () => {
-  //   const nextSlideIndex = currentSlideIndex + 1;
-  //   if (nextSlideIndex != data.length) {
-  //     const offset = nextSlideIndex * width;
-  //     ref?.current.scrollToOffset({ offset });
-  //     setCurrentSlideIndex(currentSlideIndex + 1);
-  //   }
-  // }
+  const handleNext = () => {
+    const nextSlideIndex = currentSlideIndex + 1;
+    if (nextSlideIndex != data.length) {
+      const offset = nextSlideIndex * width;
+      ref?.current.scrollToOffset({ offset });
+      setCurrentSlideIndex(currentSlideIndex + 1);
+    }
+  }
 
   const CardWelcome = ({ item }) => {
     return (
