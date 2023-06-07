@@ -1,37 +1,102 @@
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, Image, FlatList, Animated, Easing } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import fondo from '../../assets/image/fondo.jpg'
 
 const { width, height } = Dimensions.get('window');
 
+const images = [
+    { id: 1, image: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+    { id: 2, image: 'https://images.pexels.com/photos/1918160/pexels-photo-1918160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+    { id: 3, image: 'https://images.pexels.com/photos/382297/pexels-photo-382297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+    { id: 4, image: 'https://images.pexels.com/photos/2402777/pexels-photo-2402777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+    { id: 5, image: 'https://images.pexels.com/photos/4940642/pexels-photo-4940642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+    { id: 6, image: 'https://i.pinimg.com/564x/11/e4/6f/11e46f903f9f1d29a6375398f9d8a054.jpg' },
+]
+
 
 const Welcome2 = ({ navigation }) => {
+
+    const carouselRef = useRef(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const opacityValue = useRef(new Animated.Value(1)).current;
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            let nextIndex = (currentIndex + 1) % images.length;
+
+            if (nextIndex === 0 && currentIndex !== 0) {
+                // Si es la última imagen y no es la primera vez,
+                // volvemos al principio del carrusel
+                scrollToIndexWithAnimation(0)
+                setCurrentIndex(0);
+            } else {
+                // Avanzamos al siguiente índice normalmente
+                scrollToIndexWithAnimation(nextIndex)
+                setCurrentIndex(nextIndex);
+            }
+        }, 3000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [currentIndex]);
+
+    const scrollToIndexWithAnimation = (index) => {
+        Animated.timing(opacityValue, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start(() => {
+            carouselRef.current.scrollToIndex({ animated: false, index });
+            Animated.timing(opacityValue, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+        });
+    }
+
+
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground style={styles.container} source={fondo}>
                 <View style={styles.content}>
-                    <Image style={{ width: 370, height: 400, borderRadius: 20, resizeMode: 'cover' }} source={{ uri: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }} />
-                    <Text style={{ color: 'white', fontSize: 28, fontWeight: 'bold', marginTop: 22 }}>Bienvenidos a timecheck!</Text>
+
+                    {/* dame la sintaxis de renderizar aca */}
+                    <View style={[{ width: 370, height: 350, borderRadius: 20, overflow: 'hidden' }]}>
+                        <FlatList
+                            ref={carouselRef}
+                            data={images}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={({ item }) => (
+                                <Animated.View style={{ width: 370, height: 350, borderRadius: 20, overflow: 'hidden', }}>
+                                    <Animated.Image source={{ uri: item.image }} style={{ width: '100%', height: '100%', opacity: opacityValue, resizeMode: 'cover' }} />
+                                </Animated.View>
+                            )}
+                            scrollEventThrottle={16}
+                        />
+                    </View>
+                    <Text style={styles.title}>Bienvenidos a timecheck!</Text>
                     <Text style={styles.contentDescription}>
                         TimeCheck es una herramienta en línea que facilita el registro automatizado de asistentes a eventos. Permite a los usuarios registrarse en línea
-                        {/* , a los organizadores monitorear la asistencia en tiempo real y generar informes de asistencia. Simplifica la gestión de eventos y mejora la experiencia tanto para los organizadores como para los participantes. */}
+                        , a los organizadores monitorear la asistencia en tiempo real y generar informes de asistencia. Simplifica la gestión de eventos y mejora la experiencia tanto para los organizadores como para los participantes.
                     </Text>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Sign_Up')}>
-                            <View style={styles.containerBtn}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#6C63FF' }}>Register</Text>
-                            </View>
+                    <View style={styles.containerBtn}>
+                        <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={() => navigation.navigate('Sign_Up')}>
+                            <Text style={styles.btnTextOne}>Register</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Sign_In')}>
-                            <View style={styles.containerBtn}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#6C63FF' }}>Login</Text>
-                            </View>
+                        <TouchableOpacity style={styles.btn2} activeOpacity={0.8} onPress={() => navigation.navigate('Sign_In')}>
+                            <Text style={styles.btnTextTow}>Login</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ImageBackground>
-        </View>
+            </ImageBackground >
+        </View >
     )
 }
 
@@ -51,34 +116,52 @@ const styles = StyleSheet.create({
         position: 'absolute',
         paddingHorizontal: 20,
         paddingVertical: 40,
-        // backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        alignItems: 'center'
+    },
+    title: {
+        color: 'white',
+        fontSize: 28,
+        fontWeight: 'bold',
+        marginTop: 22
     },
     contentDescription: {
         color: 'white',
         lineHeight: hp('3%'),
-        fontSize: hp('2%'),
-        fontSize: wp('4.5%'),
-        marginTop: hp('2%'),
+        fontSize: hp('3%'),
+        fontSize: wp('5%'),
+        marginTop: hp('1.5%'),
     },
     containerBtn: {
-        width: 150,
-        height: 50,
-        backgroundColor: 'white',
-        marginTop: 60,
-        marginLeft: 20,
-        borderRadius: 7,
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: '100%',
+        height: 70,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 30,
     },
-    containerBtn2: {
-        position: 'absolute',
-        width: 120,
-        height: 50,
+    btn: {
+        flex: 1,
         backgroundColor: 'white',
-        borderRadius: 7,
         justifyContent: 'center',
         alignItems: 'center',
-        top: 140,
-        right: 25,
-    }
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12
+    },
+    btnTextOne: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: '#6C63FF'
+    },
+    btnTextTow: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: '#6C63FF'
+    },
+    btn2: {
+        flex: 1,
+        backgroundColor: '#BDC3C7',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderTopRightRadius: 12,
+        borderBottomRightRadius: 12
+    },
 })
