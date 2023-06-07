@@ -2,12 +2,14 @@ import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image, ActivityIn
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imgGame from "../../assets/Sing_Up.png";
 import Input from '../components/Input/Input';
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect, useCallback,  } from 'react'
 import * as Icon from '@expo/vector-icons';
 import { userSchema } from '../utils/validate';
 import { auth } from "../api/api";
 import { AuthContext } from '../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -20,6 +22,29 @@ const Sign_In = ({ navigation }) => {
   const [message, setMessage] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false);
+  const [button, setButton] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      checkExpiration();
+    }, []),
+  );
+
+  const checkExpiration = async () => {
+    const expiration = await AsyncStorage.getItem('expirationTime');
+    if (expiration) {
+      const currentTime = new Date().getTime();
+      if (expiration && currentTime > parseInt(expiration)) {
+        // La expiración ha pasado, no muestra el botón
+        setButton(false)
+        console.log("dds");
+      } else {
+        // La expiración aún está dentro del tiempo límite, muestra el botón
+        setButton(true)
+        console.log("yes");
+      }
+    };
+  }
 
   //estado para controlar los input
   const [values_us, setValues_us] = useState({
@@ -95,7 +120,7 @@ const Sign_In = ({ navigation }) => {
 
           <TouchableOpacity disabled={isLoading} activeOpacity={0.7}
             className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`}
-            style={{ width: wp('90%'), height: hp('7%'), top: hp('3.4') }}
+            style={{ width: wp('90%'), height: hp('6%'), marginTop: hp('3%') }}
             onPress={validateData}
           >
 
@@ -105,8 +130,18 @@ const Sign_In = ({ navigation }) => {
             }
 
           </TouchableOpacity>
+          {
+            button &&
+            <TouchableOpacity disabled={isLoading} activeOpacity={0.7}
+              className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`}
+              style={{ width: wp('90%'), height: hp('6%'), top: hp('1.8') }}
+              onPress={() => navigation.navigate('VerificationScreen')}
+            >
+              <Text className='text-xl font-bold text-center text-white'>Verificar cuenta</Text>
+            </TouchableOpacity>
+          }
 
-          <View className='flex-row justify-center' style={{ marginTop: hp('5') }}>
+          <View className='flex-row justify-center' style={{ marginTop: hp('4') }}>
             <Text className='font-bold' style={{ fontSize: hp('2.7') }}>Already have an account?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_Up')}>
               <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Sing Up</Text>
@@ -118,5 +153,4 @@ const Sign_In = ({ navigation }) => {
     </SafeAreaView>
   )
 }
-
 export default Sign_In

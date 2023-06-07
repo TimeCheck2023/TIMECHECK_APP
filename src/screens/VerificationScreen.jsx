@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { TextInput } from 'react-native';
 import { verificarCodigo } from '../api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const VerificationScreen = ({ navigation }) => {
@@ -25,6 +26,10 @@ const VerificationScreen = ({ navigation }) => {
                 "codigo": valoresAgrupados
             })
             const result = await verificarCodigo(objeto)
+            await AsyncStorage.removeItem('expirationTime')
+            setTimeout(() => {
+                navigation.navigate('Sign_In')
+            }, 800);
             console.log(result.data);
         } catch (error) {
             const errorMessage1 = error.response.data.error;
@@ -39,7 +44,7 @@ const VerificationScreen = ({ navigation }) => {
                     paddingHorizontal: wp('5')
                 }}>
                 <View className='flex-row items-center'>
-                    <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('12'), height: hp('6') }} onPress={() => navigation.navigate('Welcome')}>
+                    <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('12'), height: hp('6') }} onPress={() => navigation.navigate('Sign_In')}>
                         <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />
                     </TouchableOpacity>
                     <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '600' }}>Verificar cuenta</Text>

@@ -6,6 +6,8 @@ import { validationSchemaUser, validationSchemaOrg } from '../utils/validate';
 import { saveUser, saveOrg } from "../api/api"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import moment from 'moment/moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Sign_Up = ({ navigation }) => {
@@ -76,6 +78,12 @@ const Sign_Up = ({ navigation }) => {
   }
 
   const validateData = async (num) => {
+    // Obtén la fecha y hora actual
+    const currentTime = new Date();
+
+    // Establece la expiración en 24 horas
+    const expirationTime = currentTime.getTime() + 24 * 60 * 60 * 1000;
+    AsyncStorage.setItem('expirationTime', expirationTime.toString());
     try {
       if (num === 1) {
         await validationSchemaUser.validate(values_us, { abortEarly: false });
@@ -100,6 +108,7 @@ const Sign_Up = ({ navigation }) => {
       setMessage(message)
       setValues_us('')
       setIsLoading(false)
+      await AsyncStorage.setItem('lastClick', new Date().toISOString());
       setTimeout(() => {
         navigation.navigate('Sign_In')
       }, 1000);
