@@ -27,8 +27,6 @@ const Welcome2 = ({ navigation }) => {
     const carouselRef = useRef(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const opacityValue = useRef(new Animated.Value(1)).current;
-    const ITEM_HEIGHT = '95%'; // Altura estimada de cada elemento en la lista
-
 
 
     useEffect(() => {
@@ -116,8 +114,8 @@ export default Welcome2
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: width,
-        height: height,
+        width: wp('100%'),
+        height: hp('100%'),
         resizeMode: 'cover',
     },
     content: {

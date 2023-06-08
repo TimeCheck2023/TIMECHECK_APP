@@ -1,4 +1,4 @@
-import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -14,17 +14,14 @@ import BottomSheet from '@gorhom/bottom-sheet';
 const Details = ({ navigation, route }) => {
 
   const { items } = route.params;
-  const bottomSheetRef = useRef(null);
+  // source={{ uri: items.imagenEvento }}
 
 
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={{ uri: items.imagenEvento }}
-        style={{ width: '100%', height: 400 }}
-      >
-        <SafeAreaView>
-          <View style={{ paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.backgroundImageContainer}>
+        <ImageBackground style={styles.backgroundImage} source={{ uri: items.imagenEvento }}>
+          <View style={styles.header}>
             <TouchableOpacity style={{
               backgroundColor: 'white',
               width: wp('12'),
@@ -48,29 +45,37 @@ const Details = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </SafeAreaView>
-      </ImageBackground>
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={['55%', '87%']}
-        borderRadius={20}
-      // backgroundComponent={Componet}
-      // animatedIndex={animatedIndex}
-      // handleIndicatorStyle={{ opacity: 0 }}
-      >
-        {/* <Animatable.View style={[styles.card]} animation='fadeInUp' delay={400} duration={400} easing='ease-in-out'>
-          <Animated.View style={[styles.header, headerStyle]}>
-            <Animated.Text style={[styles.title, titleStyle]}>Evento de futbol</Animated.Text>
-            <Animated.Text style={[styles.location, tipoStyle]}>Ibage</Animated.Text>
-          </Animated.View>
-        </Animatable.View> */}
-      </BottomSheet>
-    </View>
+        </ImageBackground>
+      </View>
+    </SafeAreaView>
   )
 }
 
 export default Details
 
+
+const styles = StyleSheet.create({
+  backgroundImageContainer: {
+    elevation: 20,
+    marginHorizontal: 20,
+    marginTop: 20,
+    alignItems: 'center',
+    height: 320
+  },
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+    overflow: 'hidden'
+  },
+  header: {
+    paddingVertical: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10
+  }
+
+})
 
 {/* tipo de eventos y devolver */ }
       // <View className=' w-screen flex-row items-center justify-center mt-6'>
