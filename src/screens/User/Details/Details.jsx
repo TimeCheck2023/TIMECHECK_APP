@@ -1,149 +1,71 @@
 import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import { getAsistencia, saveAsistencia, updateAsistencia } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
-import moment from 'moment';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import BottomSheet from '@gorhom/bottom-sheet';
+
+
 
 
 const Details = ({ navigation, route }) => {
 
-  const [prueba, setPrueba] = useState({})
-  const [isloading, setIsloading] = useState(false)
-
-  const { userInfo } = useContext(AuthContext)
-
-
   const { items } = route.params;
+  const bottomSheetRef = useRef(null);
 
-  const getAsistencias = async () => {
-    const data = {
-      idEvento: items.idEvento,
-      correo: userInfo.correo,
-    }
-    setIsloading(true)
-    await getAsistencia(data)
-      .then((response) => {
-        // console.log(response.data);
-        setPrueba(response.data)
-        setIsloading(false)
-      }).catch((error) => {
-        console.log(error.message);
-      })
-  }
-
-  useEffect(() => {
-    getAsistencias()
-  }, [])
-
-
-  const handleSubmitPost = async () => {
-    const data = {
-      eventId: items.idEvento,
-      userEmail: userInfo.correo,
-    }
-
-    setIsloading(true)
-    await saveAsistencia(data)
-      .then((response) => {
-        // console.log(response.data);
-        getAsistencias();
-        items.cuposDisponibles += 1
-      }).catch((error) => {
-        console.log(error.message);
-        setIsloading(false)
-      })
-
-  }
-
-  const handleSubmitPut = async () => {
-    const data = {
-      correoUsuario: userInfo.correo,
-      idEvento: items.idEvento,
-    }
-    setIsloading(true)
-
-    await updateAsistencia(data)
-      .then((response) => {
-        // console.log(response.data);
-        getAsistencias();
-        items.cuposDisponibles -= 1
-      }).catch((error) => {
-        console.log(error.message);
-        setIsloading(false)
-      })
-  }
 
   return (
-    <SafeAreaView className='flex-1 bg-[#ffff]'>
-      <StatusBar translucent backgroundColor='rgba(0,0,0,0)' />
-      <ImageBackground style={{ flex: 0.5 }} resizeMode='cover' className='h-full' source={{ uri: items.imagenEvento }}>
-
-        <TouchableOpacity className='flex-row justify-between' style={{ marginTop: 40, paddingHorizontal: 20 }} onPress={() => navigation.goBack()}>
-          <View className='w-[45px] h-[45px] rounded-2xl justify-center items-center' style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-            <Icon.AntDesign name="arrowleft" size={27} color="white" />
+    <View style={{ flex: 1 }}>
+      <ImageBackground
+        source={{ uri: items.imagenEvento }}
+        style={{ width: '100%', height: 400 }}
+      >
+        <SafeAreaView>
+          <View style={{ paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <TouchableOpacity style={{
+              backgroundColor: 'white',
+              width: wp('12'),
+              aspectRatio: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+            }}>
+              <Icon.AntDesign name="arrowleft" size={27} color="black" onPress={navigation.goBack} />
+            </TouchableOpacity>
+            <View>
+              <TouchableOpacity style={{
+                backgroundColor: 'white',
+                width: wp('12'),
+                aspectRatio: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 20,
+              }}>
+                <Icon.AntDesign name="heart" size={27} color="black" onPress={navigation.goBack} />
+              </TouchableOpacity>
+            </View>
           </View>
-        </TouchableOpacity>
-        <View className='flex-row justify-between w-[100%] absolute bottom-7' style={{ padding: 20 }}>
-          <Text className='w-[70%]  font-extrabold text-white' style={{ marginBottom: 20, fontSize: 30 }} >{items.tipoEvento}</Text>
-        </View>
+        </SafeAreaView>
       </ImageBackground>
-
-
-      <View className='bg-slate-300' style={{ top: -30, borderTopLeftRadius: 30, borderTopRightRadius: 30, paddingVertical: 40, paddingHorizontal: 20, flex: 1 }}>
-        <View className='flex-row sm:w-[65px] bg-white sm:h-[65px] absolute rounded-full justify-center items-center' style={{ top: -40, right: 20, elevation: 10 }}>
-          <Icon.Feather name='heart' size={26} className='text-red-500' />
-          <Text className='text-xl text-black right-0'>{items.likes}</Text>
-        </View>
-        <View className='flex-row' style={{ marginTop: 10 }}>
-          <Icon.Entypo name='location' size={28} className='text-red-500' />
-          <Text className='text-2xl font-bold text-black' style={{ marginLeft: 5 }}>Ibague</Text>
-          <View className='absolute flex-row items-center right-3'>
-            <Text className='text-2xl font-bold text-black ' style={{ marginLeft: 5 }}>Aforo: </Text>
-            <Text className='text-xl font-semibold text-black ' style={{ marginLeft: 5 }}>{items.cuposDisponibles}/{items.aforoEvento}</Text>
-          </View>
-        </View>
-
-        <Text className='text-2xl font-bold' style={{ marginTop: 20 }}>About the trip</Text>
-        <Text className='text-lg font-semibold- text-justify justify-center' style={{ marginTop: 20 }}>Si después de seguir estos pasos sigues teniendo problemas, verifica si hay alguna otra dependencia faltante o conflicto en tu proyecto. También es posible que haya actualizaciones disponibles para los paquetes utilizados, por lo que puedes intentar actualizar tanto @react-native-masked-view como react-native-skeleton-placeholder a sus últimas versiones.</Text>
-
-        <View className='flex-row items-center'>
-          <Text className='text-xl font-bold' style={{ marginTop: 20 }}>Fecha de Incio: </Text>
-          <Text className='text-lg font-semibold' style={{ marginTop: 20 }}>{moment(items.fechaInicioEvento).format('DD/MM/YYYY')}</Text>
-        </View>
-        <View className='flex-row items-center'>
-          <Text className='text-xl font-bold' style={{ marginTop: 20 }}>Fecha de final: </Text>
-          <Text className='text-lg font-semibold' style={{ marginTop: 20 }}>{moment(items.fechaFinalEvento).format('DD/MM/YYYY')}</Text>
-        </View>
-      </View>
-
-      <View className='absolute flex-row h-[78px] w-screen bg-[#7560EE] justify-between items-center bottom-0' style={{ paddingHorizontal: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-        <View className='flex-1 flex-row items-center'>
-          <Text className='text-2xl font-bold text-white'>${items.valorEvento}</Text>
-        </View>
-        {prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' ?
-          <TouchableOpacity className='rounded-2xl justify-center items-center px-5 right-3' style={{ height: 60, backgroundColor: '#ffff' }} onPress={() => handleSubmitPost()}>
-            {
-              isloading ?
-                <ActivityIndicator size="large" color='#7560EE' />
-                :
-                <Text className='text-2xl font-bold '>asistir</Text>
-            }
-          </TouchableOpacity>
-          :
-          <TouchableOpacity className='rounded-2xl justify-center items-center px-5 right-3' style={{ height: 60, backgroundColor: '#ffff' }} onPress={() => handleSubmitPut()}>
-            {
-              isloading ?
-                <ActivityIndicator size="large" color='#7560EE' />
-                :
-                <Text className='text-2xl font-bold '>cancelar asistencia</Text>
-            }
-          </TouchableOpacity>
-        }
-      </View>
-    </SafeAreaView>
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={['55%', '87%']}
+        borderRadius={20}
+      // backgroundComponent={Componet}
+      // animatedIndex={animatedIndex}
+      // handleIndicatorStyle={{ opacity: 0 }}
+      >
+        {/* <Animatable.View style={[styles.card]} animation='fadeInUp' delay={400} duration={400} easing='ease-in-out'>
+          <Animated.View style={[styles.header, headerStyle]}>
+            <Animated.Text style={[styles.title, titleStyle]}>Evento de futbol</Animated.Text>
+            <Animated.Text style={[styles.location, tipoStyle]}>Ibage</Animated.Text>
+          </Animated.View>
+        </Animatable.View> */}
+      </BottomSheet>
+    </View>
   )
 }
 

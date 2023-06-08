@@ -154,13 +154,7 @@ const HomeScreens = ({ navigation }) => {
     };
 
     useEffect(() => {
-
-        socket.on('connect', () => {
-            console.log('Conectado al servidor');
-            socket.emit('getLikes', userInfo.nro_documento_usuario)
-        });
-
-
+        // socket.on('connect', () => {
         socket.on('activo', (activo) => {
             setisLoadings(activo);
         });
@@ -179,6 +173,7 @@ const HomeScreens = ({ navigation }) => {
         });
 
         socket.on('resultComments', (getComments) => {
+            console.log(getComments);
             setDataComment(getComments);
             setComment('')
             setIsloadingComent(false);
@@ -187,6 +182,10 @@ const HomeScreens = ({ navigation }) => {
         socket.on('delete', (getComments) => {
             setModalVisible(false);
         })
+        socket.emit('getLikes', userInfo.nro_documento_usuario)
+        // });
+
+
 
         return () => {
             socket.off('connect');
@@ -198,7 +197,7 @@ const HomeScreens = ({ navigation }) => {
             // Desconectar el socket cuando el componente se desmonte
             socket.disconnect();
         };
-    }, [])
+    }, [socket])
 
     // funcion para optener el valor del comenatrio
     const handleTextInputChange = (text) => {
@@ -254,6 +253,7 @@ const HomeScreens = ({ navigation }) => {
             nro_documento_usuario: userInfo.nro_documento_usuario
         })
         socket.emit('createLikes', objeto);
+        console.log("enviar");
     }
 
     const DeleteLikes = (id) => {

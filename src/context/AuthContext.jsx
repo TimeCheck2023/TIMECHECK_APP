@@ -16,17 +16,21 @@ export const AuthProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState(null)
 
     //iniciar session
-    const login = (message) => {
-        setIsLoading(true);
-        const token_message = message.message;
-        var decoded = jwt_decode(message.message);
-        setUserToken(token_message)
-        AsyncStorage.setItem('userInfo', JSON.stringify(decoded.payload));
-        setUserInfo(decoded.payload)
-        AsyncStorage.setItem('userToken', token_message);
-        setIsLoading(false);
+    const login = async (message) => {
+        try {
+            setIsLoading(true);
+            const token_message = message.message;
+            var decoded = jwt_decode(message.message);
+            setUserToken(token_message)
+            await AsyncStorage.setItem('userInfo', JSON.stringify(decoded.payload));
+            setUserInfo(decoded.payload)
+            await AsyncStorage.setItem('userToken', token_message);
+            setIsLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
     }
-    
+
     //cerrar session
     const logout = () => {
         setIsLoading(true);
@@ -36,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
     }
 
-    const isLoggedIn = async() => {
+    const isLoggedIn = async () => {
         // AsyncStorage.removeItem("userToken")
         // AsyncStorage.removeItem("userInfo")
         try {
@@ -57,7 +61,24 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         isLoggedIn();
-    }, [])  
+        // Función para conectar al socket
+
+        const connectToSocket = () => {
+            socket.on('connect', () => {
+                console.log('Conectado al servidor');
+            })
+
+            // Devolver una función de limpieza para desconectarse cuando se desmonte el componente
+            return () => {
+                socket.disconnect();
+            };
+        };
+        // Llamar a la función para conectar al socket cuando se monte el componente
+        const cleanup = connectToSocket();
+
+        // Llamar a la función de limpieza cuando se desmonte el componente
+        return cleanup;
+    }, [])
 
 
     return (
