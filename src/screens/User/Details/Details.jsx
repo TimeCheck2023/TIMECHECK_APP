@@ -1,4 +1,4 @@
-import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet, Animated } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -6,48 +6,161 @@ import * as Icon from '@expo/vector-icons';
 import { getAsistencia, saveAsistencia, updateAsistencia } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { Dimensions } from 'react-native';
 
 
+const { height } = Dimensions.get('window')
 
 
 const Details = ({ navigation, route }) => {
 
   const { items } = route.params;
+  const [progress, setProgress] = useState(new Animated.Value(0));
   // source={{ uri: items.imagenEvento }}
+  const bottomSheetRef = useRef(null);
+  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  useEffect(() => {
+    Animated.timing(progress, {
+      toValue: 9,
+      duration: 1000,
+      useNativeDriver: false
+    }).start();
+  }, [])
+
+
+  const precio = items.valorEvento === 0 ? 'Gratis' : items.valorEvento
+
+
+  const progressAnim = progress.interpolate({
+    inputRange: [0, data.length],
+    outputRange: ['0%', '100%']
+  })
 
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.backgroundImageContainer}>
+    <View style={{ flex: 1 }}>
+      <View>
         <ImageBackground style={styles.backgroundImage} source={{ uri: items.imagenEvento }}>
-          <View style={styles.header}>
-            <TouchableOpacity style={{
-              backgroundColor: 'white',
-              width: wp('12'),
-              aspectRatio: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 20,
-            }}>
-              <Icon.AntDesign name="arrowleft" size={27} color="black" onPress={navigation.goBack} />
-            </TouchableOpacity>
-            <View>
-              <TouchableOpacity style={{
-                backgroundColor: 'white',
-                width: wp('12'),
-                aspectRatio: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 20,
-              }}>
-                <Icon.AntDesign name="heart" size={27} color="black" onPress={navigation.goBack} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <TouchableOpacity style={{
+            backgroundColor: 'white',
+            width: wp('11'),
+            aspectRatio: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 20,
+          }}>
+            <Icon.AntDesign name="arrowleft" size={30} color="black" onPress={navigation.goBack} />
+          </TouchableOpacity>
+          <TouchableOpacity style={{
+            backgroundColor: 'white',
+            width: wp('11'),
+            aspectRatio: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 20,
+          }}>
+            <Icon.AntDesign name="arrowleft" size={30} color="black" onPress={navigation.goBack} />
+          </TouchableOpacity>
         </ImageBackground>
       </View>
-    </SafeAreaView>
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={['62%', '87%']}
+        borderRadius={10}
+      // handleIndicatorStyle={{ opacity: 0 }}
+      >
+        <BottomSheetScrollView>
+          <View style={{ padding: 20, backgroundColor: 'white', }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ width: '83%' }}>
+                <Text style={styles.titleName}>Evento de deporte</Text>
+                <Text style={{ fontSize: 20, fontWeight: '600', color: 'black', marginTop: 10 }}>deporte</Text>
+              </View>
+              <View style={{ flexDirection: 'row', top: 0 }}>
+                <Text style={styles.price}>1</Text>
+                <Text style={{ fontSize: 25, fontWeight: '600', color: 'black' }}>/100</Text>
+              </View>
+            </View>
+
+            <View style={{ marginVertical: 20 }}>
+              <View style={{ paddingVertical: 10 }}>
+                <Text style={{ color: '#6C5CE7', fontWeight: 'bold', fontSize: 17 }}>Details</Text>
+              </View>
+              <View style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
+                <View style={{ flexDirection: 'row', marginRight: 20 }}>
+                  <View style={{ backgroundColor: 'white', elevation: 7, width: 50, height: 50, padding: 5, borderRadius: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon.Feather name='calendar' size={20} color='#6C5CE7' />
+                  </View>
+                  <View>
+                    <Text>Duration</Text>
+                    <Text>3 hours</Text>
+                  </View>
+                </View>
+                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                  <View style={{ backgroundColor: 'white', elevation: 7, width: 50, height: 50, padding: 5, borderRadius: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon.Feather name='calendar' size={20} color='#6C5CE7' />
+                  </View>
+                  <View>
+                    <Text>Duration</Text>
+                    <Text>3 hours</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
+                <View style={{ width: 50, height: 50, backgroundColor: 'white', elevation: 7, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+                  <Icon.Ionicons name='location-outline' size={20} color='#6C5CE7' />
+                </View>
+                <Text style={{ fontSize: 20, fontWeight: '600', paddingHorizontal: 10 }}>carrera #13 la mariela</Text>
+              </View>
+
+              <Text
+                style={{
+                  fontSize: 10 * 2.7,
+                  fontWeight: '600',
+                  color: 'gray',
+                  marginBottom: 10
+                }}
+              >Description</Text>
+              <Text
+                style={{
+                  fontSize: 10 * 1.9,
+                  fontWeight: '500',
+                  color: 'gray',
+                }}
+              >Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, est quasi blanditiis voluptatum maxime a sequi eligendi minima necessitatibus. Est perspiciatis ut laborum quisquam ab maxime iusto magnam mollitia exercitationem esse dignissimos nesciunt quae velit, quas, nam illo corporis rem illum fuga obcaecati aspernatur minima sequi tenetur. Exercitationem, eveniet quo.</Text>
+
+              <View style={{
+                width: '100%',
+                height: 20,
+                borderRadius: 20,
+                backgroundColor: '#00000020',
+
+              }}>
+                <Animated.View style={[{
+                  height: 20,
+                  borderRadius: 20,
+                  backgroundColor: 'red'
+                }, {
+                  width: progressAnim
+                }]}>
+
+                </Animated.View>
+
+              </View>
+            </View>
+
+          </View >
+        </BottomSheetScrollView>
+      </BottomSheet >
+      {/* <View style={{ width: '100%', position: 'absolute', bottom: 0 }}>
+        <TouchableOpacity style={{ padding: 20, backgroundColor: 'black', marginHorizontal: 20, borderRadius: 20 }}>
+          <Text>Chosee this for</Text>
+          <Text>35.00</Text>
+        </TouchableOpacity>
+      </View> */}
+    </View >
   )
 }
 
@@ -55,25 +168,62 @@ export default Details
 
 
 const styles = StyleSheet.create({
-  backgroundImageContainer: {
-    elevation: 20,
-    marginHorizontal: 20,
-    marginTop: 20,
-    alignItems: 'center',
-    height: 320
-  },
   backgroundImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 20,
-    overflow: 'hidden'
-  },
-  header: {
-    paddingVertical: 20,
+    padding: 20,
+    height: height / 2.5,
+    paddingTop: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10
-  }
+    overflow: 'hidden'
+  },
+  ContainerInfo: {
+    padding: 20,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    backgroundColor: 'white',
+    bottom: 20
+  },
+  headerInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  titleName: {
+    fontSize: 30,
+    color: 'black',
+    fontWeight: 'bold'
+  },
+  Containeraforo: {
+    padding: 10,
+    paddingHorizontal: 30,
+    backgroundColor: '#6C5CE7',
+    flexDirection: 'row',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  price: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'black'
+  },
+  ContainerItems: {
+    paddingVertical: 10,
+    backgroundColor: '#6C5CE7',
+    alignItems: 'center',
+    borderRadius: 10,
+    flexDirection: 'row'
+  },
+  handleContainer: {
+    alignItems: 'center',
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    backgroundColor: 'gray',
+    borderRadius: 2,
+    marginTop: 4,
+  },
 
 })
 
