@@ -8,9 +8,10 @@ import { AuthContext } from '../../../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Dimensions } from 'react-native';
+import { Svg, Circle } from 'react-native-svg';
+import CircleProgress from '../../../components/CircleProgress/CircleProgress';
 
-
-const { height } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
 
 const Details = ({ navigation, route }) => {
@@ -37,7 +38,6 @@ const Details = ({ navigation, route }) => {
     inputRange: [0, data.length],
     outputRange: ['0%', '100%']
   })
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -72,7 +72,7 @@ const Details = ({ navigation, route }) => {
       // handleIndicatorStyle={{ opacity: 0 }}
       >
         <BottomSheetScrollView>
-          <View style={{ padding: 20, backgroundColor: 'white', }}>
+          <View style={{ paddingHorizontal: 20, backgroundColor: 'white', }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <View style={{ width: '83%' }}>
                 <Text style={styles.titleName}>Evento de deporte</Text>
@@ -84,7 +84,18 @@ const Details = ({ navigation, route }) => {
               </View>
             </View>
 
-            <View style={{ marginVertical: 20 }}>
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{ textAlign: 'center', fontSize: 20}}>Graficas</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                <CircleProgress data={90 
+                
+                }/>
+                {/* <CircleProgress data={20}/> */}
+              </View>
+            </View>
+
+
+            {/* <View style={{ marginVertical: 20 }}>
               <View style={{ paddingVertical: 10 }}>
                 <Text style={{ color: '#6C5CE7', fontWeight: 'bold', fontSize: 17 }}>Details</Text>
               </View>
@@ -138,7 +149,7 @@ const Details = ({ navigation, route }) => {
                 backgroundColor: '#00000020',
 
               }}>
-                <Animated.View style={[{
+              <Animated.View style={[{
                   height: 20,
                   borderRadius: 20,
                   backgroundColor: 'red'
@@ -149,7 +160,7 @@ const Details = ({ navigation, route }) => {
                 </Animated.View>
 
               </View>
-            </View>
+            </View> */}
 
           </View >
         </BottomSheetScrollView>
