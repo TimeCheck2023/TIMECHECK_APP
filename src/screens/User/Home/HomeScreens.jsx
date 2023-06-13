@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Pressable, FlatList, RefreshControl, TextInput, KeyboardAvoidingView, Platform, Dimensions, ActivityIndicator, Button } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Pressable, FlatList, RefreshControl, TextInput, KeyboardAvoidingView, Platform, Dimensions, ActivityIndicator, Button, useColorScheme } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Avatar from '../../../../assets/Avatar.png'
 import * as Icon from '@expo/vector-icons';
@@ -14,10 +14,13 @@ import Loading from '../../../components/Loading/Loading';
 import Header from '../../../components/Header/Header';
 import SheetComment from '../../../components/SheetComment/SheetComment';
 import * as Notifications from 'expo-notifications';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get('window')
 
 const HomeScreens = ({ navigation }) => {
+
+    const isDarkMode = useColorScheme();
 
     // estados y contexto que guardan sessiones y conexiones
     const { logout, socket, userInfo } = useContext(AuthContext)
@@ -55,6 +58,8 @@ const HomeScreens = ({ navigation }) => {
     // ref manipular el bottomSheetModals
     const bottomSheetModalRef = useRef(null);
 
+
+
     // funcion pra mostar el bottomsheetModals
     const openBottomSheet = (eventId) => {
         bottomSheetModalRef.current?.present();
@@ -91,67 +96,68 @@ const HomeScreens = ({ navigation }) => {
 
     // useEffect para ejecutar el loadEvent
     useEffect(() => {
-        registerForPushNotificationsAsync();
+        // registerForPushNotificationsAsync();
         loadEvent();
+        console.log(isDarkMode);
     }, [])
 
-    useEffect(() => {
-        // Solicitar permisos de notificación
-        const registerForPushNotifications = async () => {
-            const { status } = await Notifications.requestPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permisos de notificación no concedidos');
-                return;
-            }
-        };
+    // useEffect(() => {
+    //     // Solicitar permisos de notificación
+    //     const registerForPushNotifications = async () => {
+    //         const { status } = await Notifications.requestPermissionsAsync();
+    //         if (status !== 'granted') {
+    //             console.log('Permisos de notificación no concedidos');
+    //             return;
+    //         }
+    //     };
 
-        registerForPushNotifications();
-    }, []);
-
-
-    const registerForPushNotificationsAsync = async () => {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-
-        if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-        }
-
-        if (finalStatus !== 'granted') {
-            console.log('Permiso de notificación denegado');
-            return;
-        }
-
-        // Obtener el token de notificación del dispositivo
-        const token = (await Notifications.getExpoPushTokenAsync()).data;
-
-        // Enviar el token de notificación al servidor
-        enviarTokenDeNotificacionAlServidor(token);
-    };
+    //     registerForPushNotifications();
+    // }, []);
 
 
+    // const registerForPushNotificationsAsync = async () => {
+    //     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    //     let finalStatus = existingStatus;
 
-    const enviarTokenDeNotificacionAlServidor = async (token) => {
-        try {
-            console.log(token);
-            const response = await fetch('https://timecheck.up.railway.app/Notification/enviar-notificacion', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    token: token,
-                    mensaje: '¡Hola desde la aplicación móvil!',
-                }),
-            });
+    //     if (existingStatus !== 'granted') {
+    //         const { status } = await Notifications.requestPermissionsAsync();
+    //         finalStatus = status;
+    //     }
 
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.log('Error al enviar el token de notificación al servidor', error);
-        }
-    };
+    //     if (finalStatus !== 'granted') {
+    //         console.log('Permiso de notificación denegado');
+    //         return;
+    //     }
+
+    //     // Obtener el token de notificación del dispositivo
+    //     const token = (await Notifications.getExpoPushTokenAsync()).data;
+
+    //     // Enviar el token de notificación al servidor
+    //     enviarTokenDeNotificacionAlServidor(token);
+    // };
+
+
+
+    // const enviarTokenDeNotificacionAlServidor = async (token) => {
+    //     try {
+    //         console.log(token);
+    //         const response = await fetch('https://timecheck.up.railway.app/Notification/enviar-notificacion', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 token: token,
+    //                 mensaje: '¡Hola desde la aplicación móvil!',
+    //             }),
+    //         });
+
+    //         const data = await response.json();
+    //         console.log(data);
+    //     } catch (error) {
+    //         console.log('Error al enviar el token de notificación al servidor', error);
+    //     }
+    // };
 
     useEffect(() => {
         // socket.on('connect', () => {
@@ -173,7 +179,6 @@ const HomeScreens = ({ navigation }) => {
         });
 
         socket.on('resultComments', (getComments) => {
-            console.log(getComments);
             setDataComment(getComments);
             setComment('')
             setIsloadingComent(false);
@@ -253,7 +258,6 @@ const HomeScreens = ({ navigation }) => {
             nro_documento_usuario: userInfo.nro_documento_usuario
         })
         socket.emit('createLikes', objeto);
-        console.log("enviar");
     }
 
     const DeleteLikes = (id) => {

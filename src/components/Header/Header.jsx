@@ -1,15 +1,31 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable } from 'react-native'
 import * as Icon from '@expo/vector-icons';
 import Avatar from '../../../assets/Avatar.png'
-import React from 'react'
+import React, { useContext } from 'react'
 import { TextInput } from 'react-native';
+import { AuthContext } from '../../context/AuthContext';
 
-const header = ({ navigation, search, handleSearch, Category, select, handleSelect, userInfo }) => {
+const header = ({ visible, navigation, search, handleSearch, Category, select, handleSelect, userInfo }) => {
+
     return (
         <View>
             {/* header */}
             <View style={styles.header}>
-                <Image source={Avatar} style={styles.headerImage} resizeMode='cover' />
+                <View style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 50,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'white',
+                    elevation: 20,
+                    bottom: 3,
+                    shadowColor: '#6C63FF',
+                    borderColor: '#7973ED',
+                    borderWidth: 1,
+                }}>
+                    <Text style={{ color: '#7973ED', fontSize: 25, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text>
+                </View>
                 <View style={{ flex: 1 }}>
                     <Text style={styles.headerTextOne} numberOfLines={1}>{userInfo.nombre_completo_usuario}</Text>
                     <Text style={styles.headerTextTwo}>Discover fashion that suit your style</Text>
@@ -33,22 +49,29 @@ const header = ({ navigation, search, handleSearch, Category, select, handleSele
                 </View>
             </View>
 
+
             {/* category */}
-            <View>
-                <ScrollView horizontal
-                    contentContainerStyle={styles.CategoryListContainer}
-                    showsHorizontalScrollIndicator={false}>
-                    {
-                        Category.map((item, index) => (
-                            <Pressable key={index} onPress={() => { handleSelect(item) }}>
-                                <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
-                                    {item}
-                                </Text>
-                            </Pressable>
-                        ))
-                    }
-                </ScrollView>
-            </View>
+            {
+                !visible &&
+                <>
+                    <View>
+                        <ScrollView horizontal
+                            contentContainerStyle={styles.CategoryListContainer}
+                            showsHorizontalScrollIndicator={false}>
+                            {
+                                Category.map((item, index) => (
+                                    <Pressable key={index} onPress={() => { handleSelect(item) }}>
+                                        <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
+                                            {item}
+                                        </Text>
+                                    </Pressable>
+                                ))
+                            }
+                        </ScrollView>
+                    </View>
+                </>
+            }
+
         </View>
     )
 }
@@ -94,7 +117,7 @@ const styles = StyleSheet.create({
     Search: {
         flexDirection: 'row',
         paddingHorizontal: 24,
-        gap: 4
+        gap: 4,
     },
     SearchTextInput: {
         flex: 1,

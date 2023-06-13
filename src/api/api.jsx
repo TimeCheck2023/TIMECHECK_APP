@@ -99,6 +99,24 @@ export const getUserId = async (id) => {
     })
     return result;
 }
+
+export const getUserMiembro = async (id) => {
+    const result = await axios({
+        url: `${API_Node}/user/SubOrgMiembro/${id}`,
+        method: 'GET',
+    })
+    return result;
+}
+
+export const getUsers = async () => {
+    const result = await axios({
+        url: `${API_Node}/user`,
+        method: 'GET',
+    })
+    return result;
+}
+
+
 export const getOrg = async (id) => {
     const result = await axios({
         url: `${API_Node}/org/${id}`,
@@ -116,6 +134,23 @@ export const updateUserId = async (id, data) => {
     })
     return result;
 }
+export const updateUserRol = async (data) => {
+    console.log(data);
+    const result = await axios({
+        url: `${API_C}/api/Member/EditMemberRole`,
+        method: 'PUT',
+        data: data
+    })
+    return result;
+}
+export const deleteMiembro = async (data) => {
+    const result = await axios({
+        url: `${API_C}/api/Member/DeleteMember`,
+        method: 'DELETE',
+        params: data
+    })
+    return result;
+}
 
 export const saveSubOrg = async (id, data) => {
     // console.log(data);
@@ -126,6 +161,16 @@ export const saveSubOrg = async (id, data) => {
     })
     return result;
 }
+export const saveMiembro = async (data) => {
+    const result = await axios({
+        url: `${API_C}/api/User/NuevoMiembro`,
+        method: 'POST',
+        data: data
+    })
+    return result;
+}
+
+
 export const verificarCodigo = async (data) => {
     console.log(data);
     const result = await axios({

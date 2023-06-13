@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
+import { useFocusEffect } from "@react-navigation/native";
 
 const socket = io('https://timecheck.up.railway.app')
 // const socket = io('http://192.168.1.47:4000')
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [userToken, setUserToken] = useState(null)
     const [userInfo, setUserInfo] = useState(null)
-
+    
     //iniciar session
     const login = async (message) => {
         try {
@@ -59,25 +60,20 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+
     useEffect(() => {
         isLoggedIn();
         // Función para conectar al socket
 
-        const connectToSocket = () => {
-            socket.on('connect', () => {
-                console.log('Conectado al servidor');
-            })
+        socket.on('connect', () => {
+            console.log('Conectado al servidor');
+        })
 
-            // Devolver una función de limpieza para desconectarse cuando se desmonte el componente
-            return () => {
-                socket.disconnect();
-            };
-        };
-        // Llamar a la función para conectar al socket cuando se monte el componente
-        const cleanup = connectToSocket();
+        socket.on('disconnect', () => {
+            console.log('Socket desconectado');
+            // Aquí puedes implementar lógica para reconectar automáticamente
+        });
 
-        // Llamar a la función de limpieza cuando se desmonte el componente
-        return cleanup;
     }, [])
 
 

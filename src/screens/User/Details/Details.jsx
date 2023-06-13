@@ -1,4 +1,4 @@
-import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet, Animated } from 'react-native'
+import { View, Text, Image, ImageBackground, Linking, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet, Animated } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -10,6 +10,8 @@ import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Dimensions } from 'react-native';
 import { Svg, Circle } from 'react-native-svg';
 import CircleProgress from '../../../components/CircleProgress/CircleProgress';
+import avatar from '../../../../assets/Avatar.png';
+import moment from 'moment/moment';
 
 const { width, height } = Dimensions.get('window')
 
@@ -17,160 +19,200 @@ const { width, height } = Dimensions.get('window')
 const Details = ({ navigation, route }) => {
 
   const { items } = route.params;
-  const [progress, setProgress] = useState(new Animated.Value(0));
-  // source={{ uri: items.imagenEvento }}
+
+
+  const [likes, setLikes] = useState(0)
+  const [comments, setComments] = useState(0)
+  const [dataLikes, setDataLikes] = useState([])
+
+  const { logout, socket, userInfo } = useContext(AuthContext)
+
   const bottomSheetRef = useRef(null);
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  const precio = items.valorTotalEvento === 0 ? 'Gratis' : items.valorTotalEvento
+
+  const sendWhatsAppMessage = () => {
+    const phoneNumber = '573207432224'; // Aquí debes poner el número al que quieres abrir el chat de WhatsApp
+    const message = '3207430224'; // Aquí debes poner el número al que quieres abrir el chat de WhatsApp
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    Linking.openURL(url);
+  };
 
   useEffect(() => {
-    Animated.timing(progress, {
-      toValue: 9,
-      duration: 1000,
-      useNativeDriver: false
-    }).start();
+
+    socket.on('Countlikes', (data) => {
+      setLikes(data);
+    })
+    socket.on('CountComment', (data) => {
+      setComments(data);
+    })
+
+    socket.on('likes', (getLikes) => {
+      setDataLikes(getLikes)
+    });
+
+
+    socket.emit('getCountLikes', items.idEvento)
+    socket.emit('getCountComments', items.idEvento)
+    socket.emit('getLikes', userInfo.nro_documento_usuario)
+
+
+
+
+    // return () => {
+
+    // }
   }, [])
 
+  const CreateLikes = (id) => {
+    const objeto = new Object({
+      id_evento: id,
+      likes: 1,
+      nro_documento_usuario: userInfo.nro_documento_usuario
+    })
+    socket.emit('createLikes', objeto);
+  }
 
-  const precio = items.valorEvento === 0 ? 'Gratis' : items.valorEvento
+  const DeleteLikes = (id) => {
+    const objeto = new Object({
+      id_evento: id,
+      nro_documento_usuario: userInfo.nro_documento_usuario
+    })
+    socket.emit('deleteLikes', objeto);
+  }
 
-
-  const progressAnim = progress.interpolate({
-    inputRange: [0, data.length],
-    outputRange: ['0%', '100%']
-  })
+  const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === items.idEvento)
 
   return (
     <View style={{ flex: 1 }}>
       <View>
         <ImageBackground style={styles.backgroundImage} source={{ uri: items.imagenEvento }}>
-          <TouchableOpacity style={{
-            backgroundColor: 'white',
-            width: wp('11'),
-            aspectRatio: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 20,
-          }}>
-            <Icon.AntDesign name="arrowleft" size={30} color="black" onPress={navigation.goBack} />
+          <TouchableOpacity style={styles.ImagenButtom}>
+            <Icon.AntDesign name="arrowleft" size={wp('6')} style={{ color: '#6C63FF' }} onPress={navigation.goBack} />
           </TouchableOpacity>
-          <TouchableOpacity style={{
-            backgroundColor: 'white',
-            width: wp('11'),
-            aspectRatio: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 20,
-          }}>
-            <Icon.AntDesign name="arrowleft" size={30} color="black" onPress={navigation.goBack} />
+          <TouchableOpacity style={styles.ImagenButtom}
+            onPress={() => { resultLikes ? DeleteLikes(items.idEvento) : CreateLikes(items.idEvento) }}
+          >
+            {resultLikes ?
+              <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+              :
+              <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+            }
           </TouchableOpacity>
         </ImageBackground>
       </View>
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={['62%', '87%']}
-        borderRadius={10}
+        snapPoints={['62%', '97%']}
+        borderRadius={70}
       // handleIndicatorStyle={{ opacity: 0 }}
       >
         <BottomSheetScrollView>
-          <View style={{ paddingHorizontal: 20, backgroundColor: 'white', }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ backgroundColor: 'white' }}>
+
+            <View style={styles.headerContain}>
               <View style={{ width: '83%' }}>
-                <Text style={styles.titleName}>Evento de deporte</Text>
-                <Text style={{ fontSize: 20, fontWeight: '600', color: 'black', marginTop: 10 }}>deporte</Text>
+                <Text style={styles.headerTitleOne}>{items.nombreEvento}</Text>
+                <Text style={styles.headerTitleTwo}>{items.tipoEvento}</Text>
               </View>
-              <View style={{ flexDirection: 'row', top: 0 }}>
-                <Text style={styles.price}>1</Text>
-                <Text style={{ fontSize: 25, fontWeight: '600', color: 'black' }}>/100</Text>
+              <View style={{ bottom: 20 }}>
+                <Text style={{ fontSize: 20, color: 'black', fontWeight: '500' }}>Aforo: </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.headerTextAforoOne}>{items.cuposDisponibles}</Text>
+                  <Text style={styles.headerTextAforoTwo}>/{items.aforoEvento}</Text>
+                </View>
               </View>
             </View>
 
-            <View style={{ marginVertical: 10 }}>
-              <Text style={{ textAlign: 'center', fontSize: 20}}>Graficas</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <CircleProgress data={90 
-                
-                }/>
-                {/* <CircleProgress data={20}/> */}
+            {/* Container Body*/}
+
+            <View style={{ paddingHorizontal: 20, }}>
+
+              {/* Container date y location*/}
+
+              <View style={styles.DetailsDate}>
+                <Icon.Feather name='calendar' size={24} color='#6C5CE7' />
+                <Text style={styles.DetailsDateText}>{moment(items.fechaFinalEvento).format('D MMM YYYY h:mm a')}</Text>
+              </View>
+              <View style={styles.DetailsLocation}>
+                <Icon.Ionicons name='location' size={24} color='#6C5CE7' />
+                <Text style={styles.DetailsDateText}>{items.lugarEvento}</Text>
+              </View>
+
+
+              <View style={{ paddingVertical: 20, paddingBottom: '30%' }}>
+                {/* Container Contacto */}
+                <Text style={{
+                  fontSize: 22,
+                  fontWeight: 'bold'
+                }}>Listing Agent</Text>
+                <View style={styles.ContactEvents}>
+                  <Image source={avatar} style={styles.ImageAvatar} />
+                  <View style={{ flex: 1, paddingLeft: 15 }}>
+                    <Text style={styles.ContactTextOne}>Samarinda Kita</Text>
+                    <Text style={styles.ContactTextTwo}>SubOrganizacion</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity style={styles.ButtomPhone} onPress={sendWhatsAppMessage}>
+                      <Icon.Entypo name='phone' size={24} color='white' />
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={{ backgroundColor: '#6C5CE7', elevation: 7, width: 40, height: 40, padding: 5, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon.Feather name='calendar' size={20} color='white' />
+                  </TouchableOpacity> */}
+                  </View>
+                </View>
+
+
+                {/* Container Description */}
+
+                <View style={{ paddingVertical: 10 }}>
+                  <Text style={styles.DescriptionTitle}>Description</Text>
+                  <Text style={styles.DescriptionText}>
+                    {items.descripcionEvento}
+                  </Text>
+                </View>
+
+
+                {/* Container graficas */}
+                <View style={styles.ContanteGraficas}>
+                  <Text style={{ textAlign: 'center', fontSize: 25, fontWeight: 'bold' }}>Graficas</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <CircleProgress
+                      value={likes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                      label='Likes'
+                      colorText='#1B1B1B'
+                      colorProgress='#7560EE'
+                    />
+                    <CircleProgress
+                      value={comments} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                      label='Comments'
+                      colorText='#1B1B1B'
+                      colorProgress='#7560EE'
+                    />
+                  </View>
+                </View>
               </View>
             </View>
-
-
-            {/* <View style={{ marginVertical: 20 }}>
-              <View style={{ paddingVertical: 10 }}>
-                <Text style={{ color: '#6C5CE7', fontWeight: 'bold', fontSize: 17 }}>Details</Text>
-              </View>
-              <View style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
-                <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                  <View style={{ backgroundColor: 'white', elevation: 7, width: 50, height: 50, padding: 5, borderRadius: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <Icon.Feather name='calendar' size={20} color='#6C5CE7' />
-                  </View>
-                  <View>
-                    <Text>Duration</Text>
-                    <Text>3 hours</Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                  <View style={{ backgroundColor: 'white', elevation: 7, width: 50, height: 50, padding: 5, borderRadius: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <Icon.Feather name='calendar' size={20} color='#6C5CE7' />
-                  </View>
-                  <View>
-                    <Text>Duration</Text>
-                    <Text>3 hours</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5 }}>
-                <View style={{ width: 50, height: 50, backgroundColor: 'white', elevation: 7, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
-                  <Icon.Ionicons name='location-outline' size={20} color='#6C5CE7' />
-                </View>
-                <Text style={{ fontSize: 20, fontWeight: '600', paddingHorizontal: 10 }}>carrera #13 la mariela</Text>
-              </View>
-
-              <Text
-                style={{
-                  fontSize: 10 * 2.7,
-                  fontWeight: '600',
-                  color: 'gray',
-                  marginBottom: 10
-                }}
-              >Description</Text>
-              <Text
-                style={{
-                  fontSize: 10 * 1.9,
-                  fontWeight: '500',
-                  color: 'gray',
-                }}
-              >Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, est quasi blanditiis voluptatum maxime a sequi eligendi minima necessitatibus. Est perspiciatis ut laborum quisquam ab maxime iusto magnam mollitia exercitationem esse dignissimos nesciunt quae velit, quas, nam illo corporis rem illum fuga obcaecati aspernatur minima sequi tenetur. Exercitationem, eveniet quo.</Text>
-
-              <View style={{
-                width: '100%',
-                height: 20,
-                borderRadius: 20,
-                backgroundColor: '#00000020',
-
-              }}>
-              <Animated.View style={[{
-                  height: 20,
-                  borderRadius: 20,
-                  backgroundColor: 'red'
-                }, {
-                  width: progressAnim
-                }]}>
-
-                </Animated.View>
-
-              </View>
-            </View> */}
-
           </View >
         </BottomSheetScrollView>
       </BottomSheet >
-      {/* <View style={{ width: '100%', position: 'absolute', bottom: 0 }}>
-        <TouchableOpacity style={{ padding: 20, backgroundColor: 'black', marginHorizontal: 20, borderRadius: 20 }}>
-          <Text>Chosee this for</Text>
-          <Text>35.00</Text>
-        </TouchableOpacity>
-      </View> */}
+
+      {/* Container buttom send */}
+      <View style={styles.ContainerbuttomSend}>
+        <View style={styles.buttomSend}>
+          {/* precis */}
+          <View>
+            <Text style={{ fontSize: 15, color: 'white' }}>Price:</Text>
+            <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>{precio}</Text>
+          </View>
+
+          {/* buttom */}
+          <View style={{ backgroundColor: 'white', paddingHorizontal: 58, paddingVertical: 15, borderRadius: 30 }}>
+            <Text style={{ fontWeight: '700', fontSize: 18, color: '#6C5CE7' }}>Book Now</Text>
+          </View>
+
+        </View>
+      </View>
     </View >
   )
 }
@@ -187,55 +229,143 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     overflow: 'hidden'
   },
-  ContainerInfo: {
-    padding: 20,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+  ImagenButtom: {
     backgroundColor: 'white',
-    bottom: 20
+    width: wp('11'),
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
   },
-  headerInfo: {
+  headerContain: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    padding: 20
   },
-  titleName: {
+  headerTitleOne: {
     fontSize: 30,
     color: 'black',
     fontWeight: 'bold'
   },
-  Containeraforo: {
-    padding: 10,
-    paddingHorizontal: 30,
-    backgroundColor: '#6C5CE7',
+  headerTitleTwo: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: 'gray'
+  },
+  headerTextAforoOne: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'black'
+  },
+  headerTextAforoTwo: {
+    fontSize: 25,
+    fontWeight: '600',
+    color: 'black'
+  },
+  DetailsDate: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10
+  },
+  DetailsLocation: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5
+  },
+  DetailsDateText: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: 'gray',
+    paddingHorizontal: 10
+  },
+  ContactEvents: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    elevation: 10, // Ajusta este valor para aumentar o disminuir la sombra
+    marginVertical: 10,
+    shadowColor: '#6C63FF',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  ImageAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 50 / 2
+  },
+  ContactTextOne: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'black'
+  },
+  ContactTextTwo: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'gray'
+  },
+  ButtomPhone: {
+    backgroundColor: '#6C5CE7',
+    elevation: 7,
+    width: 40,
+    height: 40,
+    padding: 5,
     borderRadius: 10,
     justifyContent: 'center',
+    alignItems: 'center'
+  },
+  DescriptionTitle: {
+    fontSize: 22,
+    fontWeight: '700'
+  },
+  DescriptionText: {
+    fontWeight: '700',
+    color: 'gray',
+    fontSize: 18,
+    paddingVertical: 10
+  },
+  ContanteGraficas: {
+    marginVertical: 10,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 10,
+    elevation: 10, // Ajusta este valor para aumentar o disminuir la sombra
+    marginVertical: 10,
+    shadowColor: '#6C63FF',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  ContainerbuttomSend: {
+    width: '100%',
+    height: 90,
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: '#6C5CE7',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30
+  },
+  buttomSend: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 20
   },
   price: {
     fontSize: 30,
     fontWeight: 'bold',
     color: 'black'
   },
-  ContainerItems: {
-    paddingVertical: 10,
-    backgroundColor: '#6C5CE7',
-    alignItems: 'center',
-    borderRadius: 10,
-    flexDirection: 'row'
-  },
-  handleContainer: {
-    alignItems: 'center',
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: 'gray',
-    borderRadius: 2,
-    marginTop: 4,
-  },
-
 })
 
 {/* tipo de eventos y devolver */ }

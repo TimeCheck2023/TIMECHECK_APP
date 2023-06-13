@@ -1,14 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Dimensions, Image, View, Animated, StyleSheet, Text } from 'react-native';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { useContext, useRef } from 'react';
-import HomeOrg from '../screens/Org/Home/HomeOrg';
-import ProfileOrg from '../screens/Org/ProfileOrg/ProfileOrg';
-import HomeSubOrg from '../screens/Org/HomeSubOrg/HomeSubOrg';
-import UserMiembro from '../screens/Org/UserMiembro/UserMiembro';
+import UserMiembro from '../../screens/Org/UserMiembro/UserMiembro';
+import HomeEventSuborg from '../../screens/Org/HomeEventSuborg/HomeEventSuborg';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,14 +15,14 @@ const { width } = Dimensions.get('window')
 
 const tabs = [
     {
-        name: 'HomeOrg',
-        screen: HomeOrg,
+        name: 'HomeEventSuborg',
+        Screen: HomeEventSuborg,
         nameIcons: 'home',
         Icons: AntDesign
     },
     {
-        name: 'ProfileOrg',
-        screen: ProfileOrg,
+        name: 'UserMiembro',
+        Screen: UserMiembro,
         nameIcons: 'user',
         Icons: AntDesign
     },
@@ -32,11 +30,10 @@ const tabs = [
 
 
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ route }) => {
 
     const offset = useRef(new Animated.Value(0)).current;
-
-    const { userInfo } = useContext(AuthContext)
+    const { id } = route.params;
 
 
 
@@ -48,14 +45,13 @@ const BottomTabNavigator = () => {
                     tabBarStyle: {
                         height: hp('7.2'),
                     },
+                    show: true,
                 }}
-
-            // initialRouteName='HomeScreens'
             >
 
-                {tabs.map(({ name, screen, nameIcons, nIcons, Icons }, index) => {
+                {tabs.map(({ name, Screen, nameIcons, nIcons, Icons }, index) => {
                     return (
-                        <Tab.Screen name={name} component={screen} key={index}
+                        <Tab.Screen name={name} component={Screen} initialParams={{ parametro: id }} key={index}
                             options={{
                                 tabBarShowLabel: false,
                                 tabBarIcon: ({ focused }) => (
@@ -94,7 +90,7 @@ export default BottomTabNavigator;
 const styles = StyleSheet.create({
     indicador: {
         position: 'absolute',
-        width: 55,
+        width: 60,
         height: 2,
         bottom: 3,
         left: width / 6 / 2 + 40,

@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "shouldUseActivityState": true
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +26,8 @@
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.aldana212.TIMECHECK_APP"
+      "package": "com.aldana212.TIMECHECK_APP",
+      "shouldUseActivityState": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

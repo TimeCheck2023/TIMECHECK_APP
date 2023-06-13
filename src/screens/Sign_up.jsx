@@ -22,6 +22,7 @@ const Sign_Up = ({ navigation }) => {
   const [Open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+
   //estado para controlar los input
   const [values_us, setValues_us] = useState({
     documentType: '',
@@ -30,6 +31,7 @@ const Sign_Up = ({ navigation }) => {
     emailAddress: '',
     password: '',
     device: 'movil',
+    image_url: 'https://res.cloudinary.com/centroconveciones/image/upload/v1686668335/meamjbp3t0unhclqrpbh.jpg'
   });
 
   const [values_org, setValues_org] = useState({
@@ -39,6 +41,7 @@ const Sign_Up = ({ navigation }) => {
     numero_telefono: '',
     organization_password: '',
     device: 'movil',
+    image_url: 'https://res.cloudinary.com/centroconveciones/image/upload/v1686668335/meamjbp3t0unhclqrpbh.jpg'
   })
 
   //para capturar los el valor de los input

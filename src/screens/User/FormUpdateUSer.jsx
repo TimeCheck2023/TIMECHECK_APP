@@ -60,7 +60,7 @@ const FormUpdateUSer = ({ route, navigation }) => {
                 <View className='pt-7 pb-14 pl-10 pr-10 bg-[#7560EE] rounded-b-2xl'>
                     <TouchableOpacity className='absolute w-[45px] h-[45px] left-4 top-10 items-center justify-center rounded-2xl'
                         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-                        onPress={() => navigation.navigate('Profile')}>
+                        onPress={() => navigation.navigate('Profiles')}>
                         <Icon.AntDesign name="arrowleft" size={27} color="white" />
                     </TouchableOpacity>
                     <View className='items-center justify-center top-9'>

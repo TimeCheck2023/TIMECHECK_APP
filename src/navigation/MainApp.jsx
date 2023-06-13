@@ -28,7 +28,6 @@ const MainApp = () => {
                     {userToken === null ? <AuthNavigator /> : userInfo.EsUsuario === 1 ? <HomeStack /> : userInfo.EsUsuario === 2 && <HomeStackOrg />}
                 </BottomSheetModalProvider>
             </GestureHandlerRootView>
-            <StatusBar style='auto' />
         </NavigationContainer>
     )
 }

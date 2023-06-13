@@ -1,76 +1,84 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, Animated } from 'react-native';
-import { Svg, Circle, Text as SVGText } from 'react-native-svg';
-
+import React, { useRef, useEffect } from 'react';
+import { Text } from 'react-native';
+import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
+import { Svg, Circle, Text as SvgText } from 'react-native-svg';
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 
-const CircleProgress = ({ data }) => {
-
-
-    const radius = 40; // radius: Define el radio del círculo de progreso.
-    const strokeWidth = 8; //strokeWidth: Define el ancho del trazo del círculo.
-    const progress = data; // progress: Define el progreso del círculo en un valor de 0 a 100.
-
-    const circumference = 2 * Math.PI * 70; // circumference: Calcula la longitud de la circunferencia utilizando la fórmula 2 * π * radio.
-    const progressValue = (circumference * progress) / 100; // progressValue: Calcula la longitud del arco de progreso en función del progreso y la circunferencia total.
-
+const CircleProgress = ({ value, label, colorText, colorProgress }) => {
     const animatedValue = useRef(new Animated.Value(0)).current;
+    const circleRef = useRef();
 
-    const animatedStroke = animatedValue.interpolate({
-        inputRange: [0, 100],
-        outputRange: [circumference, progressValue],
-    });
+    const radius = 30; // Radio del círculo
+    const strokeWidth = 5; // Grosor del trazo
+
+    const circumference = 2 * Math.PI * radius; // Circunferencia del círculo
 
     useEffect(() => {
         Animated.timing(animatedValue, {
-            toValue: progress,
+            toValue: value,
             duration: 1000,
             useNativeDriver: true,
         }).start();
-    }, [data]);
+    }, [value]);
+
+    const animatedStrokeDashoffset = animatedValue.interpolate({
+        inputRange: [0, value + 20],
+        outputRange: [circumference, 0],
+        extrapolate: 'clamp',
+    });
 
     return (
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Svg width={40 * 2} height={40 * 2}>
+        <View style={styles.container}>
+            <Svg width={radius * 2 + strokeWidth * 2} height={radius * 2 + strokeWidth * 2}>
                 <Circle
-                    cx={radius}
-                    cy={radius}
-                    r={radius - strokeWidth / 2}
-                    fill="none"
-                    stroke="#E0E0E0"
-                    strokeWidth={strokeWidth}
+                    ref={circleRef}
+                    cx={radius + strokeWidth}
+                    cy={radius + strokeWidth}
+                    r={radius}
+                    fill="transparent"
+                    stroke="#E5E5E5"
+                    strokeWidth={7}
                 />
                 <AnimatedCircle
-                    cx={radius}
-                    cy={radius}
-                    r={radius - strokeWidth / 2}
-                    fill="none"
-                    stroke="#FF5722"
-                    strokeWidth={strokeWidth}
-                    strokeLinecap="round"
+                    cx={radius + strokeWidth}
+                    cy={radius + strokeWidth}
+                    r={radius}
+                    fill="transparent"
+                    stroke={colorProgress}
+                    strokeWidth={7}
                     strokeDasharray={circumference}
-                    strokeDashoffset={animatedStroke}
+                    strokeDashoffset={animatedStrokeDashoffset}
                 />
-                <SVGText
-                    // style={{ position: 'absolute' }}
-                    x={30}
-                    y={45}
-                    fill="#000"
+                <SvgText
+                    x={radius + strokeWidth}
+                    y={radius + strokeWidth + 6}
                     textAnchor="middle"
-                    fontSize={20}
-                fontWeight="bold"
-                alignmentBaseline="middle"
+                    fontSize={12}
+                    fontWeight="bold"
+                    fill={colorText} s
                 >
-                    {progress}%
-                </SVGText>
+                    {`${Math.round(value)}%`}
+                </SvgText>
             </Svg>
-            <Text>Comments</Text>
+            {
+                label &&
+                <Text style={{
+                    fontSize: 20,
+                    fontWeight: "600",
+                    paddingVertical: 5
+                }}>{label}</Text>
+            }
         </View>
-
     );
 }
 
+
 export default CircleProgress
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});

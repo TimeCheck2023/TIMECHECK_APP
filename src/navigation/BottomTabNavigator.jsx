@@ -1,17 +1,43 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import * as Icon from '@expo/vector-icons';
-import { Dimensions, Image, View } from 'react-native';
-import AddButton from '../components/AddButton/AddButton';
-import { useContext } from 'react';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { Dimensions, Image, View, Animated, StyleSheet, Text } from 'react-native';
+import { useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import HomeScreens from '../screens/User/Home/HomeScreens';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import Profile from '../screens/User/Profile/Profile';
-
+import HomeEvent from '../components/HomeEvents/HomeEvent';
+import Profiles from '../screens/User/Profile/Profiles';
 
 const Tab = createBottomTabNavigator();
 
+const { width } = Dimensions.get('window')
+
+
+const tabs = [
+    {
+        name: 'Home',
+        screen: HomeScreens,
+        nameIcons: 'home',
+        Icons: AntDesign
+    },
+    {
+        name: 'Profiles',
+        screen: Profiles,
+        nIcons: 'home',
+    },
+    {
+        name: 'HomeEvents',
+        screen: HomeEvent,
+        nameIcons: 'event',
+        Icons: MaterialIcons
+    },
+]
+
+
+
 const BottomTabNavigator = () => {
+
+    const offset = useRef(new Animated.Value(0)).current;
 
     const { userInfo } = useContext(AuthContext)
 
@@ -28,75 +54,73 @@ const BottomTabNavigator = () => {
                     show: true
                 }}
 
-                initialRouteName='HomeScreens'
+            // initialRouteName='HomeScreens'
             >
 
-
-                <Tab.Screen name='HomeScreens' component={HomeScreens}
-                    options={{
-                        tabBarShowLabel: false,
-                        tabBarIcon: ({ focused }) => (
-                            <View >
-                                <Icon.Ionicons
-                                    name='home'
-                                    size={27}
-                                    color={focused ? '#7973ED' : 'gray'}
-                                />
-                            </View>
-                        )
-                    }}
-                />
-
-                {
-                    userInfo.rol === 0 &&
-                    <Tab.Screen name='Home1' component={HomeScreens}
-                        options={{
-                            tabBarShowLabel: false,
-                            tabBarIcon: ({ focused }) => (
-                                <View className='items-center flex-1 h-0'>
-                                    <AddButton routes='FromEvents'/>
-                                </View>
-                            )
-                        }}
-                    />
-                }
-
-
-                <Tab.Screen name='Profile' component={Profile}
-                    options={{
-                        tabBarShowLabel: false,
-                        tabBarIcon: ({ focused }) => (
-                            <View >
-                                <Icon.Ionicons
-                                    name='home'
-                                    size={27}
-                                    color={focused ? '#7973ED' : 'gray'}
-                                />
-                            </View>
-                        ),
-                        tabBarVisible: false,
-                    }}
-                />
-
-                {/* {
-                    userInfo.rol === 0 &&
-                    <Tab.Screen name='Notification' component={Notification}
-                        options={{
-                            tabBarBadge: 5, // Cantidad a mostrar en el distintivo
-                            tabBarShowLabel: false,
-                            tabBarIcon: ({ focused }) => (
-                                <Icon.Ionicons
-                                    name='notifications-sharp'
-                                    size={24}
-                                    color={focused ? '#7973ED' : 'gray'}
-                                />
-                            )
-                        }}
-                    />
-                } */}
+                {tabs.map(({ name, screen, nameIcons, nIcons, Icons }, index) => {
+                    return (
+                        <Tab.Screen name={name} component={screen} key={index}
+                            options={{
+                                tabBarShowLabel: false,
+                                tabBarIcon: ({ focused }) => (
+                                    <View >
+                                        {nIcons ?
+                                            <View style={{
+                                                width: 50,
+                                                height: 50,
+                                                borderRadius: 50,
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                backgroundColor: 'white',
+                                                elevation: 20,
+                                                bottom: 3,
+                                                shadowColor: '#6C63FF',
+                                                borderColor: focused ? '#7973ED' : 'gray',
+                                                borderWidth: 1,
+                                            }}>
+                                                <Text style={{ color: focused ? '#7973ED' : 'gray', fontSize: 25, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text>
+                                            </View>
+                                            :
+                                            <Icons
+                                                name={nameIcons}
+                                                size={30}
+                                                color={focused ? '#7973ED' : 'gray'}
+                                            />
+                                        }
+                                    </View>
+                                )
+                            }}
+                            listeners={{
+                                focus: () => {
+                                    Animated.spring(offset, {
+                                        toValue: index * (width / tabs.length),
+                                        useNativeDriver: true
+                                    }).start()
+                                }
+                            }}
+                        />
+                    )
+                })}
             </Tab.Navigator>
+            <Animated.View style={[styles.indicador, {
+                transform: [{
+                    translateX: offset
+                }]
+            }]} />
         </>
     )
 }
 
-export default BottomTabNavigator
+export default BottomTabNavigator;
+
+const styles = StyleSheet.create({
+    indicador: {
+        position: 'absolute',
+        width: 55,
+        height: 2,
+        bottom: 3,
+        left: width / 3 / 2 - 28,
+        backgroundColor: '#7973ED',
+        zIndex: 100,
+    }
+})
