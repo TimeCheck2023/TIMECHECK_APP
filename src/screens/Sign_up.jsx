@@ -63,6 +63,7 @@ const Sign_Up = ({ navigation }) => {
       emailAddress: '',
       password: '',
       device: 'movil',
+      image_url: 'https://res.cloudinary.com/centroconveciones/image/upload/v1686668335/meamjbp3t0unhclqrpbh.jpg'
     })
     setErrors('');
   }
@@ -76,6 +77,7 @@ const Sign_Up = ({ navigation }) => {
       numero_telefono: '',
       organization_password: '',
       device: 'movil',
+      image_url: 'https://res.cloudinary.com/centroconveciones/image/upload/v1686668335/meamjbp3t0unhclqrpbh.jpg'
     })
     setErrors('');
   }

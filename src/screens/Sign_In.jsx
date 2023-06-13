@@ -2,7 +2,7 @@ import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image, ActivityIn
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imgGame from "../../assets/Sing_Up.png";
 import Input from '../components/Input/Input';
-import { useState, useContext, useEffect, useCallback,  } from 'react'
+import { useState, useContext, useEffect, useCallback, } from 'react'
 import * as Icon from '@expo/vector-icons';
 import { userSchema } from '../utils/validate';
 import { auth } from "../api/api";
@@ -37,13 +37,13 @@ const Sign_In = ({ navigation }) => {
       if (expiration && currentTime > parseInt(expiration)) {
         // La expiración ha pasado, no muestra el botón
         setButton(false)
-        console.log("dds");
       } else {
         // La expiración aún está dentro del tiempo límite, muestra el botón
         setButton(true)
-        console.log("yes");
       }
-    };
+    } else {
+      setButton(false)
+    }
   }
 
   //estado para controlar los input

@@ -52,14 +52,14 @@ const Profiles = ({ navigation }) => {
                     <ImageBackground source={fondoHeader} resizeMode='cover' style={{ flex: 1, alignItems: 'center' }}>
                         <View style={styles.headerProfile}>
                             <View style={styles.headerProfileImage}>
-                                <Text style={{ color: '#242424', fontSize: 55, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text>
-                                {/* <Image source={avatar} resizeMode='cover' style={styles.image} /> */}
+                                {/* <Text style={{ color: '#242424', fontSize: 55, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text> */}
+                                <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
                             </View>
                             <View style={{ top: '-10%', paddingBottom: 30 }}>
                                 <View style={styles.headerContent}>
                                     <View>
                                         <View style={{ width: 180 }}>
-                                            <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_completo_usuario} usuga</Text>
+                                            <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_completo_usuario}</Text>
                                         </View>
                                         <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text>
                                     </View>

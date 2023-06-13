@@ -13,33 +13,33 @@ const Tab = createBottomTabNavigator();
 const { width } = Dimensions.get('window')
 
 
-const tabs = [
-    {
-        name: 'Home',
-        screen: HomeScreens,
-        nameIcons: 'home',
-        Icons: AntDesign
-    },
-    {
-        name: 'Profiles',
-        screen: Profiles,
-        nIcons: 'home',
-    },
-    {
+const BottomTabNavigator = () => {
+
+    const { userInfo } = useContext(AuthContext)
+
+    const tabs = [
+        {
+            name: 'Home',
+            screen: HomeScreens,
+            nameIcons: 'home',
+            Icons: AntDesign
+        },
+        {
+            name: 'Profiles',
+            screen: Profiles,
+            nIcons: 'home',
+        },
+    ]
+
+    userInfo.rol === 0 && tabs.push({
         name: 'HomeEvents',
         screen: HomeEvent,
         nameIcons: 'event',
-        Icons: MaterialIcons
-    },
-]
+        Icons: MaterialIcons,
+    },)
 
-
-
-const BottomTabNavigator = () => {
 
     const offset = useRef(new Animated.Value(0)).current;
-
-    const { userInfo } = useContext(AuthContext)
 
 
 
@@ -57,7 +57,7 @@ const BottomTabNavigator = () => {
             // initialRouteName='HomeScreens'
             >
 
-                {tabs.map(({ name, screen, nameIcons, nIcons, Icons }, index) => {
+                {tabs.map(({ name, screen, nameIcons, nIcons, Icons, EsUsuario }, index) => {
                     return (
                         <Tab.Screen name={name} component={screen} key={index}
                             options={{
@@ -102,7 +102,15 @@ const BottomTabNavigator = () => {
                     )
                 })}
             </Tab.Navigator>
-            <Animated.View style={[styles.indicador, {
+            <Animated.View style={[{
+                position: 'absolute',
+                width: 55,
+                height: 2,
+                bottom: 3,
+                left: userInfo.rol == 0 ? width / 3 / 2 - 28 : width / 6 / 2 + 40,
+                backgroundColor: '#7973ED',
+                zIndex: 100,
+            }, {
                 transform: [{
                     translateX: offset
                 }]
@@ -115,12 +123,6 @@ export default BottomTabNavigator;
 
 const styles = StyleSheet.create({
     indicador: {
-        position: 'absolute',
-        width: 55,
-        height: 2,
-        bottom: 3,
-        left: width / 3 / 2 - 28,
-        backgroundColor: '#7973ED',
-        zIndex: 100,
+
     }
 })

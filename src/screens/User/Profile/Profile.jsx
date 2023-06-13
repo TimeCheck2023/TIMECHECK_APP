@@ -23,11 +23,6 @@ const Profile = ({ navigation }) => {
                 setIsLoading(false)
             })
     }
-
-    // useEffect(() => {
-    //     getUser();
-    // }, [])
-
     useFocusEffect(
         React.useCallback(() => {
             getUser();

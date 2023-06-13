@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import { getAsistencia, saveAsistencia, updateAsistencia } from '../../../api/api';
+import { DeleteAsistencia, getAsistencia, getEventId, saveAsistencia, updateAsistencia } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -12,6 +12,7 @@ import { Svg, Circle } from 'react-native-svg';
 import CircleProgress from '../../../components/CircleProgress/CircleProgress';
 import avatar from '../../../../assets/Avatar.png';
 import moment from 'moment/moment';
+import Loading from '../../../components/Loading/Loading';
 
 const { width, height } = Dimensions.get('window')
 
@@ -24,12 +25,13 @@ const Details = ({ navigation, route }) => {
   const [likes, setLikes] = useState(0)
   const [comments, setComments] = useState(0)
   const [dataLikes, setDataLikes] = useState([])
+  const [data, setData] = useState([])
+  const [prueba, setPrueba] = useState({})
+  const [isloading, setIsloading] = useState(false)
 
   const { logout, socket, userInfo } = useContext(AuthContext)
 
   const bottomSheetRef = useRef(null);
-
-  const precio = items.valorTotalEvento === 0 ? 'Gratis' : items.valorTotalEvento
 
   const sendWhatsAppMessage = () => {
     const phoneNumber = '573207432224'; // Aquí debes poner el número al que quieres abrir el chat de WhatsApp
@@ -40,8 +42,12 @@ const Details = ({ navigation, route }) => {
 
   useEffect(() => {
 
+    getEvents();
+    getAsistencias();
+
     socket.on('Countlikes', (data) => {
       setLikes(data);
+      console.log(data);
     })
     socket.on('CountComment', (data) => {
       setComments(data);
@@ -50,6 +56,8 @@ const Details = ({ navigation, route }) => {
     socket.on('likes', (getLikes) => {
       setDataLikes(getLikes)
     });
+
+
 
 
     socket.emit('getCountLikes', items.idEvento)
@@ -63,6 +71,17 @@ const Details = ({ navigation, route }) => {
 
     // }
   }, [])
+
+
+  const getEvents = async () => {
+    try {
+      const response = await getEventId(items.idEvento)
+      // console.log(response.data.response[0]);
+      setData(response.data.response[0]);
+    } catch (error) {
+      console.log('error.response');
+    }
+  }
 
   const CreateLikes = (id) => {
     const objeto = new Object({
@@ -81,139 +100,208 @@ const Details = ({ navigation, route }) => {
     socket.emit('deleteLikes', objeto);
   }
 
+  const getAsistencias = async () => {
+    const data = {
+      idEvento: items.idEvento,
+      correo: userInfo.correo,
+    }
+    setIsloading(true)
+    await getAsistencia(data)
+      .then((response) => {
+        setPrueba(response.data);
+        setIsloading(false)
+      }).catch((error) => {
+        console.log(error.message);
+      })
+  }
+
+  const precio = data.valorTotalEvento === 0 ? 'Gratis' : data.valorTotalEvento
+
+  const handleSubmitPost = async () => {
+    const data = {
+      eventId: items.idEvento,
+      userEmail: userInfo.correo,
+    }
+    setIsloading(true)
+
+    try {
+      const response = await saveAsistencia(data)
+      console.log(response.data);
+      getEvents();
+      getAsistencias();
+    } catch (error) {
+      console.log(error.message);
+      setIsloading(false)
+    }
+  }
+
+  const deleAsistencia = async () => {
+    setIsloading(true)
+
+    const data = {
+      idEvento: items.idEvento,
+      correoUsuario: userInfo.correo,
+    }
+
+    try {
+      const response = await DeleteAsistencia(data)
+      console.log(response.data);
+      getEvents();
+      getAsistencias();
+    } catch (error) {
+      console.log(error.response.data);
+      setIsloading(false)
+    }
+  }
+
   const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === items.idEvento)
 
+
   return (
-    <View style={{ flex: 1 }}>
-      <View>
-        <ImageBackground style={styles.backgroundImage} source={{ uri: items.imagenEvento }}>
-          <TouchableOpacity style={styles.ImagenButtom}>
-            <Icon.AntDesign name="arrowleft" size={wp('6')} style={{ color: '#6C63FF' }} onPress={navigation.goBack} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.ImagenButtom}
-            onPress={() => { resultLikes ? DeleteLikes(items.idEvento) : CreateLikes(items.idEvento) }}
-          >
-            {resultLikes ?
-              <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-              :
-              <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-            }
-          </TouchableOpacity>
-        </ImageBackground>
-      </View>
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={['62%', '97%']}
-        borderRadius={70}
-      // handleIndicatorStyle={{ opacity: 0 }}
-      >
-        <BottomSheetScrollView>
-          <View style={{ backgroundColor: 'white' }}>
-
-            <View style={styles.headerContain}>
-              <View style={{ width: '83%' }}>
-                <Text style={styles.headerTitleOne}>{items.nombreEvento}</Text>
-                <Text style={styles.headerTitleTwo}>{items.tipoEvento}</Text>
-              </View>
-              <View style={{ bottom: 20 }}>
-                <Text style={{ fontSize: 20, color: 'black', fontWeight: '500' }}>Aforo: </Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.headerTextAforoOne}>{items.cuposDisponibles}</Text>
-                  <Text style={styles.headerTextAforoTwo}>/{items.aforoEvento}</Text>
-                </View>
-              </View>
+    <>
+      {
+        isloading ?
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Loading />
+          </View>
+          :
+          <View style={{ flex: 1 }}>
+            <View>
+              <ImageBackground style={styles.backgroundImage} source={{ uri: data.imagenEvento }}>
+                <TouchableOpacity style={styles.ImagenButtom}>
+                  <Icon.AntDesign name="arrowleft" size={wp('6')} style={{ color: '#6C63FF' }} onPress={navigation.goBack} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.ImagenButtom}
+                  onPress={() => { resultLikes ? DeleteLikes(items.idEvento) : CreateLikes(items.idEvento) }}
+                >
+                  {resultLikes ?
+                    <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                    :
+                    <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                  }
+                </TouchableOpacity>
+              </ImageBackground>
             </View>
+            <BottomSheet
+              ref={bottomSheetRef}
+              snapPoints={['62%', '97%']}
+              borderRadius={70}
+            // handleIndicatorStyle={{ opacity: 0 }}
+            >
+              <BottomSheetScrollView>
+                <View style={{ backgroundColor: 'white' }}>
 
-            {/* Container Body*/}
-
-            <View style={{ paddingHorizontal: 20, }}>
-
-              {/* Container date y location*/}
-
-              <View style={styles.DetailsDate}>
-                <Icon.Feather name='calendar' size={24} color='#6C5CE7' />
-                <Text style={styles.DetailsDateText}>{moment(items.fechaFinalEvento).format('D MMM YYYY h:mm a')}</Text>
-              </View>
-              <View style={styles.DetailsLocation}>
-                <Icon.Ionicons name='location' size={24} color='#6C5CE7' />
-                <Text style={styles.DetailsDateText}>{items.lugarEvento}</Text>
-              </View>
-
-
-              <View style={{ paddingVertical: 20, paddingBottom: '30%' }}>
-                {/* Container Contacto */}
-                <Text style={{
-                  fontSize: 22,
-                  fontWeight: 'bold'
-                }}>Listing Agent</Text>
-                <View style={styles.ContactEvents}>
-                  <Image source={avatar} style={styles.ImageAvatar} />
-                  <View style={{ flex: 1, paddingLeft: 15 }}>
-                    <Text style={styles.ContactTextOne}>Samarinda Kita</Text>
-                    <Text style={styles.ContactTextTwo}>SubOrganizacion</Text>
+                  <View style={styles.headerContain}>
+                    <View style={{ width: '83%' }}>
+                      <Text style={styles.headerTitleOne}>{data.nombreEvento}</Text>
+                      <Text style={styles.headerTitleTwo}>{data.tipoEvento}</Text>
+                    </View>
+                    <View style={{ bottom: 20 }}>
+                      <Text style={{ fontSize: 20, color: 'black', fontWeight: '500' }}>Aforo: </Text>
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.headerTextAforoOne}>{data.cuposDisponibles}</Text>
+                        <Text style={styles.headerTextAforoTwo}>/{data.aforoEvento}</Text>
+                      </View>
+                    </View>
                   </View>
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity style={styles.ButtomPhone} onPress={sendWhatsAppMessage}>
-                      <Icon.Entypo name='phone' size={24} color='white' />
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity style={{ backgroundColor: '#6C5CE7', elevation: 7, width: 40, height: 40, padding: 5, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+
+                  {/* Container Body*/}
+
+                  <View style={{ paddingHorizontal: 20, }}>
+
+                    {/* Container date y location*/}
+
+                    <View style={styles.DetailsDate}>
+                      <Icon.Feather name='calendar' size={24} color='#6C5CE7' />
+                      <Text style={styles.DetailsDateText}>{moment(data.fechaFinalEvento).format('D MMM YYYY h:mm a')}</Text>
+                    </View>
+                    <View style={styles.DetailsLocation}>
+                      <Icon.Ionicons name='location' size={24} color='#6C5CE7' />
+                      <Text style={styles.DetailsDateText}>{data.lugarEvento}</Text>
+                    </View>
+
+
+                    <View style={{ paddingVertical: 20, paddingBottom: '30%' }}>
+                      {/* Container Contacto */}
+                      <Text style={{
+                        fontSize: 22,
+                        fontWeight: 'bold'
+                      }}>Listing Agent</Text>
+                      <View style={styles.ContactEvents}>
+                        <Image source={avatar} style={styles.ImageAvatar} />
+                        <View style={{ flex: 1, paddingLeft: 15 }}>
+                          <Text style={styles.ContactTextOne}>Samarinda Kita</Text>
+                          <Text style={styles.ContactTextTwo}>SubOrganizacion</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                          <TouchableOpacity style={styles.ButtomPhone} onPress={sendWhatsAppMessage}>
+                            <Icon.Entypo name='phone' size={24} color='white' />
+                          </TouchableOpacity>
+                          {/* <TouchableOpacity style={{ backgroundColor: '#6C5CE7', elevation: 7, width: 40, height: 40, padding: 5, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
                     <Icon.Feather name='calendar' size={20} color='white' />
                   </TouchableOpacity> */}
+                        </View>
+                      </View>
+
+
+                      {/* Container Description */}
+
+                      <View style={{ paddingVertical: 10 }}>
+                        <Text style={styles.DescriptionTitle}>Description</Text>
+                        <Text style={styles.DescriptionText}>
+                          {data.descripcionEvento}
+                        </Text>
+                      </View>
+
+
+                      {/* Container graficas */}
+                      <View style={styles.ContanteGraficas}>
+                        <Text style={{ textAlign: 'center', fontSize: 25, fontWeight: 'bold' }}>Graficas</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                          <CircleProgress
+                            value={likes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                            label='Likes'
+                            colorText='#1B1B1B'
+                            colorProgress='#7560EE'
+                          />
+                          <CircleProgress
+                            value={comments} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                            label='Comments'
+                            colorText='#1B1B1B'
+                            colorProgress='#7560EE'
+                          />
+                        </View>
+                      </View>
+                    </View>
                   </View>
+                </View >
+              </BottomSheetScrollView>
+            </BottomSheet >
+
+            {/* Container buttom send */}
+            <View style={styles.ContainerbuttomSend}>
+              <View style={styles.buttomSend}>
+                {/* precis */}
+                <View>
+                  <Text style={{ fontSize: 15, color: 'white' }}>Price:</Text>
+                  <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>{precio}</Text>
                 </View>
 
+                {/* buttom */}
+                <TouchableOpacity onPress={() => { prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' || prueba.exists === false ? handleSubmitPost() : deleAsistencia() }} style={{ backgroundColor: 'white', paddingHorizontal: 50, paddingVertical: 15, borderRadius: 30 }}>
+                  {isloading ?
+                    <ActivityIndicator size="large" color='#7560EE' />
+                    :
+                    <Text style={{ fontWeight: '700', fontSize: 18, color: '#6C5CE7' }}>{prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' ? 'Asistir' : 'cancelar asistencia'}</Text>
+                  }
 
-                {/* Container Description */}
+                </TouchableOpacity>
 
-                <View style={{ paddingVertical: 10 }}>
-                  <Text style={styles.DescriptionTitle}>Description</Text>
-                  <Text style={styles.DescriptionText}>
-                    {items.descripcionEvento}
-                  </Text>
-                </View>
-
-
-                {/* Container graficas */}
-                <View style={styles.ContanteGraficas}>
-                  <Text style={{ textAlign: 'center', fontSize: 25, fontWeight: 'bold' }}>Graficas</Text>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <CircleProgress
-                      value={likes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                      label='Likes'
-                      colorText='#1B1B1B'
-                      colorProgress='#7560EE'
-                    />
-                    <CircleProgress
-                      value={comments} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                      label='Comments'
-                      colorText='#1B1B1B'
-                      colorProgress='#7560EE'
-                    />
-                  </View>
-                </View>
               </View>
             </View>
           </View >
-        </BottomSheetScrollView>
-      </BottomSheet >
-
-      {/* Container buttom send */}
-      <View style={styles.ContainerbuttomSend}>
-        <View style={styles.buttomSend}>
-          {/* precis */}
-          <View>
-            <Text style={{ fontSize: 15, color: 'white' }}>Price:</Text>
-            <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>{precio}</Text>
-          </View>
-
-          {/* buttom */}
-          <View style={{ backgroundColor: 'white', paddingHorizontal: 58, paddingVertical: 15, borderRadius: 30 }}>
-            <Text style={{ fontWeight: '700', fontSize: 18, color: '#6C5CE7' }}>Book Now</Text>
-          </View>
-
-        </View>
-      </View>
-    </View >
+      }
+    </>
   )
 }
 

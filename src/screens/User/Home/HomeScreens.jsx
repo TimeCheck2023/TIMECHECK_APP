@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Pressable, FlatList, RefreshControl, TextInput, KeyboardAvoidingView, Platform, Dimensions, ActivityIndicator, Button, useColorScheme } from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, Pressable, FlatList, RefreshControl, TextInput, KeyboardAvoidingView, Platform, Dimensions, ActivityIndicator, Button, useColorScheme } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Avatar from '../../../../assets/Avatar.png'
 import * as Icon from '@expo/vector-icons';
@@ -32,6 +32,8 @@ const HomeScreens = ({ navigation }) => {
     const [search, setSearch] = useState('')
     //almacena la data de los eventos
     const [data, setData] = useState([])
+
+    const [filteredData, setFilteredData] = useState([])
     //almacena la data de los comentarios
     const [dataComment, setDataComment] = useState([])
     //almacena la data de los likes
@@ -68,18 +70,6 @@ const HomeScreens = ({ navigation }) => {
         socket.emit('getComments', eventId);
     };
 
-    // funcion para hacer la peticion de los eventos
-    const loadEvent = () => {
-        setIsloading(true)
-        getEvent().then((response) => {
-            setData(response.data.response);
-            setIsloading(false)
-        }).catch((error) => {
-            setIsloading(false)
-            setIsloadingFaild(true)
-            console.log("error.response");
-        })
-    }
 
     const retryFetch = () => {
         setIsloadingFaild(false)
@@ -98,9 +88,22 @@ const HomeScreens = ({ navigation }) => {
     useEffect(() => {
         // registerForPushNotificationsAsync();
         loadEvent();
-        console.log(isDarkMode);
+        // console.log(isDarkMode);
     }, [])
 
+    // funcion para hacer la peticion de los eventos
+    const loadEvent = () => {
+        setIsloading(true)
+        getEvent().then((response) => {
+            setData(response.data.response);
+            setFilteredData(response.data.response)
+            setIsloading(false)
+        }).catch((error) => {
+            setIsloading(false)
+            setIsloadingFaild(true)
+            console.log("error.response");
+        })
+    }
     // useEffect(() => {
     //     // Solicitar permisos de notificación
     //     const registerForPushNotifications = async () => {
@@ -192,16 +195,14 @@ const HomeScreens = ({ navigation }) => {
 
 
 
-        return () => {
-            socket.off('connect');
-            socket.off('typing');
-            socket.off('likes');
-            socket.off('error');
-            socket.off('resultComments');
-            socket.off('delete');
-            // Desconectar el socket cuando el componente se desmonte
-            socket.disconnect();
-        };
+        // return () => {
+        //     socket.off('connect');
+        //     socket.off('typing');
+        //     socket.off('likes');
+        //     socket.off('error');
+        //     socket.off('resultComments');
+        //     socket.off('delete');
+        // };
     }, [socket])
 
     // funcion para optener el valor del comenatrio
@@ -230,8 +231,25 @@ const HomeScreens = ({ navigation }) => {
 
     // funcion para guardar el valor del search
     const handleSearch = (text) => {
-        setSearch(text);
         setSelect('All');
+
+        //filtros tanto search como seleccion para la data eventos 
+        // const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
+        // const filtro2 = search === '' ? data : data.filter((item) => (item.nombreEvento && item.nombreEvento.toLowerCase().includes(search.toLowerCase())))
+        // let filt = search ? filtro2 : filtro;
+
+        if (text) {
+            const newData = data.filter(items => {
+                const itemData = items.nombreEvento ? items.nombreEvento.toLowerCase() : ''.toLowerCase()
+                const textData = text.toLowerCase();
+                return itemData.indexOf(textData) > -1
+            })
+            setFilteredData(newData)
+            setSearch(text);
+        } else {
+            setFilteredData(data)
+            setSearch(text);
+        }
     }
 
     // funcion para guardar el valor del select
@@ -273,11 +291,6 @@ const HomeScreens = ({ navigation }) => {
 
 
 
-    //filtros tanto search como seleccion para la data eventos 
-    const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
-    const filtro2 = search === '' ? data : data.filter((item) => (item.nombreEvento && item.nombreEvento.toLowerCase().includes(search.toLowerCase())))
-    const filt = search ? filtro2 : filtro;
-
     //renderiza la session de comentarios
     const renderComment = ({ item }) => {
         return <SheetComment item={item} userInfo={userInfo.correo} setCommenttId={setCommenttId} openModals={openModals} />
@@ -298,7 +311,7 @@ const HomeScreens = ({ navigation }) => {
                     </View>
                     :
                     <FlatList
-                        data={filt}
+                        data={filteredData}
                         renderItem={({ item }) => <CardEvent items={item} openBottomSheet={openBottomSheet} navigation={navigation} CreateLikes={CreateLikes} dataLikes={dataLikes} DeleteLikes={DeleteLikes} userInfo={userInfo} />}
                         keyExtractor={item => item.idEvento}
                         refreshControl={

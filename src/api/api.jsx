@@ -30,6 +30,17 @@ export const getAsistencia = async (data) => {
         method: 'GET',
         params: data
     })
+    return result
+}
+
+
+export const DeleteAsistencia = async (data) => {
+    console.log(data);
+    const result = await axios({
+        url: `${API_C}/api/Attendance/CancelAttendance`,
+        method: 'DELETE',
+        params: data
+    })
     // console.log(result.data);
     return result
 }
@@ -74,6 +85,13 @@ export const getSubOrg = async (id) => {
 }
 
 export const getEvent = async () => {
+    const result = await axios({
+        url: `${API_C}/api/Event/List`,
+        method: 'GET',
+    })
+    return result;
+}
+export const getEventId = async () => {
     const result = await axios({
         url: `${API_C}/api/Event/List`,
         method: 'GET',

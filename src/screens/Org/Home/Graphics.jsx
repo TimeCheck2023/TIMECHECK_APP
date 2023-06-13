@@ -51,10 +51,10 @@ const Graphics = ({ route }) => {
                   fill: ({ index }) => colorScale[index % colorScale.length], // Asigna colores personalizados a cada barra
                 },
               }}
-              horizontal
+              // horizontal
               data={data}
               barWidth={15}
-              cornerRadius={{ top: 5, bottom: 5 }}
+              cornerRadius={{ top: 5}}
               x="month"
               y="earnings"
               animate={{

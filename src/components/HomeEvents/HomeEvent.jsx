@@ -65,7 +65,7 @@ const HomeEvent = ({ navigation }) => {
                     <TouchableOpacity style={[styles.cardContainer]} onPress={() => navigation.navigate('FromEvents')}>
                         <View style={[styles.card, { backgroundColor: '#6C63FF', justifyContent: 'center', alignItems: 'center' }]} >
                             <Icon.AntDesign name="plussquareo" size={60} color="white" />
-                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', paddingVertical: 20 }}>Create Evento</Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', paddingVertical: 20 }}>Crear Evento</Text>
                         </View>
                     </TouchableOpacity>
                     {data.map((item, index) => {

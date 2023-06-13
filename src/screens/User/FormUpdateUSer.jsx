@@ -1,13 +1,17 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
 import avatar from '../../../assets/Avatar.png'
 import Input from '../../components/Input/Input';
 import { updateUserId } from '../../api/api';
+import { AuthContext } from '../../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FormUpdateUSer = ({ route, navigation }) => {
 
     const { data } = route.params;
+
+    const { logout } = useContext(AuthContext)
 
     const { height, width } = Dimensions.get('window');
 
@@ -16,11 +20,13 @@ const FormUpdateUSer = ({ route, navigation }) => {
 
     //estado para controlar los input
     const [values_us, setValues_us] = useState({
+        image_url: 'https://res.cloudinary.com/centroconveciones/image/upload/v1686687852/hwepjqxmelcboo88ojeq.jpg',
         documentType: data.tipo_documento_usuario,
         fullName: data.nombre_completo_usuario,
         emailAddress: data.correo_usuario,
         address: data.direccion_usuario,
         typeofpopulation: data.tipo_poblacion_usuario,
+        device: 'movil',
     });
 
     const handleOnChageText_us = (value, fieldName) => {
@@ -29,10 +35,21 @@ const FormUpdateUSer = ({ route, navigation }) => {
 
 
     const handleSubmit = async () => {
+
+        console.log(values_us);
+
         await updateUserId(data.nro_documento_usuario, values_us)
             .then((response) => {
-                console.log(response.data.message);
-                Alert.alert(response.data.message)
+                if (response.data.data.recordset[0].mensaje === 'cambiado') {
+                    // Obtén la fecha y hora actual
+                    const currentTime = new Date();
+
+                    // Establece la expiración en 24 horas
+                    const expirationTime = currentTime.getTime() + 24 * 60 * 60 * 1000;
+                    AsyncStorage.setItem('expirationTime', expirationTime.toString());
+                    logout();
+                }
+                console.log(response.data.data);
             }).catch((err) => {
                 console.log(err.response.data.error);
             })
@@ -65,7 +82,7 @@ const FormUpdateUSer = ({ route, navigation }) => {
                     </TouchableOpacity>
                     <View className='items-center justify-center top-9'>
                         <View className='sm:w-[130px] sm:h-[130px] rounded-full shadow-purple-400'>
-                            <Image source={avatar} className='w-[100%] h-[100%] rounded-full' />
+                            <Image source={{ uri: values_us.image_url }} className='w-[100%] h-[100%] rounded-full' />
                         </View>
                     </View>
                 </View>
