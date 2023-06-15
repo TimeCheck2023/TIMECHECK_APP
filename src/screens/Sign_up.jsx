@@ -174,10 +174,10 @@ const Sign_Up = ({ navigation }) => {
           <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('10'), height: hp('6') }} onPress={() => navigation.navigate('Welcome')}>
             <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />
           </TouchableOpacity>
-          <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '900' }}>Sing Up</Text>
+          <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '900' }}>Registrar</Text>
         </View>
 
-        <Text className='text-center text-black' style={{ fontSize: hp('2.5'), fontWeight: '900', top: hp('2') }}>Welcome select your account type</Text>
+        <Text className='text-center text-black' style={{ fontSize: hp('2.5'), fontWeight: '900', top: hp('2') }}>Bienvenido, selecciona tu tipo de cuenta</Text>
 
         <View className='flex-row justify-between items-center rounded-2xl' style={{ width: wp('95%'), height: hp('7.5'), marginTop: hp('2.5') }}>
           <TouchableOpacity activeOpacity={0.7} className={`items-center justify-center left-6 ${!isOpen && 'bg-[#7560EE]'}  rounded-lg`} style={{ width: wp('40%'), height: hp('6.5') }} onPress={ViewUser}>
@@ -198,17 +198,17 @@ const Sign_Up = ({ navigation }) => {
                 <Icon.Feather name='users' color='#642AB8' className='sm:text-xl lg:text-3xl' />
                 <Text className='font-bold text-lg rounded-lg ml-4' style={{ color: '#202020', fontSize: hp('2.4') }}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
               </TouchableOpacity>
-              <Input label='document number' value={values_us.documentNumber} keyboardType="phone-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
-              <Input label='fullName' value={values_us.fullName} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'fullName')} iconName='user' placeholder='Enter Nombre Completo' />
-              <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
-              <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
+              <Input label='numero de documento' value={values_us.documentNumber} keyboardType="phone-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
+              <Input label='nombre completo' value={values_us.fullName} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'fullName')} iconName='user' placeholder='Enter Nombre Completo' />
+              <Input label='email' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
+              <Input label='contraseña' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
             </> :
             <View style={{ bottom: hp('2') }}>
-              <Input label='organization name`s' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
-              <Input label='adress' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
-              <Input label='mail' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
-              <Input label='numero_telefono' value={values_org.numero_telefono} onChangeText={(value) => handleOnChageText_org(value, 'numero_telefono')} keyboardType='numeric' onFocus={() => setErrors('')} iconName='phone' placeholder='320145++++' />
-              <Input label='password' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
+              <Input label='nombre de organizacion' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
+              <Input label='Direccion' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
+              <Input label='email' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
+              <Input label='numero telefono' value={values_org.numero_telefono} onChangeText={(value) => handleOnChageText_org(value, 'numero_telefono')} keyboardType='numeric' onFocus={() => setErrors('')} iconName='phone' placeholder='320145++++' />
+              <Input label='contraseña' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
             </View>
           }
 
@@ -235,9 +235,9 @@ const Sign_Up = ({ navigation }) => {
             </TouchableOpacity>
           }
           <View className='flex-row justify-center' style={{ marginTop: hp('3') }}>
-            <Text className='font-bold' style={{ fontSize: hp('2.7') }}>Already have an account?  </Text>
+            <Text className='font-bold' style={{ fontSize: hp('2.7') }}>Ya tienes una cuenta?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
-              <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Sing In</Text>
+              <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>

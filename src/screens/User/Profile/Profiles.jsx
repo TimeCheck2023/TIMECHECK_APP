@@ -12,10 +12,11 @@ import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../../context/AuthContext';
 import { getUserId } from '../../../api/api';
 import { useFocusEffect } from '@react-navigation/native';
+import Loading from '../../../components/Loading/Loading';
 
 const Profiles = ({ navigation }) => {
 
-    const { logout, userInfo } = useContext(AuthContext)
+    const { logout, userInfo, socket } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
     const [pendientes, setPendientes] = useState(0)
     const [confirmado, setConfirmado] = useState(0)
@@ -40,72 +41,89 @@ const Profiles = ({ navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             getUser();
+
+
         }, []),
     );
 
 
     return (
-        <ScrollView>
-            <StatusBar />
-            <View style={styles.container}>
-                <View style={{ width: '100%', height: 250 }}>
-                    <ImageBackground source={fondoHeader} resizeMode='cover' style={{ flex: 1, alignItems: 'center' }}>
-                        <View style={styles.headerProfile}>
-                            <View style={styles.headerProfileImage}>
-                                {/* <Text style={{ color: '#242424', fontSize: 55, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text> */}
-                                <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
-                            </View>
-                            <View style={{ top: '-10%', paddingBottom: 30 }}>
-                                <View style={styles.headerContent}>
-                                    <View>
-                                        <View style={{ width: 180 }}>
-                                            <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_completo_usuario}</Text>
+        <>
+            {isLoading ?
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                    <Loading />
+                </View>
+                :
+                <ScrollView >
+                    <StatusBar />
+                    {/* {isLoading ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                        <Loading />
+                    </View>
+                    : */}
+                    <View style={{ flex: 1 }}>
+                        <View style={styles.container}>
+                            <View style={{ width: '100%', height: 250 }}>
+                                <ImageBackground source={fondoHeader} resizeMode='cover' style={{ flex: 1, alignItems: 'center' }}>
+                                    <View style={styles.headerProfile}>
+                                        <View style={styles.headerProfileImage}>
+                                            <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
                                         </View>
-                                        <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text>
+                                        <View style={{ top: '-10%', paddingBottom: 30 }}>
+                                            <View style={styles.headerContent}>
+                                                <View>
+                                                    <View style={{ width: 180 }}>
+                                                        <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_completo_usuario}</Text>
+                                                    </View>
+                                                    <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text>
+                                                </View>
+                                                <TouchableOpacity style={styles.headerContainerButtom}
+                                                    onPress={() => navigation.navigate('FormUpdateUSer', {
+                                                        data: user
+                                                    })}>
+                                                    <View style={styles.headerContentButtom}>
+                                                        <Icon.Feather name="edit" size={20} color={'white'} />
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
                                     </View>
-                                    <TouchableOpacity style={styles.headerContainerButtom}
-                                        onPress={() => navigation.navigate('FormUpdateUSer', {
-                                            data: user
-                                        })}>
-                                        <View style={styles.headerContentButtom}>
-                                            <Icon.Feather name="edit" size={20} color={'white'} />
-                                        </View>
+                                    <TouchableOpacity style={styles.btnClose} onPress={() => logout()}>
+                                        <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: '#6C63FF' }} />
                                     </TouchableOpacity>
+                                </ImageBackground>
+                            </View>
+
+
+
+                            <View style={styles.contentGraficaOne}>
+                                <View>
+                                    <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
+                                    <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text>
                                 </View>
+                                <CircleProgress
+                                    value={pendientes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                                    colorText='#1B1B1B'
+                                    colorProgress='#7560EE'
+                                />
+                            </View>
+                            <View style={styles.contentGraficaTwo}>
+                                <View>
+                                    <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
+                                    <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text>
+                                </View>
+                                <CircleProgress
+                                    value={confirmado} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                                    colorText='white'
+                                    colorProgress='#7560EE'
+                                />
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.btnClose} onPress={() => logout()}>
-                            <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: '#6C63FF' }} />
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
-
-
-                <View style={styles.contentGraficaOne}>
-                    <View>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
-                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text>
+                        {/* } */}
                     </View>
-                    <CircleProgress
-                        value={pendientes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                        colorText='#1B1B1B'
-                        colorProgress='#7560EE'
-                    />
-                </View>
-                <View style={styles.contentGraficaTwo}>
-                    <View>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
-                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text>
-                    </View>
-                    <CircleProgress
-                        value={confirmado} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                        colorText='white'
-                        colorProgress='#7560EE'
-                    />
-                </View>
-            </View>
-        </ScrollView>
+                </ScrollView>
+            }
+        </>
     )
 }
 

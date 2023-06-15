@@ -152,6 +152,17 @@ export const updateUserId = async (id, data) => {
     })
     return result;
 }
+export const updateOrgId = async (id, data) => {
+    // console.log(data);
+    const result = await axios({
+        url: `${API_Node}/org/update/${id}`,
+        method: 'PUT',
+        data: data
+    })
+    return result;
+}
+
+
 export const updateUserRol = async (data) => {
     console.log(data);
     const result = await axios({

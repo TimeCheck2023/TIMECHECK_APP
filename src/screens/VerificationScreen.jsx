@@ -28,7 +28,7 @@ const VerificationScreen = ({ navigation }) => {
             const result = await verificarCodigo(objeto)
             await AsyncStorage.removeItem('expirationTime')
             setTimeout(() => {
-                navigation.navigate('Sign_In')
+                navigation.goBack()
             }, 800);
             console.log(result.data);
         } catch (error) {
@@ -39,10 +39,7 @@ const VerificationScreen = ({ navigation }) => {
     return (
         <SafeAreaView className='flex-1'>
             <ScrollView
-                contentContainerStyle={{
-                    paddingTop: hp('2'),
-                    paddingHorizontal: wp('5')
-                }}>
+                contentContainerStyle={{ paddingTop: hp('2'), paddingHorizontal: wp('5') }}>
                 <View className='flex-row items-center'>
                     <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('12'), height: hp('6') }} onPress={() => navigation.navigate('Sign_In')}>
                         <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />

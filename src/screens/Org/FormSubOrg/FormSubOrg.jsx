@@ -73,7 +73,7 @@ const FormSubOrg = ({ navigation }) => {
 
 
                 <View className='w-full items-center'>
-                    <Text className='text-xl text-center text-black font-bold mt-10'>Welcome to the form to create a suborganization</Text>
+                    <Text className='text-xl text-center text-black font-bold mt-10'>Bienvenido al formulario para crear una subOrganización</Text>
                     <View className='w-80 h-48 items-center mt-7 rounded-2xl'>
                         <Image source={imgGame} resizeMode='contain' className='w-full h-full rounded-2xl' />
                     </View>
@@ -81,8 +81,8 @@ const FormSubOrg = ({ navigation }) => {
 
                 <View className='flex-1 mt-6'>
                     {/* input */}
-                    <Input label='name organization' value={values_us.name_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'name_organization')} iconName='mail' placeholder='Enter name organization' />
-                    <Input label='description organization' value={values_us.description_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'description_organization')} iconName='lock' placeholder='Enter description organization' />
+                    <Input label='nombre organización' value={values_us.name_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'name_organization')} iconName='mail' placeholder='Enter name organization' />
+                    <Input label='descripción organización' value={values_us.description_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'description_organization')} iconName='lock' placeholder='Enter description organization' />
                     {/* <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' /> */}
 
                     <View className='items-center top-7'>

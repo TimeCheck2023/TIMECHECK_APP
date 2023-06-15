@@ -79,6 +79,7 @@ const UserMiembro = ({ route, navigation }) => {
             const responde = await getUserMiembro(parametro)
             setData(responde.data.message)
             setFilteredData(responde.data.message)
+            console.log(responde.data.message);
             setSearch('')
             setIsLoadingData(false)
         } catch (error) {
@@ -172,7 +173,7 @@ const UserMiembro = ({ route, navigation }) => {
                         </View>
                         :
                         filteredData.length === 0 ?
-                            (<CardPlay navigation={navigation} text='Por el momentos esta suborganizacion no tiene Miembros' />) :
+                            (<CardPlay navigation={navigation} text='Por el momento esta suborganización no tiene miembros' />) :
                             filteredData.map((item, index) => (
                                 <View style={{ marginTop: 20 }} key={index}>
                                     <Swipeable

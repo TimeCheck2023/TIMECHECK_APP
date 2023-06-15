@@ -1,16 +1,24 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, ImageBackground, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
+import fondoHeader from '../../../../assets/image/fondoHeader.png'
 import * as Icon from '@expo/vector-icons';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import avatar from '../../../../assets/Avatar.png'
+import { StatusBar } from "expo-status-bar";
+
+import CircleProgress from '../../../components/CircleProgress/CircleProgress';
+
+import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../../context/AuthContext';
-import { getOrg, getUserId } from '../../../api/api';
+import { getOrg } from '../../../api/api';
 import { useFocusEffect } from '@react-navigation/native';
-import ProfileSkeleton from '../../User/Profile/ProfileSkeleton';
 
 
 const ProfileOrg = ({ navigation }) => {
-    const { logout, userInfo } = useContext(AuthContext)
+    const { logout, userInfo, socket } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
+    const [cantidad, setCantidad] = useState(0)
+    const [cantida, setCantida] = useState(0)
     const [user, setUser] = useState({})
 
     const getUser = async () => {
@@ -18,7 +26,6 @@ const ProfileOrg = ({ navigation }) => {
         await getOrg(userInfo.id_organización)
             .then((response) => {
                 setUser(response.data.message)
-                console.log(response.data.message)
                 setIsLoading(false)
             }).catch((err) => {
                 console.log(err);
@@ -33,85 +40,193 @@ const ProfileOrg = ({ navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             getUser();
+
+
+            socket.on('CountEvent', data => {
+                setCantidad(data.cantidad_eventos);
+            })
+            socket.on('CountSubOrg', data => {
+                setCantida(data.cantidad_suborganizaciones);
+            })
+
+
+            socket.emit('getCountEvent', userInfo.id_organización)
+            socket.emit('getCountSubOrg', userInfo.id_organización)
+
         }, []),
     );
     return (
-        <View className='flex-1 bg-white'>
-            {
-                isLoading ?
-                    <ProfileSkeleton />
-                    :
-                    <ScrollView
-                    >
-                        <View className='pt-7 pb-16 pl-10 pr-10 bg-[#7560EE] rounded-b-2xl'>
-                            <TouchableOpacity className='absolute w-[45px] h-[45px] left-4 top-10 items-center justify-center rounded-2xl'
-                                style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-                                onPress={() => navigation.goBack()}>
-                                <Icon.AntDesign name="arrowleft" size={27} color="white" />
-                            </TouchableOpacity>
-                            <View className='items-center justify-center top-9'>
-                                <View className='sm:w-[130px] sm:h-[130px] rounded-full shadow-purple-400'>
-                                    <Image source={avatar} className='w-[100%] h-[100%] rounded-full' />
+        <ScrollView>
+            <StatusBar />
+            <View style={styles.container}>
+                <View style={{ width: '100%', height: 250 }}>
+                    <ImageBackground source={fondoHeader} resizeMode='cover' style={{ flex: 1, alignItems: 'center' }}>
+                        <View style={styles.headerProfile}>
+                            <View style={styles.headerProfileImage}>
+                                <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
+                            </View>
+                            <View style={{ top: '-5%', paddingBottom: 30 }}>
+                                <View style={styles.headerContent}>
+                                    <View>
+                                        <View style={{ width: 180 }}>
+                                            <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_organizacion}</Text>
+                                        </View>
+                                        {/* <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text> */}
+                                    </View>
+                                    <TouchableOpacity style={styles.headerContainerButtom}
+                                        onPress={() => navigation.navigate('FormUpdateOrg', {
+                                            data: user
+                                        })}>
+                                        <View style={styles.headerContentButtom}>
+                                            <Icon.Feather name="edit" size={20} color={'white'} />
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
-                                <Text className='text-2xl text-white font-bold mt-3'>{user.correo_organizacion}</Text>
-                                <Text className='text-xl text-white font-medium mt-2'>{user.id_organización}</Text>
                             </View>
                         </View>
-                        <View className='flex-1 h-full p-4 w-full space-y-4 mt-7'>
+                        <TouchableOpacity style={styles.btnClose} onPress={() => logout()}>
+                            <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: '#6C63FF' }} />
+                        </TouchableOpacity>
+                    </ImageBackground>
+                </View>
 
-                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
-                                <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                                    <Icon.Entypo name="emoji-happy" size={25} color="white" />
-                                </View>
-                                <Text className='text-2xl text-black font-bold left-11'>Eventos asistidos</Text>
-                                <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.confirmados}</Text>
-                            </View> */}
 
-                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
-                        <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                            <Icon.Entypo name="emoji-sad" size={25} color="white" />
-                        </View>
-                        <Text className='text-2xl text-black font-bold left-11'>Eventos no asistidos</Text>
-                        <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.pendientes}</Text>
-                    </View> */}
 
-                            {/* <View className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
-                                <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                                    <Icon.Entypo name="emoji-neutral" size={25} color="white" />
-                                </View>
-                                <Text className='text-2xl text-black font-bold left-11'>Eventos pendientes</Text>
-                                <Text className='absolute right-8 text-2xl font-medium text-[#7560EE]'>{user.pendientes}</Text>
-                            </View> */}
-
-                            <TouchableOpacity className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'
-                                onPress={() => navigation.navigate('FormUpdateUSer', {
-                                    data: user
-                                })}>
-                                <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                                    <Icon.AntDesign name="form" size={25} color="white" />
-                                </View>
-                                <Text className='text-2xl text-black font-bold left-9'>Edit</Text>
-                                <Icon.AntDesign name="right" size={27} className='absolute right-5 text-[#7560EE]' />
-                            </TouchableOpacity>
-                            <TouchableOpacity className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl' onPress={() => logout()}>
-                                <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                                    <Icon.Entypo name="log-out" size={25} color="white" />
-                                </View>
-                                <Text className='text-2xl text-black font-bold left-9'>Sing out</Text>
-                                <Icon.AntDesign name="right" size={27} className='absolute right-5 text-[#7560EE]' />
-                            </TouchableOpacity>
-                            {/* <TouchableOpacity className='flex-row h-16 items-center bg-[#E7E7E7] rounded-xl'>
-                        <View className='h-12 w-12 left-2 items-center justify-center bg-[#7560EE] rounded-xl'>
-                            <Icon.AntDesign name="unlock" size={25} color="white" />
-                        </View>
-                        <Text className='text-2xl text-black font-bold left-9'>Delete</Text>
-                        <Icon.AntDesign name="right" size={27} className='absolute right-5 text-[#7560EE]' />
-                    </TouchableOpacity> */}
-                        </View>
-                    </ScrollView>
-            }
-        </View>
+                <View style={styles.contentGraficaOne}>
+                    <View>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
+                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text>
+                    </View>
+                    <CircleProgress
+                        value={cantidad} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                        colorText='#1B1B1B'
+                        colorProgress='#7560EE'
+                    />
+                </View>
+                <View style={styles.contentGraficaTwo}>
+                    <View>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
+                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text>
+                    </View>
+                    <CircleProgress
+                        value={cantida} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                        colorText='white'
+                        colorProgress='#7560EE'
+                    />
+                </View>
+            </View>
+        </ScrollView>
     )
 }
 
 export default ProfileOrg
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingBottom: 130,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    headerProfile: {
+        position: 'absolute',
+        bottom: '-25%',
+        right: 0,
+        width: '75%',
+        height: 200,
+        backgroundColor: 'white',
+        borderTopLeftRadius: 30,
+        borderBottomLeftRadius: 30,
+        elevation: 8,
+        shadowColor: '#7560EE',
+        paddingHorizontal: 20
+    },
+    headerProfileImage: {
+        width: 120,
+        height: 120,
+        borderRadius: 75,
+        top: '-20%',
+        right: '-10%',
+        elevation: 6,
+        shadowColor: '#7560EE',
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    image: {
+        width: 120,
+        height: 120,
+        borderRadius: 75,
+    },
+    headerContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    headerContentTextOne: {
+        fontSize: 35,
+        fontWeight: 'bold',
+        color: '#242424',
+        left: 20
+    },
+    headerContentTextTwo: {
+        fontSize: 22,
+        fontWeight: '700',
+        color: 'gray',
+        width: 180
+    },
+    headerContainerButtom: {
+        width: 60,
+        height: 60,
+        borderRadius: 15,
+        backgroundColor: '#8E7AFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: '-20%',
+    },
+    headerContentButtom: {
+        width: 40,
+        height: 40,
+        borderRadius: 15,
+        backgroundColor: '#7560EE',
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 9
+    },
+    contentGraficaOne: {
+        paddingHorizontal: 30,
+        width: '90%',
+        height: 100,
+        backgroundColor: 'white',
+        marginTop: 90,
+        borderRadius: 20,
+        padding: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        elevation: 9,
+    },
+    contentGraficaTwo: {
+        paddingHorizontal: 30,
+        width: '90%',
+        height: 100,
+        backgroundColor: '#7973ED',
+        marginTop: 20,
+        borderRadius: 20,
+        padding: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        elevation: 9,
+    },
+    btnClose: {
+        backgroundColor: 'white',
+        width: wp('13'),
+        aspectRatio: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        left: 20,
+        top: 40,
+        position: 'absolute'
+    }
+})

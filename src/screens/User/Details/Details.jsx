@@ -21,7 +21,6 @@ const Details = ({ navigation, route }) => {
 
   const { items } = route.params;
 
-
   const [likes, setLikes] = useState(0)
   const [comments, setComments] = useState(0)
   const [dataLikes, setDataLikes] = useState([])
@@ -46,8 +45,7 @@ const Details = ({ navigation, route }) => {
     getAsistencias();
 
     socket.on('Countlikes', (data) => {
-      setLikes(data);
-      console.log(data);
+      setLikes(data['']);
     })
     socket.on('CountComment', (data) => {
       setComments(data);
@@ -129,6 +127,7 @@ const Details = ({ navigation, route }) => {
       console.log(response.data);
       getEvents();
       getAsistencias();
+      socket.emit('postAsistencia', items.idEvento)
     } catch (error) {
       console.log(error.message);
       setIsloading(false)
@@ -148,6 +147,7 @@ const Details = ({ navigation, route }) => {
       console.log(response.data);
       getEvents();
       getAsistencias();
+      socket.emit('postAsistencia', items.idEvento)
     } catch (error) {
       console.log(error.response.data);
       setIsloading(false)
@@ -184,7 +184,7 @@ const Details = ({ navigation, route }) => {
             </View>
             <BottomSheet
               ref={bottomSheetRef}
-              snapPoints={['62%', '97%']}
+              snapPoints={['70%', '72%']}
               borderRadius={70}
             // handleIndicatorStyle={{ opacity: 0 }}
             >
@@ -222,8 +222,7 @@ const Details = ({ navigation, route }) => {
 
 
                     <View style={{ paddingVertical: 20, paddingBottom: '30%' }}>
-                      {/* Container Contacto */}
-                      <Text style={{
+                      {/* <Text style={{
                         fontSize: 22,
                         fontWeight: 'bold'
                       }}>Listing Agent</Text>
@@ -237,17 +236,14 @@ const Details = ({ navigation, route }) => {
                           <TouchableOpacity style={styles.ButtomPhone} onPress={sendWhatsAppMessage}>
                             <Icon.Entypo name='phone' size={24} color='white' />
                           </TouchableOpacity>
-                          {/* <TouchableOpacity style={{ backgroundColor: '#6C5CE7', elevation: 7, width: 40, height: 40, padding: 5, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <Icon.Feather name='calendar' size={20} color='white' />
-                  </TouchableOpacity> */}
                         </View>
-                      </View>
+                      </View> */}
 
 
                       {/* Container Description */}
 
                       <View style={{ paddingVertical: 10 }}>
-                        <Text style={styles.DescriptionTitle}>Description</Text>
+                        <Text style={styles.DescriptionTitle}>Descripcion</Text>
                         <Text style={styles.DescriptionText}>
                           {data.descripcionEvento}
                         </Text>
@@ -266,7 +262,7 @@ const Details = ({ navigation, route }) => {
                           />
                           <CircleProgress
                             value={comments} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                            label='Comments'
+                            label='Comentarios'
                             colorText='#1B1B1B'
                             colorProgress='#7560EE'
                           />
@@ -283,7 +279,7 @@ const Details = ({ navigation, route }) => {
               <View style={styles.buttomSend}>
                 {/* precis */}
                 <View>
-                  <Text style={{ fontSize: 15, color: 'white' }}>Price:</Text>
+                  <Text style={{ fontSize: 15, color: 'white' }}>Precio:</Text>
                   <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>{precio}</Text>
                 </View>
 

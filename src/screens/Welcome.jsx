@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         paddingHorizontal: 20,
         paddingVertical: 40,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     title: {
         color: 'white',

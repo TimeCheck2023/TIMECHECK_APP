@@ -35,7 +35,9 @@ const HomeOrg = ({ items }) => {
         setData(response.data.message);
         setFilteredData(response.data.message);
         setIsloadingData(false)
+        console.log("bien");
       }).catch((error) => {
+        console.log("error");
         setIsloadingData(false)
       })
   }

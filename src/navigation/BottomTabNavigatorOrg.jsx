@@ -9,6 +9,7 @@ import HomeOrg from '../screens/Org/Home/HomeOrg';
 import ProfileOrg from '../screens/Org/ProfileOrg/ProfileOrg';
 import HomeSubOrg from '../screens/Org/HomeSubOrg/HomeSubOrg';
 import UserMiembro from '../screens/Org/UserMiembro/UserMiembro';
+import ProfileOrgs from '../screens/Org/ProfileOrg/ProfileOrgs';
 
 const Tab = createBottomTabNavigator();
 

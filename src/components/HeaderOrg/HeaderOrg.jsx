@@ -13,7 +13,7 @@ const HeaderOrg = ({ navigation, SearchFilter, search }) => {
     return (
         <View>
             <View style={[styles.container2, { marginTop: inset.top + 15 }]}>
-                <AntDesign name='home' size={30} onPress={() => { }} />
+                {/* <AntDesign name='home' size={30} onPress={() => navigation.navigate('HomeStack')} /> */}
                 <Text numberOfLines={1} style={styles.title}>{userInfo.nombre_organizacion}</Text>
                 <Ionicons name='notifications-sharp' color='#7560EE' size={30} onPress={() => { }} />
             </View>

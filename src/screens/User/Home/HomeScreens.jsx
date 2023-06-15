@@ -46,6 +46,9 @@ const HomeScreens = ({ navigation }) => {
     const [isloading, setIsloading] = useState(false)
     //loading para cargar los comentarios
     const [isloadingComent, setIsloadingComent] = useState(true)
+
+    const [isloadingData, setIsloadingData] = useState(false)
+
     //loading para cargar para el send de comentarios
     const [isloadingComentSend, setIsloadingComentSend] = useState(false)
     //loading para cargar para el send de comentarios
@@ -88,18 +91,18 @@ const HomeScreens = ({ navigation }) => {
     useEffect(() => {
         // registerForPushNotificationsAsync();
         loadEvent();
-        // console.log(isDarkMode);
+        console.log(isDarkMode);
     }, [])
 
     // funcion para hacer la peticion de los eventos
     const loadEvent = () => {
-        setIsloading(true)
+        setIsloadingData(true)
         getEvent().then((response) => {
             setData(response.data.response);
             setFilteredData(response.data.response)
-            setIsloading(false)
+            setIsloadingData(false)
         }).catch((error) => {
-            setIsloading(false)
+            setIsloadingData(false)
             setIsloadingFaild(true)
             console.log("error.response");
         })
@@ -233,23 +236,18 @@ const HomeScreens = ({ navigation }) => {
     const handleSearch = (text) => {
         setSelect('All');
 
-        //filtros tanto search como seleccion para la data eventos 
-        // const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
-        // const filtro2 = search === '' ? data : data.filter((item) => (item.nombreEvento && item.nombreEvento.toLowerCase().includes(search.toLowerCase())))
-        // let filt = search ? filtro2 : filtro;
-
-        if (text) {
-            const newData = data.filter(items => {
-                const itemData = items.nombreEvento ? items.nombreEvento.toLowerCase() : ''.toLowerCase()
-                const textData = text.toLowerCase();
-                return itemData.indexOf(textData) > -1
-            })
-            setFilteredData(newData)
-            setSearch(text);
-        } else {
-            setFilteredData(data)
-            setSearch(text);
-        }
+        // if (text) {
+        //     const newData = data.filter(items => {
+        //         const itemData = items.nombreEvento ? items.nombreEvento.toLowerCase() : ''.toLowerCase()
+        //         const textData = text.toLowerCase();
+        //         return itemData.indexOf(textData) > -1
+        //     })
+        //     setFilteredData(newData)
+        //     setSearch(text);
+        // } else {
+        //     setFilteredData(data)
+        setSearch(text);
+        // }
     }
 
     // funcion para guardar el valor del select
@@ -289,7 +287,10 @@ const HomeScreens = ({ navigation }) => {
     //categorias 
     const Category = ['All', 'Educativo', 'Religioso', 'Social', 'Cultural', 'Musical', 'Deportivo', 'Festival', 'Feria', 'Exposición']
 
-
+    //filtros tanto search como seleccion para la data eventos 
+    const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
+    const filtro2 = search === '' ? data : data.filter((item) => (item.nombreEvento && item.nombreEvento.toLowerCase().includes(search.toLowerCase())))
+    let filt = search ? filtro2 : filtro;
 
     //renderiza la session de comentarios
     const renderComment = ({ item }) => {
@@ -298,34 +299,33 @@ const HomeScreens = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-
             {/* header, search, selector */}
             <Header navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} handleSelect={handleSelect} userInfo={userInfo} />
-
-            {/* card recore y retorna las cartas */}
-
             {
-                loadingFaild ?
-                    <View>
-                        <Button title="Refresh" onPress={retryFetch} />
+                isloadingData ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                        <Loading />
                     </View>
                     :
-                    <FlatList
-                        data={filteredData}
-                        renderItem={({ item }) => <CardEvent items={item} openBottomSheet={openBottomSheet} navigation={navigation} CreateLikes={CreateLikes} dataLikes={dataLikes} DeleteLikes={DeleteLikes} userInfo={userInfo} />}
-                        keyExtractor={item => item.idEvento}
-                        refreshControl={
-                            <RefreshControl
-                                colors={['#7560EE']}
-                                refreshing={refreshing}
-                                onRefresh={onRefresh}
-                            />
-                        }
-                        contentContainerStyle={{ alignItems: 'center', paddingVertical: 30 }}
-                        showsVerticalScrollIndicator={false}
-                        onEndReached={loadEvent}
-                        onEndReachedThreshold={0.1}
-                    />
+                    loadingFaild ?
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                            < Button title="Refresh" onPress={retryFetch} />
+                        </View>
+                        :
+                        <FlatList
+                            data={filt}
+                            renderItem={({ item }) => <CardEvent items={item} openBottomSheet={openBottomSheet} navigation={navigation} CreateLikes={CreateLikes} dataLikes={dataLikes} DeleteLikes={DeleteLikes} userInfo={userInfo} />}
+                            keyExtractor={item => item.idEvento}
+                            refreshControl={
+                                <RefreshControl
+                                    colors={['#7560EE']}
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
+                                />
+                            }
+                            contentContainerStyle={{ alignItems: 'center', paddingVertical: 30 }}
+                            showsVerticalScrollIndicator={false}
+                        />
             }
 
 
@@ -360,7 +360,7 @@ const HomeScreens = ({ navigation }) => {
                                     style={styles.textInputComment}
                                     value={comment}
                                     multiline={true}
-                                    onChangeText={handleTextInputChange} placeholder='Write a Comments'
+                                    onChangeText={handleTextInputChange} placeholder='Comenta aquí'
                                     editable={!isloadingComentSend}
                                 />
                                 <TouchableOpacity disabled={isloadingComentSend || comment.length === 0 && true} onPress={submitComment} style={styles.buttomSend} >
@@ -391,7 +391,9 @@ const HomeScreens = ({ navigation }) => {
                     )
                 }
             </BottomSheetModal>
-        </SafeAreaView>
+
+
+        </SafeAreaView >
     )
 }
 

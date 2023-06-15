@@ -9,6 +9,7 @@ import { ScrollView } from 'react-native';
 import fondoHeader from '../../../../assets/image/fondoHeader.png'
 import CardPlay from '../../../components/CardPlay/CardPlay';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Loading from '../../../components/Loading/Loading';
 
 
 
@@ -29,6 +30,7 @@ const HomeEventSuborg = ({ route, navigation }) => {
     const [data, setData] = useState([])
     const [filteredData, setFilteredData] = useState([])
     const [search, setSearch] = useState('')
+    const [isloading, setIsloading] = useState(false)
 
     // useEffect para ejecutar el loadEvent
     useEffect(() => {
@@ -36,13 +38,16 @@ const HomeEventSuborg = ({ route, navigation }) => {
     }, [])
 
     const loadEvent = () => {
+        setIsloading(true)
         getEvent().then((response) => {
             const eventosDePersona = response.data.response.filter(evento => evento.idSuborganizacion === parametro);
             setData(eventosDePersona);
             // console.log(eventosDePersona);
+            setIsloading(false)
             setFilteredData(eventosDePersona);
         }).catch((error) => {
             console.log("error.response");
+            setIsloading(false)
         })
     }
 
@@ -67,31 +72,36 @@ const HomeEventSuborg = ({ route, navigation }) => {
 
             <ScrollView>
                 <View style={styles.container}>
-                    {filteredData.length > 0 ? (
-                        filteredData.map((item, index) => {
-                            return (
-                                <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
-                                    <View style={[styles.card, { backgroundColor: 'white' }]} >
-                                        <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('Graphics', { items: item })}>
-                                            <Image style={styles.image} source={{ uri: item.imagenEvento }} />
-                                        </TouchableOpacity>
-                                        <View style={styles.footer}>
-                                            <View style={styles.titleBox}>
-                                                <Text style={styles.title} numberOfLines={1}>{item.nombreEvento}</Text>
-                                                <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
+                    {isloading ?
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                            <Loading />
+                        </View>
+                        :
+                        filteredData.length > 0 ? (
+                            filteredData.map((item, index) => {
+                                return (
+                                    <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
+                                        <View style={[styles.card, { backgroundColor: 'white' }]} >
+                                            <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('Graphics', { items: item })}>
+                                                <Image style={styles.image} source={{ uri: item.imagenEvento }} />
+                                            </TouchableOpacity>
+                                            <View style={styles.footer}>
+                                                <View style={styles.titleBox}>
+                                                    <Text style={styles.title} numberOfLines={1}>{item.nombreEvento}</Text>
+                                                    <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.favorite}>
+                                                <AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
                                             </View>
                                         </View>
-                                        <View style={styles.favorite}>
-                                            <AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                        </View>
                                     </View>
-                                </View>
-                            )
-                        })
+                                )
+                            })
 
-                    ) : (
-                        <CardPlay navigation={navigation} text='Por el momentos esta suborganizacion no tiene eventos creados' />
-                    )
+                        ) : (
+                            <CardPlay navigation={navigation} text='Por el momento esta suborganizacion no tiene eventos creados' />
+                        )
                     }
                 </View>
             </ScrollView >

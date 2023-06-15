@@ -28,7 +28,7 @@ const header = ({ visible, navigation, search, handleSearch, Category, select, h
                 </View>
                 <View style={{ flex: 1 }}>
                     <Text style={styles.headerTextOne} numberOfLines={1}>{userInfo.nombre_completo_usuario}</Text>
-                    <Text style={styles.headerTextTwo}>Discover fashion that suit your style</Text>
+                    <Text style={styles.headerTextTwo} numberOfLines={1}>{userInfo.correo}</Text>
                 </View>
                 <TouchableOpacity style={styles.headerIcon} onPress={() => navigation.navigate('Notifications')}>
                     <Icon.Ionicons name='notifications-sharp' color='#7560EE' size={24} />

@@ -197,14 +197,14 @@ const FromEvents = ({ navigation }) => {
                         </View>
                     </View >
                     <View className='sm:my-2 lg:my-3'>
-                        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha: </Text>
+                        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha inicio: </Text>
                         <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={showDatePickerInicial}>
                             <Text>{dateInicial ? moment(dateInicial).format('DD/MM/YYYY HH:mm:ss') : 'DD/MM/YYYY HH:mm:ss'}</Text>
                         </TouchableOpacity>
                     </View >
 
                     <View className='sm:my-2 lg:my-3'>
-                        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha: </Text>
+                        <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Fecha final: </Text>
                         <TouchableOpacity className={`flex-row items-center p-3 sm:h-[50px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`} onPress={showDatePickerFinal}>
                             <Text>{dateFinal ? moment(dateFinal).format('DD/MM/YYYY HH:mm:ss') : 'DD/MM/YYYY HH:mm:ss'}</Text>
                         </TouchableOpacity>
@@ -245,7 +245,7 @@ const FromEvents = ({ navigation }) => {
                                     cursorColor='#8A2BE2'
                                     autoCorrect={false}
                                     onChangeText={(text) => setAforo(text)}
-                                    placeholder='Enter correo'
+                                    placeholder='Aforo'
                                 />
                             </View>
                         </View>
@@ -258,7 +258,7 @@ const FromEvents = ({ navigation }) => {
                                     cursorColor='#8A2BE2'
                                     autoCorrect={false}
                                     onChangeText={(text) => setPrecio(text)}
-                                    placeholder='Enter correo'
+                                    placeholder='$'
                                 />
                             </View>
                         </View>
@@ -268,19 +268,13 @@ const FromEvents = ({ navigation }) => {
                     <View className='sm:my-2 lg:my-3'>
                         <Text className='font-bold sm:text-base lg:text-xl sm:top-2 ml-4 ' style={{ fontWeight: '900', color: '#202020' }}>Lugar: </Text>
                         <View className={`flex-row items-center p-3 sm:h-[50px] sm:top-3 lg:h-16 lg:top-3 bg-gray-300 rounded-lg`}>
-                            <Icon.Feather
-                                name='smartphone'
-                                // size={20}
-                                color='#6C5CE7'
-                                className='mr-2 sm:text-xl lg:text-3xl'
-                            />
                             <TextInput
                                 className='flex-1 font-bold text-xl pl-2'
                                 style={{ color: '#202020' }}
                                 cursorColor='#8A2BE2'
                                 autoCorrect={false}
                                 onChangeText={(text) => setLugar(text)}
-                                placeholder='Enter correo'
+                                placeholder='Dirección'
                             />
                         </View>
                     </View >

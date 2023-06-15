@@ -93,13 +93,13 @@ const Sign_In = ({ navigation }) => {
           <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('12'), height: hp('6') }} onPress={() => navigation.navigate('Welcome')}>
             <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />
           </TouchableOpacity>
-          <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '900' }}>Log In</Text>
+          <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '900' }}>Login</Text>
         </View>
 
 
 
         <View className='w-full items-center'>
-          <Text className='text-center text-black' style={{ fontSize: wp('6.5'), fontWeight: '900', marginTop: hp('3.5') }}>Welcome to our login</Text>
+          <Text className='text-center text-black' style={{ fontSize: wp('6.5'), fontWeight: '900', marginTop: hp('3.5') }}>Bienvenido!!</Text>
           <View className='w-80 h-48 items-center mt-7 rounded-2xl' style={{ width: wp('90%'), height: hp('29%') }}>
             <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded-2xl' />
           </View>
@@ -107,8 +107,8 @@ const Sign_In = ({ navigation }) => {
 
         <View className='flex-1' style={{ marginTop: hp('1') }}>
           {/* input */}
-          <Input label='mail' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
-          <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
+          <Input label='Email' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
+          <Input label='Contraseña' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
 
 
           <View className='items-center ' style={{ top: hp('1') }}>
@@ -135,16 +135,16 @@ const Sign_In = ({ navigation }) => {
             <TouchableOpacity disabled={isLoading} activeOpacity={0.7}
               className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`}
               style={{ width: wp('90%'), height: hp('6%'), top: hp('1.8') }}
-              onPress={() => navigation.navigate('VerificationScreen')}
+              onPress={() => navigation.navigate('Verificacion')}
             >
               <Text className='text-xl font-bold text-center text-white'>Verificar cuenta</Text>
             </TouchableOpacity>
           }
 
           <View className='flex-row justify-center' style={{ marginTop: hp('4') }}>
-            <Text className='font-bold' style={{ fontSize: hp('2.7') }}>Already have an account?  </Text>
+            <Text className='font-bold' style={{ fontSize: hp('2.7') }}>No tienes una cuenta?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_Up')}>
-              <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Sing Up</Text>
+              <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Registrate</Text>
             </TouchableOpacity>
           </View>
         </View>

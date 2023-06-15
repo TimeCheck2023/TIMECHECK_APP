@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import AuthNavigator from './AuthNavigator'
 import { StatusBar } from "expo-status-bar";
 import { useContext } from "react";
@@ -8,6 +8,7 @@ import HomeStack from "./HomeStack";
 import HomeStackOrg from "./HomeStackOrg";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useColorScheme } from "react-native";
 
 
 const MainApp = () => {
@@ -20,8 +21,13 @@ const MainApp = () => {
             </View>
         )
     }
+
+    const isDarkMode = useColorScheme();
+
+
     return (
-        <NavigationContainer>
+        // <NavigationContainer theme={isDarkMode === 'dark' ? DarkTheme : DefaultTheme}>
+        <NavigationContainer >
             {/* {userToken !== null ? <HomeStack /> : <AuthNavigator />} */}
             <GestureHandlerRootView style={{ flex: 1 }}>
                 <BottomSheetModalProvider>

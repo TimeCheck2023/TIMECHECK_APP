@@ -1,26 +1,51 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { VictoryChart, VictoryBar, VictoryTheme, VictoryAxis } from "victory-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import * as Icon from '@expo/vector-icons';
-
-const colorScale = ["#7032DD", "#E697FF"];
-
-const data = [
-  {
-    month: 1,
-    earnings: 950,
-  },
-  {
-    month: 2,
-    earnings: 500,
-  },
-];
+import { AuthContext } from "../../../context/AuthContext";
 
 const Graphics = ({ route }) => {
 
+  const { socket } = useContext(AuthContext)
+
+  const [confirmadas, setConfirmadas] = useState(0)
+  const [pendientes, setPendientes] = useState(0)
+  const [canceladas, setCanceladas] = useState(0)
+
   const { items } = route.params;
   console.log(items);
+
+
+  useEffect(() => {
+    socket.emit('getAsistencia', items.idEvento)
+
+
+    socket.on('Asistencias', data => {
+      console.log(data);
+      setConfirmadas(data.asistencias_confirmadas)
+      setPendientes(data.asistencias_pendientes)
+      setCanceladas(data.asistencias_canceladas)
+    })
+  }, [])
+
+  const colorScale = ["#7032DD", "#E697FF", "#7032DD"];
+
+  const data = [
+    {
+      month: 1,
+      earnings: confirmadas,
+    },
+    {
+      month: 2,
+      earnings: pendientes,
+    },
+    {
+      month: 3,
+      earnings: canceladas,
+    },
+  ];
+
 
 
 
@@ -29,7 +54,7 @@ const Graphics = ({ route }) => {
       <ScrollView>
         <Text style={styles.letra} className="text-slate-950 text-3xl text-center font-bold">Estadisticas de los Eventos</Text>
         <View style={styles.separator} />
-        <View style={styles.Search}>
+        {/* <View style={styles.Search}>
           <TouchableOpacity
             style={styles.SearchTextInput}>
 
@@ -37,11 +62,11 @@ const Graphics = ({ route }) => {
             <Text style={{ flex: 1, fontSize: 20, color: '#000', opacity: 0.5 }}>Search</Text>
 
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View className="w-85 h-90 z-20 my-4 mx-5 shadow-md border-violet-500">
-          <Text style={styles.NombreEvento} className="text-violet-500 text-4xl font-bold">Charla Soft</Text>
-          <Text style={styles.asistentes} className="text-color1 text-3xl font-bold">500</Text>
+          <Text style={styles.NombreEvento} className="text-violet-500 text-4xl font-bold">{items.nombreEvento}</Text>
+          {/* <Text style={styles.asistentes} className="text-color1 text-3xl font-bold">500</Text> */}
           <Text style={styles.asistentes} className="text-slate-950 text-xl font-bold">Asistentes</Text>
           <View style={styles.separator} />
           <VictoryChart theme={VictoryTheme.material} padding={{ top: 20, bottom: 50, left: 40, right: 50 }} domainPadding={{ x: 350 }}>
@@ -54,7 +79,7 @@ const Graphics = ({ route }) => {
               // horizontal
               data={data}
               barWidth={15}
-              cornerRadius={{ top: 5}}
+              cornerRadius={{ top: 5 }}
               x="month"
               y="earnings"
               animate={{
@@ -65,13 +90,15 @@ const Graphics = ({ route }) => {
               }}
             />
           </VictoryChart>
-          
-          
+
+
           <View style={styles.conteneGrafica}>
             <View style={[styles.box, { backgroundColor: '#7032DD' }]} />
             <Text style={styles.title}>Asistidos</Text>
-            <View style={{ marginHorizontal: 10 }} />
+            {/* <View style={{ marginHorizontal: 5 }} /> */}
             <View style={[styles.box, { backgroundColor: '#E697FF' }]} />
+            <Text style={styles.title}>pendiente</Text>
+            <View style={[styles.box, { backgroundColor: 'gray' }]} />
             <Text style={styles.title}>No Asistidos</Text>
           </View>
         </View>
@@ -84,7 +111,7 @@ const Graphics = ({ route }) => {
 const styles = StyleSheet.create({
   conteneGrafica: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     flexDirection: 'row',
     marginBottom: 20,
   },
@@ -137,7 +164,7 @@ const styles = StyleSheet.create({
   box: {
     width: 20,
     height: 20,
-    marginRight: 10,
+    marginLeft: 15,
   },
   title: {
     fontSize: 16,

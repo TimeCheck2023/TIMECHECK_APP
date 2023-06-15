@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,7 +16,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "shouldUseActivityState": true
+      "shouldUseActivityState": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Permitir acceso a la cámara",
+        "NSPhotoLibraryUsageDescription": "Permitir acceso a la biblioteca de fotos",
+        "NSPhotoLibraryAddUsageDescription": "Permitir guardar fotos en la biblioteca"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +29,9 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.RECORD_AUDIO"
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
       ],
       "package": "com.aldana212.TIMECHECK_APP",
       "shouldUseActivityState": true
@@ -61,5 +68,6 @@
       },
       "production": {}
     }
+    
   }
 }
