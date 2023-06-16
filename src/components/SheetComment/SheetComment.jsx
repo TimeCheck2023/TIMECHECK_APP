@@ -3,6 +3,7 @@ import React from 'react'
 import moment from 'moment';
 import sena from "../../../assets/eventoSena.jpg";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { light, sizes } from '../../constants/theme';
 
 
 
@@ -27,7 +28,7 @@ const SheetComment = React.memo(({ item, userInfo, setCommenttId, openModals }) 
     <TouchableOpacity style={styles.CardComment} activeOpacity={1} onLongPress={() => { isMiComentario && openModals(), setCommenttId(item.id_comentario) }}
     >
       <View style={isMiComentario ? { flexDirection: 'row-reverse' } : { flexDirection: 'row' }}>
-        <Image source={sena} style={styles.ImageComment}
+        <Image source={{uri: item.image_url}} style={styles.ImageComment}
         />
         <View style={styles.ContentText}>
           <Text style={styles.TextOne} >{item.correo_usuario}</Text>
@@ -53,14 +54,14 @@ const styles = StyleSheet.create({
   ImageComment: {
     width: 50,
     aspectRatio: 1,
-    borderRadius: 52
+    borderRadius: sizes.radius * 2
   },
   ContentText: {
     padding: 16,
-    width: 288,
+    width: wp('70'),
     borderRadius: 16,
     left: 12,
-    backgroundColor: '#9DA6B8'
+    backgroundColor: light.white
 
   },
   TextOne: {
@@ -70,16 +71,16 @@ const styles = StyleSheet.create({
   },
   TextTwo: {
     fontSize: 17,
-    fontWeight: 600,
-    color: 'black',
+    fontWeight: '600',
+    color: light.black,
     marginTop: 7,
     textAlign: 'justify'
   },
   fechaCard: {
     position: 'absolute',
-    fontSize: 19,
-    fontWeight: 'bold',
-    bottom: 3
+    fontSize: wp('4'),
+    fontWeight: '600',
+    bottom: hp('1.5')
   },
 
 })

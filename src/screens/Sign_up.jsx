@@ -45,10 +45,12 @@ const Sign_Up = ({ navigation }) => {
 
   //para capturar los el valor de los input
   const handleOnChageText_us = (value, fieldName) => {
+    setErrors(false)
     setValues_us({ ...values_us, [fieldName]: value })
   }
 
   const handleOnChageText_org = (value, fieldName) => {
+    setErrors(false)
     setValues_org({ ...values_org, [fieldName]: value })
   }
 
@@ -163,7 +165,7 @@ const Sign_Up = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       }
-      <ScrollView contentContainerStyle={{ paddingTop: hp('2'), paddingHorizontal: wp('5') }}>
+      <ScrollView contentContainerStyle={{ paddingTop: hp('1'), paddingHorizontal: wp('5') }}>
         <View style={styles.header}>
           <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Welcome')}>
             <Icon.AntDesign name='left' style={{ fontSize: wp('7'), color: light.purple }} />
@@ -182,7 +184,7 @@ const Sign_Up = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={{ marginTop: hp('1.7') }}>
+        <View style={{ marginTop: hp('1') }}>
           {!isOpen ?
             <>
               <Text style={styles.textLabel}>Tipo Documento</Text>
@@ -219,7 +221,7 @@ const Sign_Up = ({ navigation }) => {
             }
           </TouchableOpacity>
 
-          <View style={{ marginTop: hp('2'), flexDirection: 'row', justifyContent: 'center' }}>
+          <View style={{ marginTop: hp('1'), flexDirection: 'row', justifyContent: 'center' }}>
             <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>Ya tienes una cuenta?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
               <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Login</Text>
@@ -253,7 +255,7 @@ const styles = StyleSheet.create({
     left: spacing.s * 2
   },
   text: {
-    fontSize: hp('2.5'),
+    fontSize: hp('2.3'),
     fontWeight: '700',
     marginTop: hp('2'),
     color: light.black,
@@ -262,7 +264,7 @@ const styles = StyleSheet.create({
   selectButtom: {
     flex: 1,
     height: hp('7.5'),
-    marginTop: hp('2'),
+    marginTop: hp('1'),
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',

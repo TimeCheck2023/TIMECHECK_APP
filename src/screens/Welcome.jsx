@@ -16,7 +16,7 @@ const images = [
 
 const ListItem = React.memo(({ item, opacityValue }) => {
     return (
-        <Animated.View style={{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: light.gray, }}>
+        <Animated.View style={{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: light.gray }}>
             <Animated.Image source={{ uri: item.image }} style={{ width: '100%', height: '100%', opacity: opacityValue, resizeMode: 'cover' }} />
         </Animated.View>
     )
@@ -50,13 +50,13 @@ const Welcome2 = ({ navigation }) => {
         };
     }, [currentIndex]);
 
-    const scrollToIndexWithAnimation = (index) => {
+    const scrollToIndexWithAnimation = (index = 1) => {
         Animated.timing(opacityValue, {
             toValue: 0.7,
             duration: 400,
             useNativeDriver: true,
         }).start(() => {
-            carouselRef.current.scrollToIndex({ animated: true, index });
+            // carouselRef.current.scrollToIndex({ animated: true, index });
             Animated.timing(opacityValue, {
                 toValue: 1,
                 duration: 400,
@@ -76,7 +76,7 @@ const Welcome2 = ({ navigation }) => {
             <ImageBackground style={styles.container} source={fondo}>
                 <View style={styles.content}>
 
-                    <View style={[{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: light.purple }]}>
+                    <View style={[{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: light.purple, marginTop: hp('2%') }]}>
                         <FlatList
                             ref={carouselRef}
                             data={images}

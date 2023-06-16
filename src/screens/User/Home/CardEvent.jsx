@@ -13,7 +13,6 @@ const CARD_HEIGHT = hp('42%');
 const CardEvent = ({ items, navigation, openBottomSheet, CreateLikes, dataLikes, DeleteLikes, userInfo }) => {
 
   const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === items.idEvento)
-  // console.log(resultLikes);
 
 
   return (

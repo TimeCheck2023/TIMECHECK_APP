@@ -1,20 +1,17 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, Pressable, FlatList, RefreshControl, TextInput, KeyboardAvoidingView, Platform, Dimensions, ActivityIndicator, Button, useColorScheme } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Avatar from '../../../../assets/Avatar.png'
 import * as Icon from '@expo/vector-icons';
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { AuthContext } from '../../../context/AuthContext';
 import { getEvent } from '../../../api/api';
 import CardEvent from './CardEvent';
-import moment from 'moment';
-import 'moment/locale/es';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Loading from '../../../components/Loading/Loading';
 import Header from '../../../components/Header/Header';
 import SheetComment from '../../../components/SheetComment/SheetComment';
-import * as Notifications from 'expo-notifications';
 import { useFocusEffect } from '@react-navigation/native';
+import { light, sizes, spacing } from '../../../constants/theme';
 
 const { height, width } = Dimensions.get('window')
 
@@ -63,7 +60,8 @@ const HomeScreens = ({ navigation }) => {
     // ref manipular el bottomSheetModals
     const bottomSheetModalRef = useRef(null);
 
-
+    //categorias 
+    const Category = ['All', 'Educativo', 'Religioso', 'Social', 'Cultural', 'Musical', 'Deportivo', 'Festival', 'Feria', 'Exposición']
 
     // funcion pra mostar el bottomsheetModals
     const openBottomSheet = (eventId) => {
@@ -71,99 +69,9 @@ const HomeScreens = ({ navigation }) => {
         setEventId(eventId);
         // Evento para obtener los registros del servidor al cargar la aplicación
         socket.emit('getComments', eventId);
+
     };
 
-
-    const retryFetch = () => {
-        setIsloadingFaild(false)
-        loadEvent();
-    }
-
-
-    // funcion para refrescar la data de los eventos
-    const onRefresh = async () => {
-        setRefreshing(true);
-        loadEvent();
-        setRefreshing(false);
-    }
-
-    // useEffect para ejecutar el loadEvent
-    useEffect(() => {
-        // registerForPushNotificationsAsync();
-        loadEvent();
-        console.log(isDarkMode);
-    }, [])
-
-    // funcion para hacer la peticion de los eventos
-    const loadEvent = () => {
-        setIsloadingData(true)
-        getEvent().then((response) => {
-            setData(response.data.response);
-            setFilteredData(response.data.response)
-            setIsloadingData(false)
-        }).catch((error) => {
-            setIsloadingData(false)
-            setIsloadingFaild(true)
-            console.log("error.response");
-        })
-    }
-    // useEffect(() => {
-    //     // Solicitar permisos de notificación
-    //     const registerForPushNotifications = async () => {
-    //         const { status } = await Notifications.requestPermissionsAsync();
-    //         if (status !== 'granted') {
-    //             console.log('Permisos de notificación no concedidos');
-    //             return;
-    //         }
-    //     };
-
-    //     registerForPushNotifications();
-    // }, []);
-
-
-    // const registerForPushNotificationsAsync = async () => {
-    //     const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    //     let finalStatus = existingStatus;
-
-    //     if (existingStatus !== 'granted') {
-    //         const { status } = await Notifications.requestPermissionsAsync();
-    //         finalStatus = status;
-    //     }
-
-    //     if (finalStatus !== 'granted') {
-    //         console.log('Permiso de notificación denegado');
-    //         return;
-    //     }
-
-    //     // Obtener el token de notificación del dispositivo
-    //     const token = (await Notifications.getExpoPushTokenAsync()).data;
-
-    //     // Enviar el token de notificación al servidor
-    //     enviarTokenDeNotificacionAlServidor(token);
-    // };
-
-
-
-    // const enviarTokenDeNotificacionAlServidor = async (token) => {
-    //     try {
-    //         console.log(token);
-    //         const response = await fetch('https://timecheck.up.railway.app/Notification/enviar-notificacion', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 token: token,
-    //                 mensaje: '¡Hola desde la aplicación móvil!',
-    //             }),
-    //         });
-
-    //         const data = await response.json();
-    //         console.log(data);
-    //     } catch (error) {
-    //         console.log('Error al enviar el token de notificación al servidor', error);
-    //     }
-    // };
 
     useEffect(() => {
         // socket.on('connect', () => {
@@ -185,11 +93,13 @@ const HomeScreens = ({ navigation }) => {
         });
 
         socket.on('resultComments', (getComments) => {
+            // console.log(data);
             setDataComment(getComments);
             setComment('')
             setIsloadingComent(false);
             setIsloadingComentSend(false)
         })
+
         socket.on('delete', (getComments) => {
             setModalVisible(false);
         })
@@ -207,6 +117,43 @@ const HomeScreens = ({ navigation }) => {
         //     socket.off('delete');
         // };
     }, [socket])
+
+    // useEffect para ejecutar el loadEvent
+    useEffect(() => {
+        loadEvent();
+        console.log(isDarkMode);
+    }, [])
+
+
+    const retryFetch = () => {
+        setIsloadingFaild(false)
+        loadEvent();
+    }
+
+
+    // funcion para refrescar la data de los eventos
+    const onRefresh = async () => {
+        setRefreshing(true);
+        loadEvent();
+        setRefreshing(false);
+    }
+
+
+
+    // funcion para hacer la peticion de los eventos
+    const loadEvent = () => {
+        setIsloadingData(true)
+        getEvent().then((response) => {
+            setData(response.data.response);
+            setFilteredData(response.data.response)
+            setIsloadingData(false)
+        }).catch((error) => {
+            setIsloadingData(false)
+            setIsloadingFaild(true)
+            console.log("error.response");
+        })
+    }
+
 
     // funcion para optener el valor del comenatrio
     const handleTextInputChange = (text) => {
@@ -236,24 +183,39 @@ const HomeScreens = ({ navigation }) => {
     const handleSearch = (text) => {
         setSelect('All');
 
-        // if (text) {
-        //     const newData = data.filter(items => {
-        //         const itemData = items.nombreEvento ? items.nombreEvento.toLowerCase() : ''.toLowerCase()
-        //         const textData = text.toLowerCase();
-        //         return itemData.indexOf(textData) > -1
-        //     })
-        //     setFilteredData(newData)
-        //     setSearch(text);
-        // } else {
-        //     setFilteredData(data)
-        setSearch(text);
-        // }
+        if (text) {
+            const newData = data.filter(items => {
+                const itemData = items.nombreEvento ? items.nombreEvento.toLowerCase() : ''.toLowerCase()
+                const textData = text.toLowerCase();
+                return itemData.indexOf(textData) > -1
+            })
+            setFilteredData(newData)
+            setSearch(text);
+        } else {
+            setFilteredData(data)
+            setSearch(text);
+        }
     }
 
     // funcion para guardar el valor del select
     const handleSelect = (tipo) => {
-        setSelect(tipo);
         setSearch('');
+        if (tipo) {
+            if (tipo === 'All') {
+                return setFilteredData(data), setSelect(tipo);
+            }
+            const newData = data.filter(items => {
+                const itemData = items.tipoEvento ? items.tipoEvento.toLowerCase() : ''.toLowerCase()
+                const textData = tipo.toLowerCase();
+                return itemData.indexOf(textData) > -1
+            })
+            setFilteredData(newData)
+            setSelect(tipo);
+        } else {
+            setFilteredData(data)
+            setSelect(tipo);
+        }
+
     }
 
     // funcion abrir la ventana de eliminar comentario
@@ -284,14 +246,6 @@ const HomeScreens = ({ navigation }) => {
         socket.emit('deleteLikes', objeto);
     }
 
-    //categorias 
-    const Category = ['All', 'Educativo', 'Religioso', 'Social', 'Cultural', 'Musical', 'Deportivo', 'Festival', 'Feria', 'Exposición']
-
-    //filtros tanto search como seleccion para la data eventos 
-    const filtro = select === 'All' ? data : data.filter((item, index) => item.tipoEvento === select)
-    const filtro2 = search === '' ? data : data.filter((item) => (item.nombreEvento && item.nombreEvento.toLowerCase().includes(search.toLowerCase())))
-    let filt = search ? filtro2 : filtro;
-
     //renderiza la session de comentarios
     const renderComment = ({ item }) => {
         return <SheetComment item={item} userInfo={userInfo.correo} setCommenttId={setCommenttId} openModals={openModals} />
@@ -313,7 +267,7 @@ const HomeScreens = ({ navigation }) => {
                         </View>
                         :
                         <FlatList
-                            data={filt}
+                            data={filteredData}
                             renderItem={({ item }) => <CardEvent items={item} openBottomSheet={openBottomSheet} navigation={navigation} CreateLikes={CreateLikes} dataLikes={dataLikes} DeleteLikes={DeleteLikes} userInfo={userInfo} />}
                             keyExtractor={item => item.idEvento}
                             refreshControl={
@@ -342,35 +296,36 @@ const HomeScreens = ({ navigation }) => {
                     ) : (
                         <>
                             <View style={{ height: 40, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Comment</Text>
+                                <Text style={{ fontSize: wp('5'), fontWeight: 'bold' }}>Comment</Text>
                             </View>
-                            {
-                                isLoadings && <Loading isLoadings={isLoadings} />
-                            }
+                            {isLoadings && <Loading isLoadings={isLoadings} />}
                             <BottomSheetFlatList
                                 data={dataComment}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={renderComment}
                                 contentContainerStyle={{ paddingHorizontal: 20 }}
+                                showsVerticalScrollIndicator={false}
                             />
                             <KeyboardAvoidingView style={styles.KeyboardComment}
                                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                             >
-                                <TextInput
-                                    style={styles.textInputComment}
-                                    value={comment}
-                                    multiline={true}
-                                    onChangeText={handleTextInputChange} placeholder='Comenta aquí'
-                                    editable={!isloadingComentSend}
-                                />
-                                <TouchableOpacity disabled={isloadingComentSend || comment.length === 0 && true} onPress={submitComment} style={styles.buttomSend} >
-                                    {
-                                        isloadingComentSend ?
-                                            <ActivityIndicator size="small" color="#fff" />
-                                            :
-                                            <Icon.Feather name="send" size={20} style={{ color: '#fff', textAlign: 'center', }} />
-                                    }
-                                </TouchableOpacity>
+                                <View style={styles.containerText}>
+                                    <TextInput
+                                        style={styles.textInputComment}
+                                        value={comment}
+                                        multiline={true}
+                                        onChangeText={handleTextInputChange} placeholder='Comenta aquí'
+                                        editable={!isloadingComentSend}
+                                    />
+                                    <TouchableOpacity disabled={isloadingComentSend || comment.length === 0 && true} onPress={submitComment} style={styles.buttomSend} >
+                                        {
+                                            isloadingComentSend ?
+                                                <ActivityIndicator size="small" color="#fff" />
+                                                :
+                                                <Icon.Feather name="send" size={20} style={{ color: '#fff', textAlign: 'center', }} />
+                                        }
+                                    </TouchableOpacity>
+                                </View>
                             </KeyboardAvoidingView>
                             {modalVisible && (
                                 <View style={styles.container}>
@@ -405,24 +360,34 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderTopColor: '#ccc',
-        backgroundColor: 'white',
+        backgroundColor: light.light,
+        height: '10%',
+        paddingHorizontal: 10,
+        marginBottom: 10
+    },
+    containerText: {
+        flexDirection: 'row',
+        padding: 5,
+        backgroundColor: light.white,
+        borderRadius: sizes.radius + 10,
+        alignItems: 'center',
     },
     textInputComment: {
+        color: light.black,
+        fontSize: hp('2.4'),
+        fontSize: wp('5'),
         flex: 1,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        marginRight: 5,
-        maxHeight: 80,
-        paddingLeft: 30,
-        fontSize: 18
+        fontWeight: 'bold',
+        paddingLeft: spacing.s + 4,
     },
     buttomSend: {
         backgroundColor: '#7560EE',
-        padding: 13,
-        borderRadius: 5,
+        borderRadius: sizes.radius + 5,
         marginRight: 5,
+        width: 45,
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     // alerta 

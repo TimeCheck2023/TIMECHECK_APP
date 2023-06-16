@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from '@expo/vector-icons';
 import imgGame from "../../assets/verificar.png";
-import { Platform } from 'react-native';
 import { verificarCodigo } from '../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { light, sizes } from '../constants/theme';
+
 
 
 
@@ -51,6 +53,7 @@ const Verificacion = ({ navigation }) => {
 
         return inputRefs?.current[index - 1]?.focus()
     }
+
     const handleBackspace = (event, index) => {
         const { nativeEvent } = event;
         if (nativeEvent.key === "Backspace") {
@@ -72,8 +75,8 @@ const Verificacion = ({ navigation }) => {
         <View style={styles.container}>
             <SafeAreaView>
                 <View style={styles.header}>
-                    <TouchableOpacity>
-                        <AntDesign name="left" size={24} color="black" style={styles.iconHeader} />
+                    <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Sign_In')}>
+                        <AntDesign name="left" size={24} style={styles.iconHeader} />
                     </TouchableOpacity>
                     <View>
                         <Text style={styles.headerTitle}>Verificacion de codigo</Text>
@@ -82,7 +85,6 @@ const Verificacion = ({ navigation }) => {
                 </View>
             </SafeAreaView>
             <View style={styles.content}>
-                {/* <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}> */}
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={styles.title}>¡Bienvenido!</Text>
                     <View style={{ width: 350, height: 220, marginTop: 23 }}>
@@ -127,7 +129,6 @@ const Verificacion = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
-                {/* </KeyboardAvoidingView> */}
             </View>
         </View >
     )
@@ -146,71 +147,80 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20
     },
+    headerButton: {
+        width: wp('12'),
+        height: hp('6'),
+        backgroundColor: light.lightGray,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: sizes.radius - 5
+    },
     headerTitle: {
         fontSize: 23,
         fontWeight: 'bold',
         color: '#141414'
     },
     iconHeader: {
-        color: '#141414'
+        color: light.purple
     },
     content: {
         backgroundColor: '#6C5CE7',
         flex: 1,
         paddingHorizontal: 20,
-        paddingTop: 20,
-        marginTop: 10,
-        paddingTop: 60,
+        paddingTop: hp('3'),
+        marginTop: hp('1'),
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
     },
     title: {
         textTransform: 'uppercase',
-        color: 'white',
+        color: light.white,
         fontWeight: 'bold',
-        fontSize: 30,
+        fontSize: wp('7'),
+        fontSize: hp('3'),
         textAlign: 'center'
     },
     subTitle: {
-        color: '#a2b2fb',
+        color: light.white,
         textAlign: 'justify',
-        paddingVertical: 20,
+        paddingVertical: hp('2'),
         paddingHorizontal: 10,
         fontSize: 22,
         fontWeight: '700'
     },
     otpWrape: {
         flexDirection: 'row',
-        marginVertical: 10,
+        marginVertical: hp('1'),
         justifyContent: 'center',
     },
     otpButtom: {
-        width: 75,
-        height: 75,
+        width: wp('18'),
+        height: hp('9'),
         borderRadius: 60,
-        marginHorizontal: 10,
+        marginHorizontal: wp('2'),
         alignItems: 'center',
         justifyContent: 'center',
     },
     textOpt: {
-        fontSize: 25,
+        fontSize: wp('5'),
+        fontSize: hp('3'),
         fontWeight: 'bold',
         flex: 1,
     },
     buttomVerificar: {
         alignItems: 'center',
-        marginVertical: 30
+        marginVertical: hp('3')
     },
     buttom: {
-        backgroundColor: '#dad5fc',
-        paddingHorizontal: 30,
-        paddingVertical: 20,
+        backgroundColor: light.white,
+        paddingHorizontal: hp('4'),
+        paddingVertical: wp('4'),
         width: '100%',
         alignItems: 'center',
         borderRadius: 10
     },
     textButtom: {
-        color: '#6C5CE7',
+        color: light.purple,
         fontSize: 20,
         fontWeight: 'bold',
         textTransform: 'uppercase'
