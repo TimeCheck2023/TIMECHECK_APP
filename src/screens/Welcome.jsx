@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, Image, FlatList, Animated, Easing } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, FlatList, Animated } from 'react-native'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import fondo from '../../assets/image/fondo.jpg'
+import { light, sizes, spacing } from "../constants/theme";
 
-const { width, height } = Dimensions.get('window');
 
 const images = [
     { id: 1, image: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
@@ -16,7 +16,7 @@ const images = [
 
 const ListItem = React.memo(({ item, opacityValue }) => {
     return (
-        <Animated.View style={{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: '#BDC3C7', }}>
+        <Animated.View style={{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: light.gray, }}>
             <Animated.Image source={{ uri: item.image }} style={{ width: '100%', height: '100%', opacity: opacityValue, resizeMode: 'cover' }} />
         </Animated.View>
     )
@@ -69,12 +69,14 @@ const Welcome2 = ({ navigation }) => {
         return <ListItem item={item} opacityValue={opacityValue} />;
     }, []);
 
+
+
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground style={styles.container} source={fondo}>
                 <View style={styles.content}>
 
-                    <View style={[{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: '#6C63FF' }]}>
+                    <View style={[{ width: wp('95%'), height: hp('35%'), borderRadius: 20, overflow: 'hidden', backgroundColor: light.purple }]}>
                         <FlatList
                             ref={carouselRef}
                             data={images}
@@ -123,19 +125,19 @@ const styles = StyleSheet.create({
         width: '100%',
         bottom: 0,
         position: 'absolute',
-        paddingHorizontal: 20,
-        paddingVertical: 40,
+        paddingHorizontal: spacing.l,
+        paddingVertical: spacing.xl,
         alignItems: 'center',
         justifyContent: 'center'
     },
     title: {
-        color: 'white',
+        color: light.white,
         fontSize: wp('7.5%'),
         fontWeight: 'bold',
-        marginTop: 22
+        marginTop: spacing.l
     },
     contentDescription: {
-        color: 'white',
+        color: light.white,
         lineHeight: hp('3%'),
         fontSize: hp('3%'),
         fontSize: wp('5%'),
@@ -146,33 +148,33 @@ const styles = StyleSheet.create({
         height: hp('8%'),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 30,
+        marginTop: spacing.xl,
     },
     btn: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: light.white,
         justifyContent: 'center',
         alignItems: 'center',
-        borderTopLeftRadius: 12,
-        borderBottomLeftRadius: 12
+        borderTopLeftRadius: sizes.radius,
+        borderBottomLeftRadius: sizes.radius
     },
     btnTextOne: {
         fontWeight: 'bold',
         fontSize: wp('5%'),
-        color: '#6C63FF'
+        color: light.purple
     },
     btnTextTow: {
         fontWeight: 'bold',
         fontSize: wp('5%'),
-        color: '#fff'
+        color: light.white
     },
     btn2: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        borderTopRightRadius: 12,
-        borderBottomRightRadius: 12,
+        borderTopRightRadius: sizes.radius,
+        borderBottomRightRadius: sizes.radius,
         borderWidth: 2,
-        borderColor: '#fff'
+        borderColor: light.white
     },
 })

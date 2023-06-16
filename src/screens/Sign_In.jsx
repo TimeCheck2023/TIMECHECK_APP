@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native'
+import { View, Text, Dimensions, TouchableOpacity, ScrollView, Image, ActivityIndicator, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imgGame from "../../assets/Sing_Up.png";
 import Input from '../components/Input/Input';
@@ -10,6 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { light, sizes, spacing } from '../constants/theme';
 
 
 
@@ -83,44 +84,38 @@ const Sign_In = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-[#E8EAED]'>
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: hp('2'),
-          paddingHorizontal: wp('5')
-        }}>
-        <View className='flex-row items-center'>
-          <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('12'), height: hp('6') }} onPress={() => navigation.navigate('Welcome')}>
-            <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: light.white }}>
+      <ScrollView contentContainerStyle={{ paddingTop: hp('2'), paddingHorizontal: wp('5') }}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Welcome')}>
+            <Icon.AntDesign name='left' style={{ fontSize: wp('7'), color: light.purple }} />
           </TouchableOpacity>
-          <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '900' }}>Login</Text>
+          <Text style={styles.headerText}>Login</Text>
         </View>
 
 
-
-        <View className='w-full items-center'>
-          <Text className='text-center text-black' style={{ fontSize: wp('6.5'), fontWeight: '900', marginTop: hp('3.5') }}>Bienvenido!!</Text>
-          <View className='w-80 h-48 items-center mt-7 rounded-2xl' style={{ width: wp('90%'), height: hp('29%') }}>
-            <Image source={imgGame} resizeMode='cover' className='w-full h-full rounded-2xl' />
+        <View className=''>
+          <Text style={styles.text}>Bienvenido!!</Text>
+          <View style={styles.containerImage}>
+            <Image source={imgGame} resizeMode='cover' style={styles.image} />
           </View>
         </View>
 
-        <View className='flex-1' style={{ marginTop: hp('1') }}>
+        <View style={{ marginTop: hp('1.7') }}>
           {/* input */}
           <Input label='Email' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
           <Input label='Contraseña' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
 
 
-          <View className='items-center ' style={{ top: hp('1') }}>
-            {errors && <Text className={`text-red-800 text-xl font-bold`} style={{ fontSize: hp('3') }}>{errors}</Text>}
+          <View style={{ top: hp('1'), alignItems: 'center' }}>
+            {errors && <Text style={styles.textError}>{errors}</Text>}
           </View>
-          <View className='items-center' style={{ top: hp('1') }}>
-            {message && <Text className={`text-green-800 ml-3 text-xl font-bold`}>{message}</Text>}
+          <View className='items-center' style={{ top: hp('1'), alignItems: 'center' }}>
+            {message && <Text style={styles.texMessage}>{message}</Text>}
           </View>
 
           <TouchableOpacity disabled={isLoading} activeOpacity={0.7}
-            className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`}
-            style={{ width: wp('90%'), height: hp('6%'), marginTop: hp('3%') }}
+            style={[styles.buttomSend, { marginTop: hp('3'), }]}
             onPress={validateData}
           >
 
@@ -133,24 +128,87 @@ const Sign_In = ({ navigation }) => {
           {
             button &&
             <TouchableOpacity disabled={isLoading} activeOpacity={0.7}
-              className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`}
-              style={{ width: wp('90%'), height: hp('6%'), top: hp('1.8') }}
+              style={[styles.buttomSend, { top: hp('1.8') }]}
               onPress={() => navigation.navigate('Verificacion')}
             >
               <Text className='text-xl font-bold text-center text-white'>Verificar cuenta</Text>
             </TouchableOpacity>
           }
 
-          <View className='flex-row justify-center' style={{ marginTop: hp('4') }}>
-            <Text className='font-bold' style={{ fontSize: hp('2.7') }}>No tienes una cuenta?  </Text>
+          <View style={{ marginTop: hp('4'), flexDirection: 'row', justifyContent: 'center' }}>
+            <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>No tienes una cuenta?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_Up')}>
-              <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Registrate</Text>
+              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Registrate</Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
-
     </SafeAreaView>
   )
 }
 export default Sign_In
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  headerButton: {
+    width: wp('12'),
+    height: hp('6'),
+    backgroundColor: light.lightGray,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: sizes.radius - 5
+  },
+  headerText: {
+    fontSize: wp('6.5'),
+    fontWeight: '900',
+    color: light.black,
+    left: spacing.s * 2
+  },
+  text: {
+    fontSize: hp('2.5'),
+    fontSize: wp('6.5'),
+    fontWeight: '700',
+    marginTop: hp('2'),
+    color: light.black,
+    textAlign: 'center'
+  },
+  containerImage: {
+    width: wp('90%'),
+    height: hp('29%'),
+    borderRadius: sizes.radius,
+    marginTop: hp('2')
+  },
+  image: {
+    width: wp('90%'),
+    height: hp('29%'),
+    borderRadius: sizes.radius,
+  },
+  textError: {
+    fontSize: hp('2.5'),
+    color: '#d62828',
+    fontWeight: 'bold'
+  },
+  texMessage: {
+    fontSize: hp('2.5'),
+    color: '#2c6e49',
+    fontWeight: 'bold'
+  },
+  buttomSend: {
+    width: wp('90%'),
+    height: hp('7%'),
+    justifyContent: 'center',
+    borderRadius: sizes.radius,
+    backgroundColor: light.purple,
+    elevation: 9,
+    shadowColor: light.purple,
+  },
+  buttomText: {
+    fontSize: hp('2.6'),
+    textAlign: 'center',
+    color: light.white,
+    fontWeight: 'bold',
+  },
+})

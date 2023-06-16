@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, Image, PixelRatio, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, StyleSheet, Animated } from 'react-native'
 import Input from '../components/Input/Input';
 import { useEffect, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
@@ -6,12 +6,11 @@ import { validationSchemaUser, validationSchemaOrg } from '../utils/validate';
 import { saveUser, saveOrg } from "../api/api"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import moment from 'moment/moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { light, sizes, spacing } from '../constants/theme';
 
 
 const Sign_Up = ({ navigation }) => {
-  const { height, width } = Dimensions.get('window');
 
   //hook para capturar los errores y respuestas http
   const [errors, setErrors] = useState(false)
@@ -85,7 +84,6 @@ const Sign_Up = ({ navigation }) => {
   const validateData = async (num) => {
     // Obtén la fecha y hora actual
     const currentTime = new Date();
-
     // Establece la expiración en 24 horas
     const expirationTime = currentTime.getTime() + 24 * 60 * 60 * 1000;
     AsyncStorage.setItem('expirationTime', expirationTime.toString());
@@ -142,68 +140,63 @@ const Sign_Up = ({ navigation }) => {
     }
   }
 
+  
+
 
   return (
-    <SafeAreaView className='flex-1 bg-[#E8EAED]'>
+    <SafeAreaView style={{ flex: 1, backgroundColor: light.white }}>
 
       {/* ventada de escoger tipo de documento */}
       {Open &&
-        <TouchableOpacity className='absolute justify-center  items-center z-40' style={{ height, width, backgroundColor: 'rgba(0,0,0,0.5)' }} onPress={() => setOpen(false)}>
-          <View className='sm:w-72 sm:h-32 lg:w-[500px] lg:h-72 justify-center items-center bg-white rounded-xl' style={{ width: wp('75%'), height: hp('20') }}>
-            <TouchableOpacity className=' bottom-0 justify-center items-center border-b border-gray-400'
-              style={{ width: wp('50%'), height: hp('6') }} onPress={() => {
+        <TouchableOpacity style={styles.modalSelect} onPress={() => setOpen(false)}>
+          <View style={styles.modals}>
+            <TouchableOpacity style={styles.buttonSelect} onPress={() => {
                 setValues_us({ ...values_us, documentType: 'Cedula Ciudadana' }),
                   setOpen(false)
               }}>
-              <Text className=' text-gray-600 font-bold rounded-lg' style={{ fontSize: wp('4%') }}>Cedula Ciudadana</Text>
+              <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Cedula Ciudadana</Text>
             </TouchableOpacity>
-            <TouchableOpacity className='bottom-0 justify-center items-center border-b border-gray-400'
-              style={{ width: wp('50%'), height: hp('6') }}
+            <TouchableOpacity style={styles.buttonSelect}
               onPress={() => { setValues_us({ ...values_us, documentType: 'Tarjeta de identidad' }), setOpen(false) }}>
-              <Text className=' text-gray-600 font-bold rounded-lg' style={{ fontSize: wp('4%') }}>Tarjeta de identidad</Text>
+              <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Tarjeta de identidad</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       }
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: hp('2'),
-          paddingHorizontal: wp('5')
-        }}>
-        <View className='flex-row items-center'>
-          <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('10'), height: hp('6') }} onPress={() => navigation.navigate('Welcome')}>
-            <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />
+      <ScrollView contentContainerStyle={{ paddingTop: hp('2'), paddingHorizontal: wp('5') }}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Welcome')}>
+            <Icon.AntDesign name='left' style={{ fontSize: wp('7'), color: light.purple }} />
           </TouchableOpacity>
-          <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '900' }}>Registrar</Text>
+          <Text style={styles.headerText}>Registrar</Text>
         </View>
 
-        <Text className='text-center text-black' style={{ fontSize: hp('2.5'), fontWeight: '900', top: hp('2') }}>Bienvenido, selecciona tu tipo de cuenta</Text>
+        <Text style={styles.text}>Bienvenido, selecciona tu tipo de cuenta</Text>
 
-        <View className='flex-row justify-between items-center rounded-2xl' style={{ width: wp('95%'), height: hp('7.5'), marginTop: hp('2.5') }}>
-          <TouchableOpacity activeOpacity={0.7} className={`items-center justify-center left-6 ${!isOpen && 'bg-[#7560EE]'}  rounded-lg`} style={{ width: wp('40%'), height: hp('6.5') }} onPress={ViewUser}>
-            <Text className={`text-xl text-black ${!isOpen && 'text-white'} font-bold`}>usuario</Text>
+        <View style={styles.selectButtom}>
+          <TouchableOpacity activeOpacity={0.7} style={[styles.buttomOne, !isOpen && { backgroundColor: light.purple }]} onPress={ViewUser}>
+            <Text style={[styles.textOne, !isOpen && { color: light.white }]}>usuario</Text>
           </TouchableOpacity >
-          <TouchableOpacity activeOpacity={0.7} className={`items-center justify-center right-6 ${isOpen && 'bg-[#7560EE]'} rounded-lg`} style={{ width: wp('40%'), height: hp('6.5') }} onPress={ViewOrg}>
-            <Text className={`text-xl text-black ${isOpen && 'text-white'} font-bold`}>organizacion</Text>
+          <TouchableOpacity activeOpacity={0.7} style={[styles.buttomTwo, isOpen && { backgroundColor: light.purple }]} onPress={ViewOrg}>
+            <Text style={[styles.textOne, isOpen && { color: light.white }]}>organizacion</Text>
           </TouchableOpacity>
         </View>
 
-        <View className='flex-1' style={{ marginTop: hp('1.7') }}>
+        <View style={{ marginTop: hp('1.7') }}>
           {!isOpen ?
             <>
-              <Text className='font-bold ml-4' style={{ color: '#202020', fontSize: wp('4') }}>Tipo Documento</Text>
-              <TouchableOpacity activeOpacity={0.7} className={`flex-row items-center p-3 sm:top-1 lg:h-16 lg:mt-3 bg-gray-300 text-gray-700 rounded-lg`}
-                style={{ height: hp('7') }}
+              <Text style={styles.textLabel}>Tipo Documento</Text>
+              <TouchableOpacity activeOpacity={0.7} style={styles.selectType}
                 onPress={() => { setOpen(!Open) }}>
-                <Icon.Feather name='users' color='#642AB8' className='sm:text-xl lg:text-3xl' />
-                <Text className='font-bold text-lg rounded-lg ml-4' style={{ color: '#202020', fontSize: hp('2.4') }}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
+                <Icon.Feather name='users' size={20} style={{ color: light.purple }} />
+                <Text style={styles.textSelect}>{values_us.documentType ? values_us.documentType : 'Tipo de documento'}</Text>
               </TouchableOpacity>
               <Input label='numero de documento' value={values_us.documentNumber} keyboardType="phone-pad" onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'documentNumber')} iconName='phone' placeholder='Enter Number' />
               <Input label='nombre completo' value={values_us.fullName} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'fullName')} iconName='user' placeholder='Enter Nombre Completo' />
               <Input label='email' value={values_us.emailAddress} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'emailAddress')} iconName='mail' placeholder='Enter correo' />
               <Input label='contraseña' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' />
             </> :
-            <View style={{ bottom: hp('2') }}>
+            <View style={{ bottom: hp('1') }}>
               <Input label='nombre de organizacion' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
               <Input label='Direccion' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
               <Input label='email' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
@@ -212,32 +205,24 @@ const Sign_Up = ({ navigation }) => {
             </View>
           }
 
-          <View className='items-center ' style={{ top: hp('1') }}>
-            {errors && <Text className={`text-red-800 text-xl font-bold`} style={{ fontSize: hp('2.5') }}>{errors}</Text>}
+          <View style={{ top: hp('1'), alignItems: 'center' }}>
+            {errors && <Text style={styles.textError}>{errors}</Text>}
           </View>
-          <View className='items-center' style={{ top: hp('1') }}>
-            {message && <Text className={`text-green-800 ml-3 font-bold`} style={{ fontSize: hp('2.5') }}>{message}</Text>}
+          <View className='items-center' style={{ top: hp('1'), alignItems: 'center' }}>
+            {message && <Text style={styles.texMessage}>{message}</Text>}
           </View>
 
-          {!isOpen ?
-            <TouchableOpacity disabled={isLoading} activeOpacity={0.7} style={{ width: wp('90%'), height: hp('7%'), top: hp('2') }} className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`} onPress={() => validateData(1)}>
-              {isLoading ?
-                <ActivityIndicator size="large" color='#ffff' /> :
-                <Text className='text-xl font-bold text-center text-white'>Registrar</Text>
-              }
-            </TouchableOpacity>
-            :
-            <TouchableOpacity disabled={isLoading} activeOpacity={0.7} style={{ width: wp('90%'), height: hp('7%'), top: hp('2') }} className={`rounded-xl bg-[#6C5CE7] shadow-xl justify-center`} onPress={() => validateData(2)}>
-              {isLoading ?
-                <ActivityIndicator size="large" color='#ffff' /> :
-                <Text className='text-xl font-bold text-center text-white'>Registrar</Text>
-              }
-            </TouchableOpacity>
-          }
-          <View className='flex-row justify-center' style={{ marginTop: hp('3') }}>
-            <Text className='font-bold' style={{ fontSize: hp('2.7') }}>Ya tienes una cuenta?  </Text>
+          <TouchableOpacity disabled={isLoading} activeOpacity={0.8} style={[styles.buttomSend, isOpen ? { marginTop: hp('1'), } : { marginTop: hp('2'), }]} onPress={() => { !isOpen ? validateData(1) : validateData(2) }}>
+            {isLoading ?
+              <ActivityIndicator size="large" color='#ffff' /> :
+              <Text style={styles.buttomText}>Registrar</Text>
+            }
+          </TouchableOpacity>
+
+          <View style={{ marginTop: hp('2'), flexDirection: 'row', justifyContent: 'center' }}>
+            <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>Ya tienes una cuenta?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
-              <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Login</Text>
+              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -247,3 +232,141 @@ const Sign_Up = ({ navigation }) => {
   )
 }
 export default Sign_Up
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  headerButton: {
+    width: wp('12'),
+    height: hp('6'),
+    backgroundColor: light.lightGray,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: sizes.radius - 5
+  },
+  headerText: {
+    fontSize: wp('6.5'),
+    fontWeight: '900',
+    color: light.black,
+    left: spacing.s * 2
+  },
+  text: {
+    fontSize: hp('2.5'),
+    fontWeight: '700',
+    marginTop: hp('2'),
+    color: light.black,
+    textAlign: 'center'
+  },
+  selectButtom: {
+    flex: 1,
+    height: hp('7.5'),
+    marginTop: hp('2'),
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    borderRadius: sizes.radius
+  },
+  buttomOne: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    height: hp('6.7'),
+    borderTopLeftRadius: sizes.radius,
+    borderBottomLeftRadius: sizes.radius,
+    borderColor: light.purple,
+    borderWidth: 1,
+  },
+  textOne: {
+    fontSize: sizes.h3 + 3,
+    fontWeight: 'bold',
+
+  },
+  buttomTwo: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    height: hp('6.7'),
+    borderTopRightRadius: sizes.radius,
+    borderBottomRightRadius: sizes.radius,
+    borderColor: light.purple,
+    borderWidth: 1,
+  },
+  textLabel: {
+    color: light.black,
+    fontSize: wp('4.5'),
+    fontWeight: 'bold',
+    marginLeft: spacing.m - 6,
+  },
+  selectType: {
+    height: hp('7'),
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    marginTop: 2,
+    backgroundColor: light.lightGray,
+    borderRadius: sizes.radius,
+  },
+  textSelect: {
+    color: light.gray,
+    fontSize: hp('2.4'),
+    fontSize: wp('5'),
+    fontWeight: 'bold',
+    paddingLeft: spacing.s + 4,
+  },
+  textError: {
+    fontSize: hp('2.5'),
+    color: '#d62828',
+    fontWeight: 'bold'
+  },
+  texMessage: {
+    fontSize: hp('2.5'),
+    color: '#2c6e49',
+    fontWeight: 'bold'
+  },
+  buttomSend: {
+    width: wp('90%'),
+    height: hp('7%'),
+    justifyContent: 'center',
+    borderRadius: sizes.radius,
+    backgroundColor: light.purple,
+    elevation: 9,
+    shadowColor: light.purple,
+  },
+  buttomText: {
+    fontSize: hp('2.6'),
+    textAlign: 'center',
+    color: light.white,
+    fontWeight: 'bold',
+  },
+  modalSelect: {
+    height: sizes.height,
+    width: sizes.width,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    zIndex: 1
+  },
+  modals: {
+    width: wp('75%'),
+    height: hp('22'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: light.white,
+    borderRadius: sizes.radius
+  },
+  buttonSelect: {
+    // bottom-0 justify-center items-center border-b border-gray-400
+    width: wp('50%'), 
+    height: hp('7'),
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: light.lightGray,
+    borderBottomWidth: 2
+  }
+
+
+})
