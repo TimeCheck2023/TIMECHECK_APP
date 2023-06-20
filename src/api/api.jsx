@@ -91,16 +91,15 @@ export const getEvent = async () => {
     })
     return result;
 }
-export const getEventId = async () => {
+export const getEventId = async (id) => {
     const result = await axios({
-        url: `${API_C}/api/Event/List`,
+        url: `${API_C}/api/Event/Consult/${id}`,
         method: 'GET',
     })
     return result;
 }
 
 export const saveEvent = async (newEvent) => {
-    // console.log(newEvent);
     const result = await axios({
         url: `${API_C}/api/Event/Send`,
         method: 'POST',

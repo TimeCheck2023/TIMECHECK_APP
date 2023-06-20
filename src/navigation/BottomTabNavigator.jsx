@@ -8,6 +8,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import HomeEvent from '../components/HomeEvents/HomeEvent';
 import Profiles from '../screens/User/Profile/Profiles';
 
+
+
 const Tab = createBottomTabNavigator();
 
 const { width } = Dimensions.get('window')
@@ -24,11 +26,11 @@ const BottomTabNavigator = () => {
             nameIcons: 'home',
             Icons: AntDesign
         },
-        {
-            name: 'Profiles',
-            screen: Profiles,
-            nIcons: 'home',
-        },
+        // {
+        //     name: 'Profiles',
+        //     screen: Profiles,
+        //     nIcons: 'home',
+        // },
     ]
 
     userInfo.rol === 0 && tabs.push({

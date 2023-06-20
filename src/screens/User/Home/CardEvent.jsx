@@ -1,9 +1,7 @@
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, Image, Dimensions } from 'react-native'
 import * as Icon from '@expo/vector-icons';
-import React, { useEffect, useState, useContext, useRef } from 'react'
 import moment from 'moment';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
 const { width, height } = Dimensions.get('window')
 
 const CARD_WIDTH = wp('90%');
@@ -11,6 +9,9 @@ const CARD_HEIGHT = hp('42%');
 
 
 const CardEvent = ({ items, navigation, openBottomSheet, CreateLikes, dataLikes, DeleteLikes, userInfo }) => {
+
+
+  // console.log(dataLikes);
 
   const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === items.idEvento)
 

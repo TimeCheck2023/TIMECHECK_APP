@@ -5,7 +5,7 @@ import { Svg, Circle, Text as SvgText } from 'react-native-svg';
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 
-const CircleProgress = ({ value, label, colorText, colorProgress }) => {
+const CircleProgress = ({ value, label, colorText, colorProgress, colorStoke }) => {
     const animatedValue = useRef(new Animated.Value(0)).current;
     const circleRef = useRef();
 
@@ -37,7 +37,7 @@ const CircleProgress = ({ value, label, colorText, colorProgress }) => {
                     cy={radius + strokeWidth}
                     r={radius}
                     fill="transparent"
-                    stroke="#E5E5E5"
+                    stroke={colorStoke}
                     strokeWidth={7}
                 />
                 <AnimatedCircle

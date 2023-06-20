@@ -40,7 +40,7 @@ const HomeScreens = ({ navigation }) => {
     //almacena el id del comentario seleccionado
     const [commentId, setCommenttId] = useState(null)
     //loading para cargar los eventos
-    const [isloading, setIsloading] = useState(false)
+    const [isloading, setIsloading] = useState(false)    
     //loading para cargar los comentarios
     const [isloadingComent, setIsloadingComent] = useState(true)
 
@@ -254,7 +254,7 @@ const HomeScreens = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {/* header, search, selector */}
-            <Header navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} handleSelect={handleSelect} userInfo={userInfo} />
+            <Header navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} setSelect={setSelect} handleSelect={handleSelect} userInfo={userInfo} />
             {
                 isloadingData ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>

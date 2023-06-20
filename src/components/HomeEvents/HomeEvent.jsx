@@ -72,7 +72,7 @@ const HomeEvent = ({ navigation }) => {
                         return (
                             <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
                                 <View style={[styles.card, { backgroundColor: 'white' }]} >
-                                    <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('Details', { items: item })}>
+                                    <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('DetailsSub', { items: item })}>
                                         <Image style={styles.image} source={{ uri: item.imagenEvento }} />
                                     </TouchableOpacity>
                                     <View style={styles.footer}>

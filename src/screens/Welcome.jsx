@@ -50,13 +50,14 @@ const Welcome2 = ({ navigation }) => {
         };
     }, [currentIndex]);
 
-    const scrollToIndexWithAnimation = (index = 1) => {
+    const scrollToIndexWithAnimation = (index) => {
         Animated.timing(opacityValue, {
             toValue: 0.7,
             duration: 400,
             useNativeDriver: true,
         }).start(() => {
-            // carouselRef.current.scrollToIndex({ animated: true, index });
+            //   flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+            carouselRef.current?.scrollToIndex({ animated: true, index });
             Animated.timing(opacityValue, {
                 toValue: 1,
                 duration: 400,

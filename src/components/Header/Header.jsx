@@ -1,31 +1,95 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable, Animated } from 'react-native'
 import * as Icon from '@expo/vector-icons';
 import Avatar from '../../../assets/Avatar.png'
-import React, { useContext } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { TextInput } from 'react-native';
 import { AuthContext } from '../../context/AuthContext';
+import { light, sizes } from "../../constants/theme";
 
-const header = ({ visible, navigation, search, handleSearch, Category, select, handleSelect, userInfo }) => {
+
+const header = ({ navigation, search, handleSearch, Category, select, setSelect, handleSelect, userInfo }) => {
+
+    const [isVisible, setIsVisible] = useState(false)
+    const animation = useRef(new Animated.Value(0)).current
+    const animatedBorderWidth = useRef(new Animated.Value(0)).current;
+    const animatedBorderColor = useRef(new Animated.Value(0)).current;
+
+
+    const handleFiltre = () => {
+        setIsVisible(!isVisible)
+        if (isVisible) {
+            Animated.timing(animation, {
+                toValue: 60,
+                duration: 500,
+                useNativeDriver: false
+            }).start()
+        } else {
+            handleSelect('All')
+            Animated.timing(animation, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: false
+            }).start()
+        }
+    }
+
+    const handleFocus = () => {
+        Animated.parallel([
+            Animated.timing(animatedBorderWidth, {
+                toValue: 2,
+                duration: 200,
+                useNativeDriver: false,
+            }),
+            Animated.timing(animatedBorderColor, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: false,
+            }),
+        ]).start();
+    };
+
+    const handleBlur = () => {
+        Animated.parallel([
+            Animated.timing(animatedBorderWidth, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: false,
+            }),
+            Animated.timing(animatedBorderColor, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: false,
+            }),
+        ]).start();
+    };
+
+    const borderStyle = {
+        borderColor: animatedBorderColor.interpolate({
+            inputRange: [0, 1],
+            outputRange: [light.lightGray, light.purple],
+        }),
+        borderWidth: animatedBorderWidth,
+    };
 
     return (
         <View>
             {/* header */}
             <View style={styles.header}>
-                <View style={{
+                <TouchableOpacity style={{
                     width: 60,
                     height: 60,
                     borderRadius: 50,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'white',
                     elevation: 20,
                     bottom: 3,
                     shadowColor: '#6C63FF',
                     borderColor: '#7973ED',
-                    borderWidth: 1,
-                }}>
-                    <Text style={{ color: '#7973ED', fontSize: 25, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text>
-                </View>
+                    borderWidth: 2,
+                    overflow: 'hidden',
+                }} onPress={() => navigation.navigate('Profiles')}>
+                    <Image source={{ uri: userInfo.image_url }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                </TouchableOpacity>
                 <View style={{ flex: 1 }}>
                     <Text style={styles.headerTextOne} numberOfLines={1}>{userInfo.nombre_completo_usuario}</Text>
                     <Text style={styles.headerTextTwo} numberOfLines={1}>{userInfo.correo}</Text>
@@ -35,43 +99,45 @@ const header = ({ visible, navigation, search, handleSearch, Category, select, h
                 </TouchableOpacity>
             </View>
 
-
             {/* shearch */}
             <View style={styles.Search}>
-                <View style={styles.SearchTextInput}>
-                    <Icon.FontAwesome name='search' size={20} color='#7560EE' style={{ opacity: 0.5 }} />
+                <Animated.View style={[styles.SearchTextInput, borderStyle]}>
+                    <Icon.FontAwesome name='search' size={20} color={light.purple} style={{ opacity: 0.9 }} />
                     <TextInput
-                        style={{ flex: 1, fontSize: 20, color: '#7560EE', opacity: 0.5 }}
+                        style={{ flex: 1, fontSize: 22, color: light.purple, opacity: 0.9 }}
                         placeholder='Search'
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                         value={search}
+                        cursorColor={light.purple}
                         onChangeText={handleSearch}
                     />
-                </View>
+                </Animated.View>
+                <Pressable style={styles.filtre} onPress={handleFiltre}>
+                    <Icon.Ionicons name='md-filter' size={25} color={light.lightGray} style={{ opacity: 0.9 }} />
+                </Pressable>
             </View>
 
 
             {/* category */}
-            {
-                !visible &&
-                <>
-                    <View>
-                        <ScrollView horizontal
-                            contentContainerStyle={styles.CategoryListContainer}
-                            showsHorizontalScrollIndicator={false}>
-                            {
-                                Category.map((item, index) => (
-                                    <Pressable key={index} onPress={() => { handleSelect(item) }}>
-                                        <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
-                                            {item}
-                                        </Text>
-                                    </Pressable>
-                                ))
-                            }
-                        </ScrollView>
-                    </View>
-                </>
-            }
-
+            <View>
+                <Animated.ScrollView horizontal
+                    style={[styles.CategoryListContainer, {
+                        height: animation,
+                    }]}
+                    contentContainerStyle={{ justifyContent: 'space-between', alignItems: 'center', gap: 15 }}
+                    showsHorizontalScrollIndicator={false}>
+                    {
+                        Category.map((item, index) => (
+                            <Pressable key={index} onPress={() => { handleSelect(item) }}>
+                                <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
+                                    {item}
+                                </Text>
+                            </Pressable>
+                        ))
+                    }
+                </Animated.ScrollView>
+            </View>
         </View>
     )
 }
@@ -118,28 +184,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 24,
         gap: 4,
+        alignItems: 'center'
     },
     SearchTextInput: {
         flex: 1,
-        height: 52,
-        borderRadius: 52,
-        borderWidth: 2,
-        borderColor: '#7560EE',
+        height: 55,
+        borderRadius: sizes.radius + 5,
         alignItems: 'center',
         flexDirection: 'row',
         paddingHorizontal: 24,
-        gap: 12
+        gap: 12,
+        backgroundColor: light.white,
+    },
+    filtre: {
+        backgroundColor: '#6C63FF',
+        width: 50,
+        aspectRatio: 1,
+        borderRadius: sizes.radius,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     // category
     CategoryListContainer: {
         marginTop: 7,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         paddingHorizontal: 40,
-        height: 60,
-        gap: 15,
+        // height: 60
     },
     CategoryListText: {
         fontSize: 21,

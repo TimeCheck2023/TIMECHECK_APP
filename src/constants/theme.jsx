@@ -12,13 +12,9 @@ export const light = {
     purple: '#6C5CE7'
 };
 
-export const dark = {
-    primary: '#070f18',
-    gray: '#8b8989',
-    lightGray: '#D1D5DB',
-    light: '#fbfbfb',
-    white: '#E8EAED',
-    black: '#0A090B',
+export const dark = {   
+    gray: '#3D3A50',
+    black: '#1A1C22',
     purple: '#6C5CE7'
 };
 
@@ -31,6 +27,7 @@ export const shadow = {
             width: 0,
             height: 2,
         },
+        elevation: 5
     },
     dark: {
         shadowColor: light.black,

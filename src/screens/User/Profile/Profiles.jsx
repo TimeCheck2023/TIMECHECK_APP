@@ -5,7 +5,7 @@ import * as Icon from '@expo/vector-icons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import avatar from '../../../../assets/Avatar.png'
 import { StatusBar } from "expo-status-bar";
-
+import { light, sizes, spacing } from "../../../constants/theme";
 import CircleProgress from '../../../components/CircleProgress/CircleProgress';
 
 import React, { useContext, useState } from 'react'
@@ -13,11 +13,13 @@ import { AuthContext } from '../../../context/AuthContext';
 import { getUserId } from '../../../api/api';
 import { useFocusEffect } from '@react-navigation/native';
 import Loading from '../../../components/Loading/Loading';
+import MyModal from './MyModal';
 
 const Profiles = ({ navigation }) => {
 
     const { logout, userInfo, socket } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [pendientes, setPendientes] = useState(0)
     const [confirmado, setConfirmado] = useState(0)
     const [user, setUser] = useState({})
@@ -41,8 +43,6 @@ const Profiles = ({ navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             getUser();
-
-
         }, []),
     );
 
@@ -56,71 +56,90 @@ const Profiles = ({ navigation }) => {
                 :
                 <ScrollView >
                     <StatusBar />
-                    {/* {isLoading ?
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
-                        <Loading />
-                    </View>
-                    : */}
-                    <View style={{ flex: 1 }}>
-                        <View style={styles.container}>
-                            <View style={{ width: '100%', height: 250 }}>
-                                <ImageBackground source={fondoHeader} resizeMode='cover' style={{ flex: 1, alignItems: 'center' }}>
-                                    <View style={styles.headerProfile}>
-                                        <View style={styles.headerProfileImage}>
-                                            <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
-                                        </View>
-                                        <View style={{ top: '-10%', paddingBottom: 30 }}>
-                                            <View style={styles.headerContent}>
-                                                <View>
-                                                    <View style={{ width: 180 }}>
-                                                        <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_completo_usuario}</Text>
-                                                    </View>
-                                                    <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text>
-                                                </View>
-                                                <TouchableOpacity style={styles.headerContainerButtom}
-                                                    onPress={() => navigation.navigate('FormUpdateUSer', {
-                                                        data: user
-                                                    })}>
-                                                    <View style={styles.headerContentButtom}>
-                                                        <Icon.Feather name="edit" size={20} color={'white'} />
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
+                    <View style={styles.container}>
+                        <View style={{ width: '100%', height: 200 }}>
+                            <ImageBackground source={fondoHeader} resizeMode='cover' style={{ width: '100%', height: '100%', alignItems: 'center' }}>
+
+                                <View style={styles.headerProfile}>
+                                    <View style={styles.headerProfileImage}>
+                                        <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
                                     </View>
-                                    <TouchableOpacity style={styles.btnClose} onPress={() => logout()}>
-                                        <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: '#6C63FF' }} />
-                                    </TouchableOpacity>
-                                </ImageBackground>
-                            </View>
+                                    <View style={styles.headerContent}>
+                                        <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_completo_usuario}</Text>
+                                        <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text>
+                                    </View>
+                                </View>
+                                <TouchableOpacity style={styles.btnClose} onPress={() => navigation.goBack()}>
+                                    <Icon.Ionicons name="arrow-back" size={wp('7')} style={{ color: '#6C63FF' }} />
+                                </TouchableOpacity>
+                            </ImageBackground>
+                        </View>
 
 
-
-                            <View style={styles.contentGraficaOne}>
+                        <View style={{ width: '100%', flexDirection: 'row', flexWrap: 'wrap', marginTop: '36%' }}>
+                            <View style={[styles.contentGraficaOne, { backgroundColor: light.white }]}>
                                 <View>
                                     <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
                                     <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text>
                                 </View>
-                                <CircleProgress
-                                    value={pendientes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                                    colorText='#1B1B1B'
-                                    colorProgress='#7560EE'
-                                />
+                                <View style={{ marginTop: 20, elevation: 6, shadowColor: light.white }}>
+                                    <CircleProgress
+                                        value={pendientes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                                        colorText='#1B1B1B'
+                                        colorProgress='#7560EE'
+                                        colorStoke={light.lightGray}
+                                    />
+                                </View>
                             </View>
-                            <View style={styles.contentGraficaTwo}>
-                                <View>
-                                    <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
+
+                            <View style={[styles.contentGraficaOne, { backgroundColor: light.purple }]}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={{ fontSize: 27, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
                                     <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text>
                                 </View>
-                                <CircleProgress
-                                    value={confirmado} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                                    colorText='white'
-                                    colorProgress='#7560EE'
-                                />
+                                <View style={{ marginTop: 20, elevation: 6, shadowColor: light.white }}>
+                                    <CircleProgress
+                                        value={confirmado} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                                        colorText='white'
+                                        colorProgress='#7560EE'
+                                        colorStoke={light.white}
+                                    />
+                                </View>
                             </View>
                         </View>
-                        {/* } */}
+
+                        <TouchableOpacity style={styles.contentCard} onPress={() => navigation.navigate('FormUpdateUSer', { data: user })}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.iconCard}>
+                                    <Icon.AntDesign name="user" size={wp('8')} style={{ color: light.white }} />
+                                </View>
+                                <Text style={{ left: 15, fontSize: 20 }}>Editar perfil</Text>
+                            </View>
+                            <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
+                        </TouchableOpacity>
+
+                        <View style={styles.contentCard}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.iconCard}>
+                                    <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: light.white }} />
+                                </View>
+                                <Text style={{ left: 15, fontSize: 20 }}>Cambiar Contraseña</Text>
+                            </View>
+                            <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
+                        </View>
+
+                        <TouchableOpacity style={styles.contentCard} onPress={() => setIsModalOpen(!isModalOpen)}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.iconCard}>
+                                    <Icon.AntDesign name="setting" size={wp('8')} style={{ color: light.white }} />
+                                </View>
+                                <Text style={{ left: 15, fontSize: 20 }}>Configuraciones</Text>
+                            </View>
+                            <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
+                        </TouchableOpacity>
                     </View>
+                    {/* } */}
+                    <MyModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
                 </ScrollView>
             }
         </>
@@ -132,29 +151,27 @@ export default Profiles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 130,
+        // paddingBottom: 130,
         justifyContent: 'center',
         alignItems: 'center'
     },
     headerProfile: {
         position: 'absolute',
-        bottom: '-25%',
-        right: 0,
-        width: '75%',
-        height: 200,
+        bottom: '-70%',
+        width: '90%',
+        height: 230,
         backgroundColor: 'white',
-        borderTopLeftRadius: 30,
-        borderBottomLeftRadius: 30,
+        borderRadius: sizes.radius,
         elevation: 8,
         shadowColor: '#7560EE',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     headerProfileImage: {
         width: 120,
         height: 120,
         borderRadius: 75,
-        top: '-20%',
-        right: '-10%',
         elevation: 6,
         shadowColor: '#7560EE',
         backgroundColor: 'white',
@@ -167,19 +184,20 @@ const styles = StyleSheet.create({
         borderRadius: 75,
     },
     headerContent: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        marginTop: 15,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     headerContentTextOne: {
         fontSize: 35,
         fontWeight: 'bold',
-        color: '#242424'
+        color: '#242424',
     },
     headerContentTextTwo: {
         fontSize: 22,
         fontWeight: '700',
         color: 'gray',
-        width: 180
+        // width: 180
     },
     headerContainerButtom: {
         width: 60,
@@ -201,29 +219,36 @@ const styles = StyleSheet.create({
     },
     contentGraficaOne: {
         paddingHorizontal: 30,
-        width: '90%',
-        height: 100,
+        width: '43%',
+        height: 180,
         backgroundColor: 'white',
-        marginTop: 90,
         borderRadius: 20,
         padding: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
         elevation: 9,
+        marginLeft: 20,
+        marginBottom: 20,
     },
-    contentGraficaTwo: {
-        paddingHorizontal: 30,
+    contentCard: {
         width: '90%',
-        height: 100,
-        backgroundColor: '#7973ED',
-        marginTop: 20,
-        borderRadius: 20,
+        backgroundColor: 'white',
+        height: 90,
+        borderRadius: sizes.radius,
+        marginTop: 10,
         padding: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        elevation: 9,
+        elevation: 7,
+        shadowColor: light.purple
+    },
+    iconCard: {
+        width: 60,
+        height: 60,
+        backgroundColor: light.purple,
+        borderRadius: sizes.radius,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     btnClose: {
         backgroundColor: 'white',
