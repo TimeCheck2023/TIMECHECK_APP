@@ -1,7 +1,7 @@
 import { View, Text, Image, ImageBackground, Linking, TouchableOpacity, Modal, ActivityIndicator, StyleSheet, Animated, Easing, TextInput } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import { DeleteAsistencia, getAsistencia, getEventId, saveAsistencia, updateAsistencia } from '../../../api/api';
+import { ConfirmarAsistencias, DeleteAsistencia, getAsistencia, getEventId, saveAsistencia, updateAsistencia } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -12,55 +12,52 @@ import Input from '../../../components/Input/Input';
 import Loading from '../../../components/Loading/Loading';
 import { light, sizes } from '../../../constants/theme';
 import ModalsOption from './ModalsOption';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const DetailsSub = ({ navigation, route }) => {
     const { items } = route.params;
     const [likes, setLikes] = useState(0)
+    const [number, setNumber] = useState('')
     const [comments, setComments] = useState(0)
     const [dataLikes, setDataLikes] = useState([])
     const [data, setData] = useState([])
     const [prueba, setPrueba] = useState({})
     const [isloading, setIsloading] = useState(false)
+    const [isActive, setIsActive] = useState(false)
     const [isModalsOpen, setIsModalsOpen] = useState(false)
     const [isModalsOpenC, setIsModalsOpenC] = useState(false)
+    const [error, setError] = useState('')
 
     const { logout, socket, userInfo } = useContext(AuthContext)
 
     const bottomSheetRef = useRef(null);
     const scale = useRef(new Animated.Value(0)).current
 
+    useFocusEffect(
+        React.useCallback(() => {
+            getEvents();
+            getAsistencias();
 
-    useEffect(() => {
+            socket.on('Countlikes', (data) => {
+                setLikes(data.countLikes);
+            })
+            socket.on('CountComment', (data) => {
+                setComments(data);
+            })
 
-        getEvents();
-        getAsistencias();
-
-        socket.on('Countlikes', (data) => {
-            setLikes(data.countLikes);
-        })
-        socket.on('CountComment', (data) => {
-            setComments(data);
-        })
-
-        socket.on('likes', (getLikes) => {
-            setDataLikes(getLikes)
-        });
-
-
-
-
-        socket.emit('getCountLikes', items.idEvento)
-        socket.emit('getCountComments', items.idEvento)
-        socket.emit('getLikes', userInfo.nro_documento_usuario)
+            socket.on('likes', (getLikes) => {
+                setDataLikes(getLikes)
+            });
 
 
 
 
-        // return () => {
-
-        // }
-    }, [])
+            socket.emit('getCountLikes', items.idEvento)
+            socket.emit('getCountComments', items.idEvento)
+            socket.emit('getLikes', userInfo.nro_documento_usuario)
+        }, [])
+    );
 
 
     const getEvents = async () => {
@@ -108,44 +105,25 @@ const DetailsSub = ({ navigation, route }) => {
 
     const precio = data.valorTotalEvento === 0 ? 'Gratis' : data.valorTotalEvento
 
-    const handleSubmitPost = async () => {
-        const data = {
-            eventId: items.idEvento,
-            userEmail: userInfo.correo,
-        }
-        setIsloading(true)
-
-        try {
-            const response = await saveAsistencia(data)
-            console.log(response.data);
-            getEvents();
-            getAsistencias();
-            socket.emit('postAsistencia', items.idEvento)
-        } catch (error) {
-            console.log(error.message);
-            setIsloading(false)
-        }
-    }
-
-    const deleAsistencia = async () => {
-        setIsloading(true)
-
+    const ConfirmarAsistencia = async () => {
         const data = {
             idEvento: items.idEvento,
-            correoUsuario: userInfo.correo,
+            nroDocumentoUsuario: number,
         }
+        setIsActive(true)
 
         try {
-            const response = await DeleteAsistencia(data)
+            const response = await ConfirmarAsistencias(data)
             console.log(response.data);
-            getEvents();
-            getAsistencias();
             socket.emit('postAsistencia', items.idEvento)
+            setIsActive(false)
         } catch (error) {
-            console.log(error.response.data);
-            setIsloading(false)
+            setError(error.message)
+            // console.log(error.message);
+            setIsActive(false)
         }
     }
+
 
     const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === items.idEvento)
 
@@ -169,16 +147,16 @@ const DetailsSub = ({ navigation, route }) => {
                     </View>
                     :
                     <View style={{ flex: 1 }}>
-                        <TouchableOpacity onPress={() => navigation.navigate('ContainerImage', { image: data.imagenEvento })}>
+                        <TouchableOpacity activeOpacity={3} onPress={() =>{ navigation.navigate('ContainerImage', { image: data.imagenEvento }), setIsModalsOpen(!isModalsOpen)}}>
                             <ImageBackground style={styles.backgroundImage} source={{ uri: data.imagenEvento }} >
-                                <TouchableOpacity style={styles.ImagenButtomBack} >
+                                <TouchableOpacity activeOpacity={3} style={styles.ImagenButtomBack} >
                                     <Icon.AntDesign name="arrowleft" size={wp('6')} style={{ color: '#6C63FF' }} onPress={navigation.goBack} />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.Select} onPress={() => resiveBox(1)}>
+                                <TouchableOpacity activeOpacity={3} style={styles.Select} onPress={() => resiveBox(1)}>
                                     <Icon.Entypo name='dots-three-vertical' size={wp('6')} style={{ color: '#6C63FF' }} />
                                 </TouchableOpacity>
                                 {/* modal */}
-                                <ModalsOption isModalsOpen={isModalsOpen} setIsModalsOpen={setIsModalsOpen} scale={scale} />
+                                <ModalsOption item={data} isModalsOpen={isModalsOpen} setIsModalsOpen={setIsModalsOpen} scale={scale} navigation={navigation} />
                             </ImageBackground>
                         </TouchableOpacity>
                         <BottomSheet
@@ -195,7 +173,7 @@ const DetailsSub = ({ navigation, route }) => {
                                             <Text style={styles.headerTitleOne}>{data.nombreEvento}</Text>
                                             <Text style={styles.headerTitleTwo}>{data.tipoEvento}</Text>
                                         </View>
-                                        <View style={{ bottom: 20 }}>
+                                        <View style={{ bottom: 20, right: 10 }}>
                                             <Text style={{ fontSize: 20, color: 'black', fontWeight: '500' }}>Aforo: </Text>
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Text style={styles.headerTextAforoOne}>{data.cuposDisponibles}</Text>
@@ -263,7 +241,11 @@ const DetailsSub = ({ navigation, route }) => {
                             <View style={styles.buttomSend}>
 
                                 {/* buttom */}
-                                <TouchableOpacity onPress={() => { prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' || prueba.exists === false ? handleSubmitPost() : deleAsistencia() }} style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 10, borderRadius: sizes.radius + 10, height: 60, width: 240, justifyContent: 'center', alignItems: 'center' }}>
+                                <TouchableOpacity
+                                    activeOpacity={3}
+                                    onPress={() => setIsModalsOpenC(!isModalsOpenC)
+                                    }
+                                    style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 10, borderRadius: sizes.radius + 10, height: 60, width: 240, justifyContent: 'center', alignItems: 'center' }}>
                                     {isloading ?
                                         <ActivityIndicator size="large" color='#7560EE' />
                                         :
@@ -272,7 +254,7 @@ const DetailsSub = ({ navigation, route }) => {
                                 </TouchableOpacity>
 
                                 {/* precis */}
-                                <TouchableOpacity style={styles.ImagenButtom}
+                                <TouchableOpacity activeOpacity={3} style={styles.ImagenButtom}
                                     onPress={() => { resultLikes ? DeleteLikes(items.idEvento) : CreateLikes(items.idEvento) }}
                                 >
                                     {resultLikes ?
@@ -287,23 +269,28 @@ const DetailsSub = ({ navigation, route }) => {
 
                         <Modal
                             transparent
-                            visible={true}
+                            visible={isModalsOpenC}
                         >
-                            <View style={styles.containerModal}>
+                            <TouchableOpacity activeOpacity={3} style={styles.containerModal} onPress={() => setIsModalsOpenC(!isModalsOpenC)}>
                                 <View style={styles.modal}>
-                                    <Input />
-                                    <View style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                                        <TouchableOpacity style={{ backgroundColor: light.purple, paddingHorizontal: 20, paddingVertical: 10, borderRadius: sizes.radius + 10, height: 60, width: 240, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                                            {isloading ?
-                                                <ActivityIndicator size="large" color='#7560EE' />
+                                    <View>
+                                        <Text style={styles.textTitleModal}>Confirmar Asistencia al Evento</Text>
+                                        <Text style={styles.textModal}>Por favor, ingresa el numero de documento el cual quieres confirmar la asistencia al evento</Text>
+                                    </View>
+                                    {error && <Text style={styles.textModal}>{error}</Text>}
+                                    <Input value={number} onChangeText={(text) => setNumber(text)} placeholder='Numero de documento' iconName='user' />
+                                    <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                        <TouchableOpacity activeOpacity={3} onPress={ConfirmarAsistencia} style={{ backgroundColor: light.purple, paddingHorizontal: 20, paddingVertical: 10, borderRadius: sizes.radius + 10, height: 60, width: 240, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                                            {isActive ?
+                                                <ActivityIndicator size="large" color={light.white} />
                                                 :
-                                                <Text style={{ fontWeight: '700', fontSize: 20, color: light.purple }}>Confirmar Asistencia</Text>
+                                                <Text style={{ fontWeight: '700', fontSize: 20, color: light.white }}>Confirmar Asistencia</Text>
                                             }
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            </View>
-                        </Modal>
+                            </TouchableOpacity>
+                        </Modal >
                     </View >
             }
         </>
@@ -484,9 +471,22 @@ const styles = StyleSheet.create({
     },
     modal: {
         width: wp('90%'),
-        height: hp('50%'),
+        height: hp('40%'),
         backgroundColor: 'white',
         borderRadius: sizes.radius,
-        paddingHorizontal: 20,
-    }
+        padding: 20,
+    },
+    textTitleModal: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
+        textAlign: 'center',
+    },
+    textModal: {
+        fontSize: 18,
+        fontWeight: '500',
+        color: 'black',
+        textAlign: 'center',
+        marginTop: 15
+    },
 })

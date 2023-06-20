@@ -139,7 +139,7 @@ const Profiles = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                     {/* } */}
-                    <MyModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+                    <MyModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} logout={logout} />
                 </ScrollView>
             }
         </>

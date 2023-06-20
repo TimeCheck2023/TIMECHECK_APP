@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     CategoryListContainer: {
         marginTop: 7,
         flexDirection: 'row',
-        paddingHorizontal: 40,
+        paddingHorizontal: 10,
         // height: 60
     },
     CategoryListText: {

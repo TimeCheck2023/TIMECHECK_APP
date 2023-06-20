@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { sizes } from '../constants/theme';
 
 const Modals = ({ visible, onClose }) => {
     return (
@@ -24,6 +25,8 @@ const Modals = ({ visible, onClose }) => {
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
+        width: sizes.width,
+        height: sizes.height,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',

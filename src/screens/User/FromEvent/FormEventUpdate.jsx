@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform, TextInput, Animated, Keyboard } from 'react-native'
-import React, { useContext, useState, useRef, useEffect } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Keyboard, ScrollView, Platform, TextInput, Animated, Pressable } from 'react-native'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -7,35 +7,64 @@ import { light, sizes, spacing } from '../../../constants/theme';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as ImagePicker from 'expo-image-picker';
 import moment from 'moment';
-import { saveEvent } from '../../../api/api';
+import { saveEvent, updateEvent } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
 
-
-const FormEvents = () => {
+const FormEventUpdate = ({ navigation, route }) => {
 
     const { userInfo } = useContext(AuthContext)
+    const { item } = route.params
+    // console.log(item);
+
+    const heightAnim = useRef(new Animated.Value(80)).current;
+    const heightAnimated = useRef(new Animated.Value(60)).current;
 
 
     const [Open, setOpen] = useState(false);
     const [visibility, setVisibility] = useState(false);
-    const [image, setImage] = useState(null)
+    const [image, setImage] = useState(item.imagenEvento)
     const [error, setError] = useState('')
-    const [tipo, setTipo] = useState('')
+    const [tipo, setTipo] = useState(item.tipoEvento)
     const [tipoNumber, setTipoNumber] = useState(null)
-    const [nameEvent, setNameEvent] = useState('')
-    const [nameDescription, setNameDescription] = useState('')
-    const [aforo, setAforo] = useState('')
-    const [precio, setPrecio] = useState('')
-    const [Lugar, setLugar] = useState('hola')
+    const [nameEvent, setNameEvent] = useState(item.nombreEvento)
+    const [nameDescription, setNameDescription] = useState(item.descripcionEvento)
+    const [aforo, setAforo] = useState(item.aforoEvento)
+    const [precio, setPrecio] = useState(item.valorTotalEvento === 0 ? 'Gratis' : item.valorTotalEvento)
+    const [Lugar, setLugar] = useState(item.lugarEvento)
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
-    const heightAnim = useRef(new Animated.Value(80)).current;
-    const heightAnimated = useRef(new Animated.Value(60)).current;
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isDatePickerVisibleFinal, setDatePickerVisibilityFinal] = useState(false);
 
 
+    const dataItem = [
+        { id: 21, tipo: 'Educativo' },
+        { id: 22, tipo: 'Religioso' },
+        { id: 18, tipo: 'Social' },
+        { id: 20, tipo: 'Cultural' },
+        { id: 23, tipo: 'Musical' },
+        { id: 19, tipo: 'Deportivo' },
+        { id: 24, tipo: 'Festival' },
+        { id: 25, tipo: 'Exposición' },
+    ]
+
     useEffect(() => {
+        const tipoEvento = () => {
+            if (tipo === 'Religioso') return setTipoNumber(22)
+            if (tipo === 'Educativo') return setTipoNumber(21)
+            if (tipo === 'Social') return setTipoNumber(18)
+            if (tipo === 'Cultural') return setTipoNumber(20)
+            if (tipo === 'Musical') return setTipoNumber(23)
+            if (tipo === 'Deportivo') return setTipoNumber(19)
+            if (tipo === 'Festival') return setTipoNumber(24)
+            if (tipo === 'Exposición') return setTipoNumber(25)
+
+        }
+
+        tipoEvento()
+
+
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
@@ -75,20 +104,9 @@ const FormEvents = () => {
     }, [])
 
 
-    const dataItem = [
-        { id: 21, tipo: 'Educativo' },
-        { id: 22, tipo: 'Religioso' },
-        { id: 18, tipo: 'Social' },
-        { id: 20, tipo: 'Cultural' },
-        { id: 23, tipo: 'Musical' },
-        { id: 19, tipo: 'Deportivo' },
-        { id: 24, tipo: 'Festival' },
-        { id: 25, tipo: 'Exposición' },
-    ]
 
-
-    const [dateInicial, setDateInicial] = useState('');
-    const [dateFinal, setDateFinal] = useState('');
+    const [dateInicial, setDateInicial] = useState(item.fechaInicioEvento);
+    const [dateFinal, setDateFinal] = useState(item.fechaFinalEvento);
 
     const showDatePickerInicial = () => {
         setDatePickerVisibility(!isDatePickerVisible);
@@ -135,47 +153,40 @@ const FormEvents = () => {
         }
     };
 
-    const handleSelectImage = async (e) => {
-
-        if (tipo === 'Religioso') setTipoNumber(22)
-        if (tipo === 'Educativo') setTipoNumber(21)
-        if (tipo === 'Social') setTipoNumber(18)
-        if (tipo === 'Cultural') setTipoNumber(20)
-        if (tipo === 'Musical') setTipoNumber(23)
-        if (tipo === 'Deportivo') setTipoNumber(19)
-        if (tipo === 'Festival') setTipoNumber(24)
-        if (tipo === 'Exposición') setTipoNumber(25)
-
-        if (image === null) return setError('La imagen es requerida')
-        if (nameEvent === '') return setError('La nombre es requerida')
-        if (dateInicial === '') return setError('La fecha Inicio es requerida')
-        if (dateFinal === '') return setError('La fecha Final es requerida')
-        if (Lugar === '') return setError('La lugar es requerida')
-        if (aforo === '') return setError('La aforo es requerida')
-
-        const formData = new FormData();
-        formData.append("file", image);
-        formData.append("upload_preset", "time_check");
-        formData.append("cloud_name", "centroconveciones");
-        try {
-            const res = await fetch(
-                `https://api.cloudinary.com/v1_1/centroconveciones/image/upload`,
-                {
-                    method: "POST",
-                    body: formData,
-                    headers: { "X-Requested-With": "XMLHttpRequest" },
+    const handleSelectImage = async () => {
+        if (image === item.imagenEvento) {
+            handleSubmit(image)
+            return
+        } else {
+            const formData = new FormData();
+            formData.append("file", image);
+            formData.append("upload_preset", "time_check");
+            formData.append("cloud_name", "centroconveciones");
+            try {
+                const res = await fetch(
+                    `https://api.cloudinary.com/v1_1/centroconveciones/image/upload?w=500&h=300`,
+                    {
+                        method: "POST",
+                        body: formData,
+                        headers: { "X-Requested-With": "XMLHttpRequest" },
+                    }
+                );
+                const data = await res.json();
+                console.log(data);
+                if (data.secure_url) {
+                    handleSubmit(data.secure_url)
                 }
-            );
-            const data = await res.json();
-            if (data.secure_url) {
-                handleSubmit(data.secure_url)
-            }
-        } catch (error) {
-            console.error(error);
-        };
+            } catch (error) {
+                console.error(error);
+            };
+            return;
+        }
+
     }
 
     const handleSubmit = async (image) => {
+
+        console.log(tipoNumber);
 
         const data = {
             nombreEvento: nameEvent,
@@ -185,11 +196,10 @@ const FormEvents = () => {
             fecha_final: dateFinal,
             lugar: Lugar,
             aforo: aforo,
-            id_suborganizacion: userInfo.id_suborganizacion,
             id_tipo_evento: tipoNumber
         }
 
-        await saveEvent(data)
+        await updateEvent(data, item.idEvento)
             .then((response) => {
                 console.log("response.data.message");
                 console.log(response.data.message);
@@ -236,11 +246,12 @@ const FormEvents = () => {
 
             <SafeAreaView>
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Sign_In')}>
+                    <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
                         <AntDesign name="left" size={24} style={styles.iconHeader} />
                     </TouchableOpacity>
                     <View>
-                        <Text style={styles.headerTitle}>Verificacion de codigo</Text>
+                        <Text>El teclado está {isKeyboardOpen ? 'abierto' : 'cerrado'}</Text>
+                        {/* <Text style={styles.headerTitle}>Actualizar evento</Text> */}
                     </View>
                     <View style={{ width: 20 }} />
                 </View>
@@ -255,14 +266,14 @@ const FormEvents = () => {
                         <Image source={!image ? { uri: 'https://i.pinimg.com/564x/9e/be/af/9ebeaf28bd1fc61efd80803194029806.jpg' } : { uri: image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.containerButtom}>
-                            <Entypo name="eye" size={24} color={light.lightGray} />
+                        <TouchableOpacity style={styles.containerButtom} onPress={() => navigation.navigate('ContainerImage', { image: image })}>
+                            <Entypo name="eye" size={26} color={light.white} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.containerButtom} onPress={openImagePicker}>
-                            <AntDesign name="picture" size={24} color={light.lightGray} />
+                            <AntDesign name="picture" size={26} color={light.white} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.containerButtom} onPress={openCamera}>
-                            <AntDesign name="camerao" size={24} color={light.lightGray} />
+                            <AntDesign name="camerao" size={26} color={light.white} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -275,6 +286,7 @@ const FormEvents = () => {
                         <View style={styles.containerTextInput}>
                             <MaterialIcons name="drive-file-rename-outline" size={24} color={light.purple} />
                             <TextInput
+                                value={nameEvent}
                                 style={styles.textInputs}
                                 cursorColor={light.purple}
                                 onChangeText={(text) => setNameEvent(text)}
@@ -287,7 +299,7 @@ const FormEvents = () => {
                         <Text style={styles.textLabel}>Fecha inicio:</Text>
                         <TouchableOpacity activeOpacity={0.7} style={styles.containerTextInput} onPress={showDatePickerInicial}>
                             <AntDesign name="calendar" size={24} color={light.purple} />
-                            <Text style={styles.textInputDate}>{dateInicial ? moment(dateInicial).format('DD/MM/YYYY HH:mm:ss') : 'DD/MM/YYYY HH:mm:ss'}</Text>
+                            <Text style={styles.textInputDate}>{dateInicial ? moment(dateInicial).format('DD/MM/YYYY HH:mm A') : 'DD/MM/YYYY HH:mm:ss'}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -295,7 +307,7 @@ const FormEvents = () => {
                         <Text style={styles.textLabel}>Fecha inicio:</Text>
                         <TouchableOpacity activeOpacity={0.7} style={styles.containerTextInput} onPress={showDatePickerFinal}>
                             <AntDesign name="calendar" size={24} color={light.purple} />
-                            <Text style={styles.textInputDate}>{dateFinal ? moment(dateFinal).format('DD/MM/YYYY HH:mm:ss') : 'DD/MM/YYYY HH:mm:ss'}</Text>
+                            <Text style={styles.textInputDate}>{dateFinal ? moment(dateFinal).format('DD/MM/YYYY HH:mm A') : 'DD/MM/YYYY HH:mm:ss'}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -316,6 +328,7 @@ const FormEvents = () => {
                                 numberOfLines={2}
                                 style={styles.textInputs}
                                 cursorColor={light.purple}
+                                value={nameDescription}
                                 onChangeText={(text) => setNameDescription(text)}
                                 placeholder="Escribe una descripción del evento..."
                             />
@@ -330,7 +343,9 @@ const FormEvents = () => {
                                 <AntDesign name="user" size={24} color={light.purple} />
                                 <TextInput
                                     style={styles.textInputs}
+                                    value={aforo.toString()}
                                     cursorColor={light.purple}
+                                    keyboardType='numeric'
                                     onChangeText={(text) => setAforo(text)}
                                     placeholder='Aforo'
                                 />
@@ -344,6 +359,7 @@ const FormEvents = () => {
                                 <TextInput
                                     style={styles.textInputs}
                                     cursorColor={light.purple}
+                                    value={precio}
                                     onChangeText={(text) => setPrecio(text)}
                                     placeholder='Precio'
                                 />
@@ -368,7 +384,7 @@ const FormEvents = () => {
             <Animated.View style={[styles.containerSend, { height: heightAnim }]}>
                 <TouchableOpacity style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }} onPress={handleSelectImage}>
                     <Animated.View style={[styles.send, { height: heightAnimated }]} >
-                        <Text style={styles.textSend}>Crear evento</Text>
+                        <Text style={styles.textSend}>Actualizar evento</Text>
                     </Animated.View>
                 </TouchableOpacity>
             </Animated.View>
@@ -376,7 +392,7 @@ const FormEvents = () => {
     )
 }
 
-export default FormEvents
+export default FormEventUpdate
 
 const styles = StyleSheet.create({
     container: {
@@ -442,7 +458,7 @@ const styles = StyleSheet.create({
         fontSize: hp('2.4'),
         fontSize: wp('5'),
         flex: 1,
-        fontWeight: 'bold',
+        fontWeight: '600',
         paddingLeft: spacing.s + 4,
     },
     textInputDate: {
@@ -450,7 +466,7 @@ const styles = StyleSheet.create({
         fontSize: hp('2.4'),
         fontSize: wp('4'),
         flex: 1,
-        fontWeight: 'bold',
+        fontWeight: '600',
         paddingLeft: spacing.s + 4,
     },
     modalSelect: {
@@ -474,7 +490,6 @@ const styles = StyleSheet.create({
     },
     containerSend: {
         width: '100%',
-        height: 80,
         position: 'absolute',
         bottom: 0,
         backgroundColor: light.white,
@@ -483,14 +498,13 @@ const styles = StyleSheet.create({
     },
     send: {
         width: '70%',
-        height: 60,
         backgroundColor: light.purple,
         borderRadius: sizes.radius,
         justifyContent: 'center',
         alignItems: 'center',
     },
     textSend: {
-        fontSize: 30,
+        fontSize: wp('5'),
         fontWeight: 'bold',
         color: light.white
     }

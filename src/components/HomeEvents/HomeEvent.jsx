@@ -6,6 +6,7 @@ import Header from '../Header/Header'
 import { AuthContext } from '../../context/AuthContext'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as Icon from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 const { width, height } = Dimensions.get('window');
 
 const CARD_WIDTH = width / 2 - (24 + 24 / 2)
@@ -20,6 +21,10 @@ const HomeEvent = ({ navigation }) => {
     const { logout, socket, userInfo } = useContext(AuthContext)
 
     const [data, setData] = useState([])
+
+    const [dataLikes, setDataLikes] = useState([])
+
+    const [filteredData, setFilteredData] = useState([])
     //almacena el la busqueda
     const [search, setSearch] = useState('')
     //seleciona el tipo de evento
@@ -30,27 +35,82 @@ const HomeEvent = ({ navigation }) => {
 
     // funcion para guardar el valor del search
     const handleSearch = (text) => {
-        setSearch(text);
         setSelect('All');
+
+        if (text) {
+            const newData = data.filter(items => {
+                const itemData = items.nombreEvento ? items.nombreEvento.toLowerCase() : ''.toLowerCase()
+                const textData = text.toLowerCase();
+                return itemData.indexOf(textData) > -1
+            })
+            setFilteredData(newData)
+            setSearch(text);
+        } else {
+            setFilteredData(data)
+            setSearch(text);
+        }
     }
     // funcion para guardar el valor del select
     const handleSelect = (tipo) => {
-        setSelect(tipo);
         setSearch('');
+        if (tipo) {
+            if (tipo === 'All') {
+                return setFilteredData(data), setSelect(tipo);
+            }
+            const newData = data.filter(items => {
+                const itemData = items.tipoEvento ? items.tipoEvento.toLowerCase() : ''.toLowerCase()
+                const textData = tipo.toLowerCase();
+                return itemData.indexOf(textData) > -1
+            })
+            setFilteredData(newData)
+            setSelect(tipo);
+        } else {
+            setFilteredData(data)
+            setSelect(tipo);
+        }
+
     }
 
     const loadEvent = () => {
         getEvent().then((response) => {
             const eventosDePersona = response.data.response.filter(evento => evento.idSuborganizacion === userInfo.id_suborganizacion);
             setData(eventosDePersona);
+            setFilteredData(eventosDePersona);
         }).catch((error) => {
             console.log("error.response");
         })
     }
+
+
+    const CreateLikes = (id) => {
+        const objeto = new Object({
+            id_evento: id,
+            likes: 1,
+            nro_documento_usuario: userInfo.nro_documento_usuario
+        })
+        socket.emit('createLikes', objeto);
+    }
+
+    const DeleteLikes = (id) => {
+        const objeto = new Object({
+            id_evento: id,
+            nro_documento_usuario: userInfo.nro_documento_usuario
+        })
+        socket.emit('deleteLikes', objeto);
+    }
+
+
     // useEffect para ejecutar el loadEvent
-    useEffect(() => {
-        loadEvent();
-    }, [])
+    useFocusEffect(
+        React.useCallback(() => {
+            socket.on('likes', (getLikes) => {
+                setDataLikes(getLikes)
+            });
+            loadEvent();
+            socket.emit('getLikes', userInfo.nro_documento_usuario)
+        }, [])
+    );
+
 
     const URI = 'https://raw.githubusercontent.com/azdravchev/Travel-App/details_screen_bottom_sheet/assets/images/trips/eea622430834cb64b900c2f03e5be6b8.jpeg'
 
@@ -68,7 +128,8 @@ const HomeEvent = ({ navigation }) => {
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', paddingVertical: 20 }}>Crear Evento</Text>
                         </View>
                     </TouchableOpacity>
-                    {data.map((item, index) => {
+                    {filteredData.map((item, index) => {
+                        const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === item.idEvento)
                         return (
                             <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
                                 <View style={[styles.card, { backgroundColor: 'white' }]} >
@@ -81,9 +142,13 @@ const HomeEvent = ({ navigation }) => {
                                             <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
                                         </View>
                                     </View>
-                                    <View style={styles.favorite}>
-                                        <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                    </View>
+                                    <TouchableOpacity style={styles.favorite} onPress={() => { resultLikes ? DeleteLikes(item.idEvento) : CreateLikes(item.idEvento) }}>
+                                        {resultLikes ?
+                                            <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                                            :
+                                            <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                                        }
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         )
@@ -122,15 +187,16 @@ const styles = StyleSheet.create({
     },
     image: {
         width: CARD_WIDTH,
-        height: CARD_HEIGHT - 60,
+        height: CARD_HEIGHT - 75,
         resizeMode: 'cover'
     },
     footer: {
-        marginTop: 6,
+        marginBottom: 7,
         marginLeft: 16,
         marginRight: 16,
         flexDirection: 'row',
         alignItems: 'center',
+        // paddingVertical: 10
     },
     titleBox: {
         flex: 1,

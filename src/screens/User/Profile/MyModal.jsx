@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Modal, Button, Switch, TouchableOpacity } from 
 import React from 'react'
 import { light, shadow, sizes } from "../../../constants/theme";
 
-const MyModal = ({ isModalOpen, setIsModalOpen }) => {
+const MyModal = ({ isModalOpen, setIsModalOpen, logout }) => {
     const [switch1, setSwitch1] = React.useState(false)
     return (
         <>
@@ -18,7 +18,7 @@ const MyModal = ({ isModalOpen, setIsModalOpen }) => {
                             <Text style={{ fontSize: 20, fontWeight: 'bold', paddingLeft: 10 }}>Modo Oscuro</Text>
                             <Switch value={switch1} onChange={() => setSwitch1(!switch1)} />
                         </View>
-                        <TouchableOpacity style={styles.buttomContainer}>
+                        <TouchableOpacity style={styles.buttomContainer} onPress={() => logout()}>
                             <Text style={{ fontSize: 22, fontWeight: 'bold', color: light.white }}>Cerrar Session</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttomContainer} onPress={() => setIsModalOpen(!isModalOpen)}>

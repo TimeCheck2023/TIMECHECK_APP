@@ -6,7 +6,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { light, sizes } from '../../../constants/theme';
 
 
-const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale }) => {
+const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale, navigation, item }) => {
     return (
         <>
             <Modal
@@ -17,7 +17,7 @@ const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale }) => {
                     <Animated.View style={[styles.cardModal, {
                         transform: [{ scale }]
                     }]}>
-                        <TouchableOpacity style={styles.option} onPress={() => console.log('editar')}>
+                        <TouchableOpacity style={styles.option} onPress={() => {navigation.navigate('FormEventUpdate', { item: item }), setIsModalsOpen(!isModalsOpen)}}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Editar</Text>
                             <Icon.AntDesign name='edit' size={wp('6')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
@@ -40,10 +40,11 @@ const styles = StyleSheet.create({
         top: 70,
         right: 30,
         borderRadius: sizes.radius,
-        backgroundColor: light.white,
+        backgroundColor: light.light,
         width: 160,
         height: 120,
         justifyContent: 'center',
+        padding: 10
     },
     option: {
         flexDirection: 'row',

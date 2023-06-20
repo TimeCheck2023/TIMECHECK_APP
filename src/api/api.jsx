@@ -100,12 +100,20 @@ export const getEventId = async (id) => {
 }
 
 export const saveEvent = async (newEvent) => {
+
     const result = await axios({
         url: `${API_C}/api/Event/Send`,
         method: 'POST',
         params: newEvent
     })
-    // console.log(result.message.data.data);
+    return result;
+}
+export const updateEvent = async (newEvent, id) => {
+    const result = await axios({
+        url: `${API_C}/api/Event/Update/${id}`,
+        method: 'PUT',
+        params: newEvent,
+    })
     return result;
 }
 
@@ -205,6 +213,16 @@ export const verificarCodigo = async (data) => {
         url: `${API_Node}/Auth/verificacion`,
         method: 'POST',
         data: data
+    })
+    return result;
+}
+
+
+export const ConfirmarAsistencias = async (data) => {
+    const result = await axios({
+        url: `${API_C}/api/Attendance/ConfirmAttendance`,
+        method: 'PUT',
+        params: data
     })
     return result;
 }
