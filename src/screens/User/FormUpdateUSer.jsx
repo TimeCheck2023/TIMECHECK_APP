@@ -183,7 +183,7 @@ const FormUpdateUSer = ({ route, navigation }) => {
                             setTipoDocumento('Cedula Ciudadana'),
                                 setOpen(false)
                         }}>
-                            <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Cedula Ciudadana</Text>
+                            <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Cédula de Ciudadanía</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttonSelect}
                             onPress={() => { setTipoDocumento('Tarjeta de identidad'), setOpen(false) }}>

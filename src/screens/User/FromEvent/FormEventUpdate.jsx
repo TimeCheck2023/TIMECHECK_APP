@@ -253,7 +253,7 @@ const FormEventUpdate = ({ navigation, route }) => {
                         <AntDesign name="left" size={24} style={styles.iconHeader} />
                     </TouchableOpacity>
                     <View>
-                        <Text style={styles.headerTitle}>Actualizar evento</Text>
+                        <Text style={styles.headerTitle}>Actualizar Evento</Text>
                     </View>
                     <View style={{ width: 20 }} />
                 </View>
@@ -290,7 +290,7 @@ const FormEventUpdate = ({ navigation, route }) => {
                                 style={styles.textInputs}
                                 cursorColor={light.purple}
                                 onChangeText={(text) => setNameEvent(text)}
-                                placeholder='Ingresa el nombre delevento'
+                                placeholder='Ingresa el nombre del evento'
                             />
                         </View>
                     </View>
@@ -387,7 +387,7 @@ const FormEventUpdate = ({ navigation, route }) => {
                         {visibility ?
                             <ActivityIndicator size="large" color={light.white} />
                             :
-                            <Text style={styles.textSend}>Actualizar evento</Text>
+                            <Text style={styles.textSend}>Actualizar Evento</Text>
                         }
                     </Animated.View>
                 </TouchableOpacity>

@@ -100,10 +100,10 @@ const Welcome2 = ({ navigation }) => {
                     </Text>
                     <View style={styles.containerBtn}>
                         <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={() => navigation.navigate('Sign_Up')}>
-                            <Text style={styles.btnTextOne}>Register</Text>
+                            <Text style={styles.btnTextOne}>Registrarse!</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.btn2} activeOpacity={0.8} onPress={() => navigation.navigate('Sign_In')}>
-                            <Text style={styles.btnTextTow}>Login</Text>
+                            <Text style={styles.btnTextTow}>Iniciar Sesión</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

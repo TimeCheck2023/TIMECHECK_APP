@@ -81,7 +81,7 @@ const HomeOrg = ({ items }) => {
           :
           <View style={styles.container}>
             {filteredData.length === 0 ?
-              <CardPlay navigation={navigation} text='Por el momentos no tienes suborganizacion creadas' />
+              <CardPlay navigation={navigation} text='Por el momento no tienes suborganizaciónes creadas' />
               :
               filteredData.map((item, index) => (
                 <TouchableOpacity key={item.id_suborganizacion} style={styles.containerCard} onPress={() => {

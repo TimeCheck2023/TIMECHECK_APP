@@ -44,13 +44,13 @@ const VerificationScreen = ({ navigation }) => {
                     <TouchableOpacity className='bg-slate-300 items-center justify-center rounded-lg' style={{ width: wp('12'), height: hp('6') }} onPress={() => navigation.navigate('Sign_In')}>
                         <Icon.AntDesign name='left' color='#6C5CE7' style={{ fontSize: wp('7') }} />
                     </TouchableOpacity>
-                    <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '600' }}>Verificar cuenta</Text>
+                    <Text className='left-4 text-black ' style={{ fontSize: wp('6.5'), fontWeight: '600' }}>Verificar Cuenta</Text>
                 </View>
 
 
 
                 <View className='w-full items-center'>
-                    <Text className='text-center text-black' style={{ fontSize: wp('6.5'), fontWeight: '900', marginTop: hp('3.5') }}>Welcome to our login</Text>
+                    <Text className='text-center text-black' style={{ fontSize: wp('6.5'), fontWeight: '900', marginTop: hp('3.5') }}>¡Bienvenido!</Text>
                     <View className='w-80 h-48 items-center mt-7 rounded-2xl' style={{ width: wp('90%'), height: hp('29%') }}>
                         <Image source={imgGame} resizeMode='contain' className='w-full h-full rounded-2xl' />
                     </View>
@@ -123,9 +123,9 @@ const VerificationScreen = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <View className='flex-row justify-center' style={{ marginTop: hp('5') }}>
-                        <Text className='font-bold' style={{ fontSize: hp('2.7') }}>Already have an account?  </Text>
+                        <Text className='font-bold' style={{ fontSize: hp('2.7') }}>¿Ya tienes una cuenta?</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Sign_Up')}>
-                            <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Sing Up</Text>
+                            <Text className='text-[#6C5CE7] font-bold' style={{ fontSize: hp('2.7') }}>Registrarse</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

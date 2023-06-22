@@ -13,13 +13,13 @@ const MyModal = ({ isModalOpen, setIsModalOpen, logout }) => {
             >
                 <View style={styles.modalContainer}>
                     <View style={[shadow.light, styles.modal]}>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: light.black }}>configuracion</Text>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: light.black }}>Configuración</Text>
                         <View style={styles.opcionContainer}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', paddingLeft: 10 }}>Modo Oscuro</Text>
                             <Switch value={switch1} onChange={() => setSwitch1(!switch1)} />
                         </View>
                         <TouchableOpacity style={styles.buttomContainer} onPress={() => logout()}>
-                            <Text style={{ fontSize: 22, fontWeight: 'bold', color: light.white }}>Cerrar Session</Text>
+                            <Text style={{ fontSize: 22, fontWeight: 'bold', color: light.white }}>Cerrar Sesión</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttomContainer} onPress={() => setIsModalOpen(!isModalOpen)}>
                             <Text style={{ fontSize: 22, fontWeight: 'bold', color: light.white }}>Cerrar modal</Text>
