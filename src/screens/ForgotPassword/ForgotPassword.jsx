@@ -49,8 +49,7 @@ const ForgotPassword = ({ navigation }) => {
             const result = await verificacionEmail(email)
             const message = result.data;
             setCodigo(message.message.codigo);
-            setId(message.message.nro_documento_usuario);
-            console.log(message.message.codigo);
+            setId(message.message.id);
             setIsLoading(false)
             setIsVisible(true)
             setErrors('')

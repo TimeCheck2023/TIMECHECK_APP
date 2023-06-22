@@ -1,24 +1,21 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { VictoryBar, VictoryChart, VictoryTheme, VictoryAxis, VictoryPortal } from 'victory-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, Share } from "react-native";
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, Share, Platform } from "react-native";
 import * as Icon from '@expo/vector-icons';
 import { AuthContext } from "../../../context/AuthContext";
 import * as ImagePicker from 'expo-image-picker';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { light, sizes } from "../../../constants/theme";
 import CircleProgress from "../../../components/CircleProgress/CircleProgress";
-import { Svg } from 'react-native-svg';
-import * as Print from 'expo-print';
-import * as FileSystem from 'expo-file-system';
 import { captureRef } from 'react-native-view-shot';
-
+import PDFLib, { PDFDocument, PDFPage } from 'react-native-pdf-lib';
 
 const Graphics = ({ route, navigation }) => {
 
   const { socket } = useContext(AuthContext)
 
-  const graphRef = useRef(null);
+  const scrollViewRef = React.useRef();
 
 
   const [confirmadas, setConfirmadas] = useState(0)
@@ -29,9 +26,9 @@ const Graphics = ({ route, navigation }) => {
   const [comments, setComments] = useState(0)
 
 
+
   const { items } = route.params;
   // console.log("este es el id del evento" + items.idEvento);
-
 
   useEffect(() => {
     socket.emit('getAsistencia', items.idEvento)
@@ -60,6 +57,8 @@ const Graphics = ({ route, navigation }) => {
 
   }, [])
 
+
+
   const colorScale = ["#7032DD", light.purple, "#7032DD"];
 
   const data = [
@@ -77,48 +76,40 @@ const Graphics = ({ route, navigation }) => {
     },
   ];
 
+  // const filtre = data.filter((item) => item.NombreEvento === nombre)
+
   const generatePDF = async () => {
     try {
-      const result = await ImagePicker.launchCameraAsync({
-        allowsEditing: false,
+      const captureResult = await captureRef(scrollViewRef, {
+        format: 'base64',
+        quality: 1,
       });
 
-      if (!result.canceled) {
-        const base64Data = result.base64;
+      const pdfDoc = await PDFDocument.create();
+      const page = PDFPage.create().setMediaBox(0, 0, 595.276, 841.890).addImage(captureResult, 'PNG').drawImage(0, 0);
+      console.log(page);
+      pdfDoc.addPage(page);
 
-        const htmlContent = `<img src="data:image/png;base64,${base64Data}" />`;
+      const pdfBytes = await pdfDoc.save();
 
-        const pdfFile = await Print.printToFileAsync({ html: htmlContent });
-
-        const destinationPath = `${FileSystem.documentDirectory}graph.pdf`;
-
-        await FileSystem.moveAsync({
-          from: pdfFile.uri,
-          to: destinationPath,
-        });
-
-        console.log('PDF generado exitosamente');
-        console.log('Ruta del archivo PDF:', destinationPath);
-      }
+      // Aquí puedes hacer algo con el archivo PDF, como guardarlo o enviarlo a través de una API.
+      console.log(pdfBytes);
     } catch (error) {
-      console.error('Error al generar el PDF:', error);
+      console.error('Error al capturar y convertir en PDF:', error);
     }
+  }
 
-  };
-
-
-  const sharePDF = async (path) => {
+  const convertToBase64 = async (filePath) => {
     try {
-      const shareOptions = {
-        url: `file://${path}`,
-        mimeType: 'application/pdf',
-        filename: 'graph.pdf',
-        message: '¡Hola! Aquí tienes el archivo PDF de la gráfica que generé.',
-      };
+      const fileUri = filePath.replace('file://', '');
+      const fileContent = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
 
-      await Share.share(shareOptions);
+      return `data:image/png;base64,${fileContent}`;
     } catch (error) {
-      console.error('Error al compartir el PDF:', error);
+      console.error('Error al convertir el archivo a base64:', error);
+      return null;
     }
   };
 
@@ -138,11 +129,11 @@ const Graphics = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-      <ScrollView>
+      <ScrollView ref={scrollViewRef}>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <View style={styles.card}>
             {showGraph ?
-              <Svg ref={graphRef} width={420} height={320}>
+              <View ref={scrollViewRef} style={{ flex: 1 }}>
                 <VictoryChart
                   theme={VictoryTheme.material}
                   domainPadding={70}
@@ -170,7 +161,7 @@ const Graphics = ({ route, navigation }) => {
                     }}
                   />
                 </VictoryChart>
-              </Svg>
+              </View>
               :
               <View style={styles.noAttendanceContainer}>
                 <Text style={styles.noAttendanceText}>No hay asistencia en este evento</Text>
