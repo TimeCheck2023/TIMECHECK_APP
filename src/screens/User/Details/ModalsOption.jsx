@@ -22,7 +22,7 @@ const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale, navigation, item, 
                             <Icon.AntDesign name='edit' size={wp('6')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.option} onPress={() => { setMostrarAdvertencia(true), setIsModalsOpen(!isModalsOpen) }}>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delete</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Eliminar</Text>
                             <Icon.AntDesign name='delete' size={wp('6')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
                     </Animated.View>

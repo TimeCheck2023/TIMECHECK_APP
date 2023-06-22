@@ -34,10 +34,10 @@ const FormSubOrgUpdate = ({navigation, route}) => {
     const validateForm = async () => {
         try {
             if (values_us.name_organization.length === 0) {
-                setErrors('el nombre es obligatorio');
+                setErrors('El nombre es obligatorio');
                 return;
             } else if (values_us.description_organization.length === 0) {
-                setErrors('la descripcion es obligatorio');
+                setErrors('La descripcion es obligatorio');
                 return;
             }
             setIsLoading(true)
@@ -75,7 +75,7 @@ const FormSubOrgUpdate = ({navigation, route}) => {
 
 
                 <View className='w-full items-center'>
-                    <Text className='text-xl text-center text-black font-bold mt-10'>Bienvenido al formulario para actualizar una subOrganización</Text>
+                    <Text className='text-xl text-center text-black font-bold mt-10'>Bienvenido al formulario para actualizar una subOrganización!</Text>
                     <View className='w-80 h-48 items-center mt-7 rounded-2xl'>
                         <Image source={imgGame} resizeMode='contain' className='w-full h-full rounded-2xl' />
                     </View>
@@ -83,8 +83,8 @@ const FormSubOrgUpdate = ({navigation, route}) => {
 
                 <View className='flex-1 mt-6'>
                     {/* input */}
-                    <Input label='nombre organización' value={values_us.name_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'name_organization')} iconName='mail' placeholder='Enter name organization' />
-                    <Input label='descripción organización' value={values_us.description_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'description_organization')} iconName='lock' placeholder='Enter description organization' />
+                    <Input label='nombre organización' value={values_us.name_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'name_organization')} iconName='mail' placeholder='Nombre Organización' />
+                    <Input label='descripción organización' value={values_us.description_organization} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'description_organization')} iconName='lock' placeholder='Descripción organización' />
                     {/* <Input label='password' value={values_us.password} onFocus={() => setErrors('')} onChangeText={(value) => handleOnChageText_us(value, 'password')} password iconName='lock' placeholder='Enter password' /> */}
 
                     <View className='items-center top-7'>
@@ -94,7 +94,7 @@ const FormSubOrgUpdate = ({navigation, route}) => {
                     <TouchableOpacity disabled={isLoading} activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
                         {isLoading ?
                             <ActivityIndicator size="large" color='#ffff' /> :
-                            <Text className='text-xl font-bold text-center text-white'>Register</Text>
+                            <Text className='text-xl font-bold text-center text-white'>Registro</Text>
                         }
                     </TouchableOpacity>
                 </View>

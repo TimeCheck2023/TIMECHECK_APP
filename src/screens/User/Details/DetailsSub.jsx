@@ -244,7 +244,7 @@ const DetailsSub = ({ navigation, route }) => {
                                             {/* Container Description */}
 
                                             <View style={{ paddingVertical: 10 }}>
-                                                <Text style={styles.DescriptionTitle}>Descripcion</Text>
+                                                <Text style={styles.DescriptionTitle}>Descripción</Text>
                                                 <Text style={styles.DescriptionText}>
                                                     {data.descripcionEvento}
                                                 </Text>
@@ -316,7 +316,7 @@ const DetailsSub = ({ navigation, route }) => {
                                 <View style={styles.modal}>
                                     <View>
                                         <Text style={styles.textTitleModal}>Confirmar Asistencia al Evento</Text>
-                                        <Text style={styles.textModal}>Por favor, ingresa el numero de documento el cual quieres confirmar la asistencia al evento</Text>
+                                        <Text style={styles.textModal}>Por favor, ingresa el número de documento el cual quieres confirmar la asistencia al evento</Text>
                                     </View>
                                     {error && <Text style={[styles.textModal, { color: '#d62828' }]}>{error}</Text>}
                                     {message && <Text style={[styles.textModal, { color: '#2c6e49' }]}>{message}</Text>}

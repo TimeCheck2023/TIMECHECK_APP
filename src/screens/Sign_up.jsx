@@ -153,14 +153,14 @@ const Sign_Up = ({ navigation }) => {
         <TouchableOpacity style={styles.modalSelect} onPress={() => setOpen(false)}>
           <View style={styles.modals}>
             <TouchableOpacity style={styles.buttonSelect} onPress={() => {
-                setValues_us({ ...values_us, documentType: 'Cedula Ciudadana' }),
+                setValues_us({ ...values_us, documentType: 'Cédula de Ciudadanía' }),
                   setOpen(false)
               }}>
-              <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Cedula Ciudadana</Text>
+              <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Cédula de Ciudadanía</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonSelect}
               onPress={() => { setValues_us({ ...values_us, documentType: 'Tarjeta de identidad' }), setOpen(false) }}>
-              <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Tarjeta de identidad</Text>
+              <Text style={{ fontSize: wp('5%'), color: light.gray, fontWeight: 'bold' }}>Tarjeta de Identidad</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -177,17 +177,17 @@ const Sign_Up = ({ navigation }) => {
 
         <View style={styles.selectButtom}>
           <TouchableOpacity activeOpacity={0.7} style={[styles.buttomOne, !isOpen && { backgroundColor: light.purple }]} onPress={ViewUser}>
-            <Text style={[styles.textOne, !isOpen && { color: light.white }]}>usuario</Text>
+            <Text style={[styles.textOne, !isOpen && { color: light.white }]}>Usuario</Text>
           </TouchableOpacity >
           <TouchableOpacity activeOpacity={0.7} style={[styles.buttomTwo, isOpen && { backgroundColor: light.purple }]} onPress={ViewOrg}>
-            <Text style={[styles.textOne, isOpen && { color: light.white }]}>organizacion</Text>
+            <Text style={[styles.textOne, isOpen && { color: light.white }]}>Organización</Text>
           </TouchableOpacity>
         </View>
 
         <View style={{ marginTop: hp('1') }}>
           {!isOpen ?
             <>
-              <Text style={styles.textLabel}>Tipo Documento</Text>
+              <Text style={styles.textLabel}>Tipo de Documento</Text>
               <TouchableOpacity activeOpacity={0.7} style={styles.selectType}
                 onPress={() => { setOpen(!Open) }}>
                 <Icon.Feather name='users' size={20} style={{ color: light.purple }} />
@@ -202,8 +202,8 @@ const Sign_Up = ({ navigation }) => {
               <Input label='nombre de organizacion' value={values_org.organization_name} onChangeText={(value) => handleOnChageText_org(value, 'organization_name')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
               <Input label='Direccion' value={values_org.address_organization} onChangeText={(value) => handleOnChageText_org(value, 'address_organization')} onFocus={() => setErrors('')} iconName='user' placeholder='Jhon Smith' />
               <Input label='email' value={values_org.email_organization} onChangeText={(value) => handleOnChageText_org(value, 'email_organization')} onFocus={() => setErrors('')} iconName='mail' placeholder='Jhon Smith' />
-              <Input label='numero telefono' value={values_org.numero_telefono} onChangeText={(value) => handleOnChageText_org(value, 'numero_telefono')} keyboardType='numeric' onFocus={() => setErrors('')} iconName='phone' placeholder='320145++++' />
-              <Input label='contraseña' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
+              <Input label='Numero telefono' value={values_org.numero_telefono} onChangeText={(value) => handleOnChageText_org(value, 'numero_telefono')} keyboardType='numeric' onFocus={() => setErrors('')} iconName='phone' placeholder='320145++++' />
+              <Input label='Contraseña' value={values_org.organization_password} onChangeText={(value) => handleOnChageText_org(value, 'organization_password')} onFocus={() => setErrors('')} password iconName='lock' placeholder='Jhon Smith' />
             </View>
           }
 
@@ -222,9 +222,9 @@ const Sign_Up = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={{ marginTop: hp('1'), flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>Ya tienes una cuenta?  </Text>
+            <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>Ya tienes una cuenta?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_In')}>
-              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Login</Text>
+              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>¡Inicia Sesión!</Text>
             </TouchableOpacity>
           </View>
         </View>

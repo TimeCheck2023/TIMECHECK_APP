@@ -30,7 +30,7 @@ const ChangePassword = ({ navigation }) => {
     //validamos los campos si hay error se lo mandamos al handleError
     const validateForm = async () => {
         if (contraseñaNueva !== contraseñaNuevaCon) {
-            return setErrors("las contraseñas deben ser iguales");
+            return setErrors("Las contraseñas deben ser iguales");
         } else {
             const data = {
                 contraseñaActual,
@@ -93,7 +93,7 @@ const ChangePassword = ({ navigation }) => {
 
                         {isLoading ?
                             <ActivityIndicator size="large" color='#ffff' /> :
-                            <Text className='text-xl font-bold text-center text-white'>Cambiar contraseña</Text>
+                            <Text className='text-xl font-bold text-center text-white'>Cambiar Contraseña</Text>
                         }
 
                     </TouchableOpacity>

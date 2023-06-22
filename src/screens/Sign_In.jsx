@@ -90,7 +90,7 @@ const Sign_In = ({ navigation }) => {
           <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Welcome')}>
             <Icon.AntDesign name='left' style={{ fontSize: wp('7'), color: light.purple }} />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Login</Text>
+          <Text style={styles.headerText}>¡Inicia Sesión!</Text>
         </View>
 
 
@@ -121,7 +121,7 @@ const Sign_In = ({ navigation }) => {
 
             {isLoading ?
               <ActivityIndicator size="large" color='#ffff' /> :
-              <Text className='text-xl font-bold text-center text-white'>Login</Text>
+              <Text className='text-xl font-bold text-center text-white'>Inicia Sesión</Text>
             }
 
           </TouchableOpacity>
@@ -131,7 +131,7 @@ const Sign_In = ({ navigation }) => {
               style={[styles.buttomSend, { top: hp('1.8') }]}
               onPress={() => navigation.navigate('Verificacion')}
             >
-              <Text className='text-xl font-bold text-center text-white'>Verificar cuenta</Text>
+              <Text className='text-xl font-bold text-center text-white'>Verificar Cuenta</Text>
             </TouchableOpacity>
           }
 

@@ -43,7 +43,7 @@ const ModalUP = ({ visible, dataRol, setVisible, handleUpdate, rol, setRol }) =>
                     </View>
                     <View style={styles.conatinerButton}>
                         <TouchableOpacity style={{ height: 53, width: 150, borderRadius: 40, backgroundColor: '#5458F7', justifyContent: 'center', alignItems: 'center' }} onPress={() => handleUpdate(dataRol.nro_documento_usuario, rol)}>
-                            <Text style={{ fontSize: 20, color: 'white', lineHeight: 18, fontWeight: 'bold' }}>Update</Text>
+                            <Text style={{ fontSize: 20, color: 'white', lineHeight: 18, fontWeight: 'bold' }}>Actualizar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

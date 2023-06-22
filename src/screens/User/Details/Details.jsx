@@ -246,7 +246,7 @@ const Details = ({ navigation, route }) => {
                       {/* Container Description */}
 
                       <View style={{ paddingVertical: 10 }}>
-                        <Text style={styles.DescriptionTitle}>Descripcion</Text>
+                        <Text style={styles.DescriptionTitle}>Descripción</Text>
                         <Text style={styles.DescriptionText}>
                           {data.descripcionEvento}
                         </Text>

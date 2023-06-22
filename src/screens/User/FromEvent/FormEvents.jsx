@@ -147,11 +147,11 @@ const FormEvents = ({ navigation }) => {
         if (tipo === 'Exposición') setTipoNumber(25)
 
         if (image === null) return setError('La imagen es requerida')
-        if (nameEvent === '') return setError('La nombre es requerida')
-        if (dateInicial === '') return setError('La fecha Inicio es requerida')
+        if (nameEvent === '') return setError('El nombre es requerido')
+        if (dateInicial === '') return setError('La fecha Inicial es requerida')
         if (dateFinal === '') return setError('La fecha Final es requerida')
-        if (Lugar === '') return setError('La lugar es requerida')
-        if (aforo === '') return setError('La aforo es requerida')
+        if (Lugar === '') return setError('El lugar es requerido')
+        if (aforo === '') return setError('El aforo es requerido')
 
         const formData = new FormData();
         formData.append("file", image);
@@ -240,7 +240,7 @@ const FormEvents = ({ navigation }) => {
                         <AntDesign name="left" size={24} style={styles.iconHeader} />
                     </TouchableOpacity>
                     <View>
-                        <Text style={styles.headerTitle}>Verificacion de codigo</Text>
+                        <Text style={styles.headerTitle}>Verificación de Codigo</Text>
                     </View>
                     <View style={{ width: 20 }} />
                 </View>
@@ -278,7 +278,7 @@ const FormEvents = ({ navigation }) => {
                                 style={styles.textInputs}
                                 cursorColor={light.purple}
                                 onChangeText={(text) => setNameEvent(text)}
-                                placeholder='Ingresa el nombre delevento'
+                                placeholder='Ingresa el nombre del evento'
                             />
                         </View>
                     </View>
