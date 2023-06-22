@@ -73,7 +73,6 @@ const Details = ({ navigation, route }) => {
 
 
   const getEvents = async () => {
-    console.log("items.idEvento");
     try {
       const response = await getEventId(items.idEvento)
       setData(response.data.response);
@@ -129,7 +128,7 @@ const Details = ({ navigation, route }) => {
       console.log(response.data);
       getEvents();
       getAsistencias();
-      socket.emit('postAsistencia', items.idEvento)
+      socket.emit('getAsistencia', items.idEvento)
     } catch (error) {
       console.log(error.message);
       setIsloading(false)
@@ -149,7 +148,7 @@ const Details = ({ navigation, route }) => {
       console.log(response.data);
       getEvents();
       getAsistencias();
-      socket.emit('postAsistencia', items.idEvento)
+      socket.emit('getAsistencia', items.idEvento)
     } catch (error) {
       console.log(error.response.data);
       setIsloading(false)
@@ -290,11 +289,11 @@ const Details = ({ navigation, route }) => {
                 </View>
 
                 {/* buttom */}
-                <TouchableOpacity onPress={() => { prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' || prueba.exists === false ? handleSubmitPost() : deleAsistencia() }} style={{ backgroundColor: 'white', paddingHorizontal: 50, paddingVertical: 15, borderRadius: 30 }}>
+                <TouchableOpacity onPress={() => { prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' || prueba.exists === false ? handleSubmitPost() : deleAsistencia() }} style={{ backgroundColor: 'white', paddingHorizontal: 10, paddingVertical: 15, borderRadius: 30, width: wp('65'), justifyContent: 'center', alignItems: 'center' }}>
                   {isloading ?
                     <ActivityIndicator size="large" color='#7560EE' />
                     :
-                    <Text style={{ fontWeight: '700', fontSize: 18, color: '#6C5CE7' }}>{prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' ? 'Asistir' : 'cancelar asistencia'}</Text>
+                    <Text style={{ fontWeight: '700', fontSize: wp('5'), color: '#6C5CE7' }}>{prueba.tipoAsistencia === 'cancelado' || prueba.tipoAsistencia === '' ? 'Asistir' : 'cancelar asistencia'}</Text>
                   }
 
                 </TouchableOpacity>

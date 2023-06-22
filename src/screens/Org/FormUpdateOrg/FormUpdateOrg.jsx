@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { AntDesign, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -9,11 +9,16 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Input from '../../../components/Input/Input';
 import { updateOrgId } from '../../../api/api';
 import Modals from '../../../components/Modals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../../../context/AuthContext';
 
 
 const FormUpdateOrg = ({ route, navigation }) => {
 
     const { data } = route.params;
+    console.log(data.id_organización);
+
+    const { logout, setUserInfo } = useContext(AuthContext)
 
 
     // ref manipular el bottomSheetModals
@@ -22,14 +27,17 @@ const FormUpdateOrg = ({ route, navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingImg, setIsLoadingImg] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [values, setValues] = useState({
-        organization_name: data.nombre_organizacion,
-        address_organization: data.direccion_organizacion,
-        email_organization: data.correo_organizacion,
-        numero_telefono: data.numero_telefono,
-        device: "movil",
-        image_url: data.image_url
-    });
+
+    const [image, setImage] = useState(data.image_url)
+    const [fullName, setFullName] = useState(data.nombre_organizacion)
+    const [email, setEmail] = useState(data.correo_organizacion)
+    const [address, setAddress] = useState(data.direccion_organizacion)
+    const [numerTelefono, setNumeroTelefono] = useState(data.numero_telefono)
+    const [device, setDevice] = useState('movil')
+    //hook para capturar los errores y respuestas http
+    const [errors, setErrors] = useState(false)
+    const [message, setMessage] = useState(false)
+
 
     const openImagePicker = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -42,10 +50,7 @@ const FormUpdateOrg = ({ route, navigation }) => {
 
         if (!result.canceled) {
             let base64Img = `data:image/jpg;base64,${result.assets[0].base64}`
-            setValues(prevValues => ({
-                ...prevValues,
-                image_url: base64Img
-            }));
+            setImage(base64Img)
             // setSelectedImage(base64Img);
             bottomSheetModalRef.current?.close();
             // setImageSave(result.assets[0].uri)
@@ -60,10 +65,7 @@ const FormUpdateOrg = ({ route, navigation }) => {
             });
             if (!result.canceled) {
                 let base64Img = `data:image/jpg;base64,${result.assets[0].base64}`
-                setValues(prevValues => ({
-                    ...prevValues,
-                    image_url: base64Img
-                }));
+                setImage(base64Img)
                 bottomSheetModalRef.current?.close();
             }
         } else {
@@ -74,16 +76,12 @@ const FormUpdateOrg = ({ route, navigation }) => {
     // funcion pra mostar el bottomsheetModals
     const openBottomSheet = () => {
         bottomSheetModalRef.current?.present();
-    };
-
-    const handleOnChageText_us = (value, fieldName) => {
-        setValues({ ...values, [fieldName]: value })
     }
 
     const handleSelectImage = async () => {
         setIsLoading(true)
         const formData = new FormData();
-        formData.append("file", values.image_url);
+        formData.append("file", image);
         formData.append("upload_preset", "time_check");
         formData.append("cloud_name", "centroconveciones");
         try {
@@ -101,21 +99,24 @@ const FormUpdateOrg = ({ route, navigation }) => {
                     "/upload/",
                     "/upload/w_500,h_300/"
                 )}`;
-                setValues(prevValues => ({
-                    ...prevValues,
-                    image_url: resizedImageUrl
-                }));
-                handleSubmit()
+                handleSubmit(resizedImageUrl)
             }
         } catch (error) {
             console.error(error);
         };
     }
 
-    const handleSubmit = async () => {
-        // setIsLoadingImg(true)
+    const handleSubmit = async (image) => {
+        const newData = {
+            organization_name: fullName,
+            address_organization: address,
+            email_organization: email,
+            numero_telefono: numerTelefono,
+            device,
+            image_url: image
+        }
         try {
-            const responde = await updateOrgId(data.id_organización, values)
+            const responde = await updateOrgId(data.id_organización, newData)
             if (responde.data.data.recordset[0].mensaje === 'cambiado') {
                 // Obtén la fecha y hora actual
                 const currentTime = new Date();
@@ -125,11 +126,20 @@ const FormUpdateOrg = ({ route, navigation }) => {
                 AsyncStorage.setItem('expirationTime', expirationTime.toString());
                 logout();
             }
+            let Info = await AsyncStorage.getItem('userInfo');
+            if (Info) {
+                const objeto = JSON.parse(Info);
+                objeto.nombre_organizacion = fullName
+                objeto.image_url = image
+                await AsyncStorage.setItem('userInfo', JSON.stringify(objeto));
+                setUserInfo(objeto)
+            }
             setIsLoading(false)
+            setMessage('Actualizacion correctamente')
             console.log(responde.data.data);
         } catch (error) {
             setIsLoading(false)
-            console.log(error.response.data.error);
+            console.log(error.response.data);
         }
     }
 
@@ -150,7 +160,7 @@ const FormUpdateOrg = ({ route, navigation }) => {
 
                         <View style={{ top: '10%' }}>
                             <View style={styles.profileImage}>
-                                <Image source={{ uri: values.image_url }} style={styles.image} resizeMode='center' />
+                                <Image source={{ uri: image }} style={styles.image} resizeMode='center' />
                             </View>
                             <TouchableOpacity style={styles.add} onPress={openBottomSheet}>
                                 <Ionicons name='ios-add' size={24} color={'#DFD8C8'} style={{ marginTop: 2, marginLeft: 2 }} />
@@ -188,33 +198,37 @@ const FormUpdateOrg = ({ route, navigation }) => {
             </View>
             <View style={{ paddingHorizontal: 20, marginTop: 50 }}>
                 <Input label='nombre organizacion'
-                    value={values.organization_name}
+                    value={fullName}
                     // editable={false}
                     iconName='user'
-                    onChangeText={(value) => handleOnChageText_us(value, 'organization_name')}
+                    onChangeText={(text) => setFullName(text)}
                 // placeholder='Enter nombre organizacion'
                 />
                 <Input label='correo organizacion'
-                    value={values.email_organization}
+                    value={email}
                     // editable={false}
                     iconName='smartphone'
-                    onChangeText={(value) => handleOnChageText_us(value, 'email_organization')}
+                    onChangeText={(text) => setEmail(text)}
                 // placeholder='Enter correo'
                 />
                 <Input label='direccion organizacion'
-                    value={values.address_organization}
+                    value={address}
                     // editable={false}
                     iconName='smartphone'
-                    onChangeText={(value) => handleOnChageText_us(value, 'address_organization')}
+                    onChangeText={(text) => setAddress(text)}
                 // placeholder='Enter correo'
                 />
                 <Input label='numero telefono'
-                    value={values.numero_telefono}
+                    value={numerTelefono}
                     // editable={false}
                     iconName='smartphone'
-                    onChangeText={(value) => handleOnChageText_us(value, 'numero_telefono')}
+                    onChangeText={(text) => setNumeroTelefono(text)}
                 // placeholder='Enter correo'
                 />
+
+                <View className='items-center' style={{ top: hp('1'), alignItems: 'center' }}>
+                    {message && <Text style={styles.texMessage}>{message}</Text>}
+                </View>
 
                 <TouchableOpacity activeOpacity={0.7} className={`sm:mt-6 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={handleSelectImage}>
                     {isLoading ?
@@ -309,6 +323,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         marginTop: 16
+    },
+    texMessage: {
+        fontSize: hp('2.5'),
+        color: '#2c6e49',
+        fontWeight: 'bold'
     },
     mediaImageContainer: {
         width: 180,

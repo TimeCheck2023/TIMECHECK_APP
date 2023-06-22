@@ -19,6 +19,7 @@ const Profiles = ({ navigation }) => {
 
     const { logout, userInfo, socket } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
+    const [message, setMessage] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [pendientes, setPendientes] = useState(0)
     const [confirmado, setConfirmado] = useState(0)
@@ -79,10 +80,10 @@ const Profiles = ({ navigation }) => {
                         <View style={{ width: '100%', flexDirection: 'row', flexWrap: 'wrap', marginTop: '36%' }}>
                             <View style={[styles.contentGraficaOne, { backgroundColor: light.white }]}>
                                 <View>
-                                    <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
-                                    <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text>
+                                    <Text style={{ fontSize: wp('5'), fontWeight: 'bold', color: 'black' }}>Eventos</Text>
+                                    <Text style={{ fontSize: wp('5'), fontWeight: '700', color: 'gray' }}>Asistidos</Text>
                                 </View>
-                                <View style={{ marginTop: 20, elevation: 6, shadowColor: light.white }}>
+                                <View style={{ marginTop: hp('1'), elevation: 6, shadowColor: light.white }}>
                                     <CircleProgress
                                         value={pendientes} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
                                         colorText='#1B1B1B'
@@ -94,10 +95,10 @@ const Profiles = ({ navigation }) => {
 
                             <View style={[styles.contentGraficaOne, { backgroundColor: light.purple }]}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 27, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
-                                    <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text>
+                                    <Text style={{ fontSize: wp('5'), fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
+                                    <Text style={{ fontSize: wp('5'), fontWeight: '700', color: 'white' }}>Asistidos</Text>
                                 </View>
-                                <View style={{ marginTop: 20, elevation: 6, shadowColor: light.white }}>
+                                <View style={{ marginTop: hp('1'), elevation: 6, shadowColor: light.white }}>
                                     <CircleProgress
                                         value={confirmado} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
                                         colorText='white'
@@ -118,7 +119,7 @@ const Profiles = ({ navigation }) => {
                             <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
 
-                        <View style={styles.contentCard}>
+                        <TouchableOpacity style={styles.contentCard} onPress={() => navigation.navigate('ChangePassword')}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={styles.iconCard}>
                                     <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: light.white }} />
@@ -126,7 +127,7 @@ const Profiles = ({ navigation }) => {
                                 <Text style={{ left: 15, fontSize: 20 }}>Cambiar Contraseña</Text>
                             </View>
                             <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
-                        </View>
+                        </TouchableOpacity>
 
                         <TouchableOpacity style={styles.contentCard} onPress={() => setIsModalOpen(!isModalOpen)}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
         borderRadius: 75,
     },
     headerContent: {
-        marginTop: 15,
+        marginTop: hp('2'),
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -219,8 +220,8 @@ const styles = StyleSheet.create({
     },
     contentGraficaOne: {
         paddingHorizontal: 30,
-        width: '43%',
-        height: 180,
+        width: wp('43%'),
+        height: hp('23%'),
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,

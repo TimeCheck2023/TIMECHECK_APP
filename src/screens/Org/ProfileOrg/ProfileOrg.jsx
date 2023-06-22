@@ -12,6 +12,8 @@ import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../../context/AuthContext';
 import { getOrg } from '../../../api/api';
 import { useFocusEffect } from '@react-navigation/native';
+import { light, sizes } from '../../../constants/theme';
+import Loading from '../../../components/Loading/Loading';
 
 
 const ProfileOrg = ({ navigation }) => {
@@ -26,16 +28,13 @@ const ProfileOrg = ({ navigation }) => {
         await getOrg(userInfo.id_organización)
             .then((response) => {
                 setUser(response.data.message)
+                console.log(response.data.message)
                 setIsLoading(false)
             }).catch((err) => {
                 console.log(err);
                 setIsLoading(false)
             })
     }
-
-    // useEffect(() => {
-    //     getUser();
-    // }, [])
 
     useFocusEffect(
         React.useCallback(() => {
@@ -56,66 +55,92 @@ const ProfileOrg = ({ navigation }) => {
         }, []),
     );
     return (
-        <ScrollView>
-            <StatusBar />
-            <View style={styles.container}>
-                <View style={{ width: '100%', height: 250 }}>
-                    <ImageBackground source={fondoHeader} resizeMode='cover' style={{ flex: 1, alignItems: 'center' }}>
-                        <View style={styles.headerProfile}>
-                            <View style={styles.headerProfileImage}>
-                                <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
-                            </View>
-                            <View style={{ top: '-5%', paddingBottom: 30 }}>
-                                <View style={styles.headerContent}>
-                                    <View>
-                                        <View style={{ width: 180 }}>
-                                            <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_organizacion}</Text>
-                                        </View>
-                                        {/* <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_usuario}</Text> */}
+        <>
+            {isLoading ?
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                    <Loading />
+                </View>
+                :
+                <ScrollView>
+                    <StatusBar />
+                    <View style={styles.container}>
+                        <View style={{ width: '100%', height: 200 }}>
+                            <ImageBackground source={fondoHeader} resizeMode='cover' style={{ width: '100%', height: '100%', alignItems: 'center' }}>
+
+                                <View style={styles.headerProfile}>
+                                    <View style={styles.headerProfileImage}>
+                                        <Image source={{ uri: user.image_url }} resizeMode='cover' style={styles.image} />
                                     </View>
-                                    <TouchableOpacity style={styles.headerContainerButtom}
-                                        onPress={() => navigation.navigate('FormUpdateOrg', {
-                                            data: user
-                                        })}>
-                                        <View style={styles.headerContentButtom}>
-                                            <Icon.Feather name="edit" size={20} color={'white'} />
-                                        </View>
-                                    </TouchableOpacity>
+                                    <View style={styles.headerContent}>
+                                        <Text style={styles.headerContentTextOne} numberOfLines={1}>{user.nombre_organizacion}</Text>
+                                        <Text numberOfLines={1} style={styles.headerContentTextTwo}>{user.correo_organizacion}</Text>
+                                    </View>
                                 </View>
-                            </View>
+                                <TouchableOpacity style={styles.btnClose} onPress={() => navigation.goBack()}>
+                                    <Icon.Ionicons name="arrow-back" size={wp('7')} style={{ color: '#6C63FF' }} />
+                                </TouchableOpacity>
+                            </ImageBackground>
                         </View>
-                        <TouchableOpacity style={styles.btnClose} onPress={() => logout()}>
-                            <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: '#6C63FF' }} />
+
+
+                        <View style={styles.contentGraficaOne}>
+                            <View>
+                                <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
+                                {/* <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text> */}
+                            </View>
+                            <CircleProgress
+                                value={cantidad} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                                colorText='#1B1B1B'
+                                colorProgress='#7560EE'
+                                colorStoke={light.lightGray}
+                            />
+                        </View>
+                        <View style={styles.contentGraficaTwo}>
+                            <View>
+                                <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white' }}>SubOrganizaciones</Text>
+                                {/* <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text> */}
+                            </View>
+                            <CircleProgress
+                                value={cantida} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
+                                colorText='white'
+                                colorProgress='#7560EE'
+                                colorStoke={light.white}
+                            />
+                        </View>
+
+                        <TouchableOpacity style={styles.contentCard} onPress={() => navigation.navigate('FormUpdateOrg', { data: user })}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.iconCard}>
+                                    <Icon.AntDesign name="user" size={wp('8')} style={{ color: light.white }} />
+                                </View>
+                                <Text style={{ left: 15, fontSize: 20 }}>Editar perfil</Text>
+                            </View>
+                            <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
-                    </ImageBackground>
-                </View>
 
+                        <TouchableOpacity style={styles.contentCard} onPress={() => navigation.navigate('ChangePassword')}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.iconCard}>
+                                    <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: light.white }} />
+                                </View>
+                                <Text style={{ left: 15, fontSize: 20 }}>Cambiar Contraseña</Text>
+                            </View>
+                            <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
+                        </TouchableOpacity>
 
-
-                <View style={styles.contentGraficaOne}>
-                    <View>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'black' }}>Eventos</Text>
-                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'gray' }}>Asistidos</Text>
+                        <TouchableOpacity style={styles.contentCard} onPress={() => logout()}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.iconCard}>
+                                    <Icon.AntDesign name="setting" size={wp('8')} style={{ color: light.white }} />
+                                </View>
+                                <Text style={{ left: 15, fontSize: 20 }}>Cerrar session</Text>
+                            </View>
+                            <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
+                        </TouchableOpacity>
                     </View>
-                    <CircleProgress
-                        value={cantidad} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                        colorText='#1B1B1B'
-                        colorProgress='#7560EE'
-                    />
-                </View>
-                <View style={styles.contentGraficaTwo}>
-                    <View>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white' }}>Eventos no</Text>
-                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'white' }}>Asistidos</Text>
-                    </View>
-                    <CircleProgress
-                        value={cantida} // Aquí puedes pasar el valor de progreso deseado entre 0 y 1
-                        colorText='white'
-                        colorProgress='#7560EE'
-                    />
-                </View>
-            </View>
-        </ScrollView>
+                </ScrollView>
+            }
+        </>
     )
 }
 
@@ -130,23 +155,21 @@ const styles = StyleSheet.create({
     },
     headerProfile: {
         position: 'absolute',
-        bottom: '-25%',
-        right: 0,
-        width: '75%',
-        height: 200,
+        bottom: '-70%',
+        width: '90%',
+        height: 230,
         backgroundColor: 'white',
-        borderTopLeftRadius: 30,
-        borderBottomLeftRadius: 30,
+        borderRadius: sizes.radius,
         elevation: 8,
         shadowColor: '#7560EE',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     headerProfileImage: {
         width: 120,
         height: 120,
         borderRadius: 75,
-        top: '-20%',
-        right: '-10%',
         elevation: 6,
         shadowColor: '#7560EE',
         backgroundColor: 'white',
@@ -159,20 +182,20 @@ const styles = StyleSheet.create({
         borderRadius: 75,
     },
     headerContent: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        marginTop: hp('2'),
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     headerContentTextOne: {
         fontSize: 35,
         fontWeight: 'bold',
         color: '#242424',
-        left: 20
     },
     headerContentTextTwo: {
         fontSize: 22,
         fontWeight: '700',
         color: 'gray',
-        width: 180
+        // width: 180
     },
     headerContainerButtom: {
         width: 60,
@@ -197,7 +220,7 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 100,
         backgroundColor: 'white',
-        marginTop: 90,
+        marginTop: hp('18'),
         borderRadius: 20,
         padding: 20,
         flexDirection: 'row',
@@ -209,7 +232,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         width: '90%',
         height: 100,
-        backgroundColor: '#7973ED',
+        backgroundColor: light.purple,
         marginTop: 20,
         borderRadius: 20,
         padding: 20,
@@ -228,5 +251,26 @@ const styles = StyleSheet.create({
         left: 20,
         top: 40,
         position: 'absolute'
-    }
+    },
+    contentCard: {
+        width: '90%',
+        backgroundColor: 'white',
+        height: 90,
+        borderRadius: sizes.radius,
+        marginTop: 10,
+        padding: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        elevation: 7,
+        shadowColor: light.purple
+    },
+    iconCard: {
+        width: 60,
+        height: 60,
+        backgroundColor: light.purple,
+        borderRadius: sizes.radius,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 })

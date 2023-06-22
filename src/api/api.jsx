@@ -75,6 +75,46 @@ export const auth = async (user) => {
     return result;
 }
 
+export const verificacionEmail = async (email) => {
+    const result = await axios({
+        url: `${API_Node}/Auth/verificacionEmail`,
+        method: 'POST',
+        data: { email: email }
+    })
+    return result;
+}
+
+
+export const cambioPasswordOlvidar = async (data) => {
+    const result = await axios({
+        url: `${API_Node}/Auth/CambioPassword`,
+        method: 'POST',
+        data: data
+    })
+    // console.log(result);
+    return result;
+}
+
+export const cambioPassword = async (data) => {
+    const result = await axios({
+        url: `${API_C}/api/Password/UpdatePasswordUser`,
+        method: 'PUT',
+        data: data
+    })
+    // console.log(result);
+    return result;
+}
+
+export const cambioPasswordOrg = async (data) => {
+    const result = await axios({
+        url: `${API_C}/api/Password/UpdatePasswordOrg`,
+        method: 'PUT',
+        data: data
+    })
+    // console.log(result);
+    return result;
+}
+
 
 export const getSubOrg = async (id) => {
     const result = await axios({
@@ -91,6 +131,16 @@ export const getEvent = async () => {
     })
     return result;
 }
+export const getEventPendi = async (id) => {
+    const result = await axios({
+        url: `${API_C}/api/Event/PendingEvents/${id}`,
+        method: 'GET',
+    })
+    return result;
+}
+
+
+
 export const getEventId = async (id) => {
     const result = await axios({
         url: `${API_C}/api/Event/Consult/${id}`,
@@ -159,8 +209,9 @@ export const updateUserId = async (id, data) => {
     })
     return result;
 }
+
 export const updateOrgId = async (id, data) => {
-    // console.log(data);
+    console.log(id)
     const result = await axios({
         url: `${API_Node}/org/update/${id}`,
         method: 'PUT',
@@ -197,6 +248,18 @@ export const saveSubOrg = async (id, data) => {
     })
     return result;
 }
+
+export const saveSubOrgUpdate = async (id, data) => {
+    // console.log(data);
+    const result = await axios({
+        url: `${API_Node}/SubOrg/update/${id}`,
+        method: 'PUT',
+        data: data
+    })
+    return result;
+}
+
+
 export const saveMiembro = async (data) => {
     const result = await axios({
         url: `${API_C}/api/User/NuevoMiembro`,
@@ -223,6 +286,14 @@ export const ConfirmarAsistencias = async (data) => {
         url: `${API_C}/api/Attendance/ConfirmAttendance`,
         method: 'PUT',
         params: data
+    })
+    return result;
+}
+
+export const deteleEvent = async (id) => {
+    const result = await axios({
+        url: `${API_C}/api/Event/Delete/${id}`,
+        method: 'DELETE',
     })
     return result;
 }

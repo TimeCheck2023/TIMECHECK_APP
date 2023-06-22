@@ -11,7 +11,7 @@ import { saveEvent } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
 
 
-const FormEvents = () => {
+const FormEvents = ({ navigation }) => {
 
     const { userInfo } = useContext(AuthContext)
 
@@ -236,7 +236,7 @@ const FormEvents = () => {
 
             <SafeAreaView>
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Sign_In')}>
+                    <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
                         <AntDesign name="left" size={24} style={styles.iconHeader} />
                     </TouchableOpacity>
                     <View>

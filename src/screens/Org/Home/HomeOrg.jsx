@@ -1,8 +1,10 @@
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image, ImageBackground } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Modal, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext'
 import { getSubOrg } from '../../../api/api';
+import * as Icon from '@expo/vector-icons';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 // import esperando from '../../../assets/esperando.png'
 import { useFocusEffect } from '@react-navigation/native';
 import fondoHeader from '../../../../assets/image/fondoHeader.png'
@@ -12,11 +14,14 @@ import { AntDesign, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons'
 import CircleProgress from '../../../components/CircleProgress/CircleProgress';
 import Loading from '../../../components/Loading/Loading';
 import CardPlay from '../../../components/CardPlay/CardPlay';
-
+import { light, sizes } from '../../../constants/theme';
+import ModalDelete from '../../../components/modals/ModalDelete';
 
 const HomeOrg = ({ items }) => {
   const { logout, userInfo } = useContext(AuthContext);
   const [data, setData] = useState([])
+  const [idSubOrg, setIdSubOrg] = useState(null)
+  const [mostrarAdvertencia, setMostrarAdvertencia] = useState(false);
   const [filteredData, setFilteredData] = useState([])
   const [search, setSearch] = useState('')
   const [isloadingData, setIsloadingData] = useState(false)
@@ -56,6 +61,11 @@ const HomeOrg = ({ items }) => {
     }
   }
 
+
+  const DeleteSubOrg = () => {
+    console.log(idSubOrg);
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
 
@@ -79,9 +89,17 @@ const HomeOrg = ({ items }) => {
                     { id: item.id_suborganizacion })
                 }}>
                   <ImageBackground source={fondoHeader} style={[styles.card]} >
-                    <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
+                    <View style={styles.containerAccion}>
+                      <TouchableOpacity style={[styles.iconComment, { backgroundColor: '#6C63FF', }]} onPress={() => navigation.navigate('FormSubOrgUpdate', { item: item })}>
+                        <Icon.AntDesign name='edit' size={24} style={{ color: 'white' }} />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[styles.iconComment, { backgroundColor: 'red', }]} onPress={() => { setIdSubOrg(item.id_suborganizacion), setMostrarAdvertencia(true) }}>
+                        <Icon.AntDesign name='delete' size={24} style={{ color: 'white' }} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ paddingHorizontal: 20, paddingVertical: 20, marginRight: 40 }}>
                       <Text style={{ fontSize: 40, fontWeight: 'bold', color: 'white' }}>{item.nombre_suborganizacion}</Text>
-                      <Text style={{ fontSize: 20, fontWeight: '600', color: 'white', lineHeight: 30 }}>{item.descripcion_suborganizacion}</Text>
+                      <Text style={{ fontSize: 20, fontWeight: '600', color: 'white', lineHeight: 30, width: 220 }}>{item.descripcion_suborganizacion}</Text>
                     </View>
                   </ImageBackground>
                 </TouchableOpacity>
@@ -89,6 +107,28 @@ const HomeOrg = ({ items }) => {
           </View>
         }
       </ScrollView>
+
+      <ModalDelete visible={mostrarAdvertencia} setShow={setMostrarAdvertencia} title='¿Estás seguro de que quieres eliminar la SubOrganizacion?' description='¡Atención! Al eliminar la SubOrganizacion, se borrarán todos los datos asociados, incluyendo los miembros, proyectos y eventos relacionados.' handleDelete={DeleteSubOrg} />
+
+      {/* <Modal visible={mostrarAdvertencia} transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.contenido}>
+            <Text style={styles.titulo2}>¿Estás seguro de que quieres eliminar la SubOrganizacion?</Text>
+            <Text style={styles.contentText}></Text>
+            <TouchableOpacity
+              // onPress={confirmarEliminacion}
+              style={styles.botonEliminar}>
+              <Text style={styles.textoBotonEliminar}>Eliminar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setMostrarAdvertencia(false)}
+              style={styles.botonCancelar}>
+              <Text style={styles.textoBotonCancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal> */}
+
       <TouchableOpacity style={styles.containerButtom} onPress={() => navigation.navigate('FormSubOrg')}>
         <Ionicons
           name='add-sharp'
@@ -186,6 +226,80 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 15,
     right: 15
+  },
+  containerAccion: {
+    width: 90,
+    height: 200,
+    backgroundColor: light.white,
+    position: 'absolute',
+    right: 1,
+    borderRadius: sizes.radius,
+    // borderBottomLeftRadius: sizes.radius,
+    padding: 20,
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  iconComment: {
+    width: 60,
+    aspectRatio: 1,
+    borderRadius: 20,
+    shadowColor: 'black',
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  contenido: {
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    width: '90%',
+    padding: 20,
+  },
+  titulo2: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center'
+  },
+  contentText: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 10,
+    textAlign: 'center'
+  },
+  botonEliminar: {
+    backgroundColor: 'red',
+    padding: 15,
+    borderRadius: 4,
+    marginTop: 10,
+  },
+  textoBotonEliminar: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20
+  },
+  botonCancelar: {
+    backgroundColor: 'gray',
+    padding: 15,
+    borderRadius: 4,
+    marginTop: 10,
+  },
+  textoBotonCancelar: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20
   },
 })
 

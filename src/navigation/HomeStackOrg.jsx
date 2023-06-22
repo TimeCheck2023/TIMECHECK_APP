@@ -8,6 +8,8 @@ import HomeEventSuborg from "../screens/Org/HomeEventSuborg/HomeEventSuborg";
 import JuegoMemoria from "../components/JuegoMemoria/JuegoMemoria";
 import BottomTabNavigator from "./BottomEventListOrg/BottomEventListOrg";
 import FormUpdateOrg from "../screens/Org/FormUpdateOrg/FormUpdateOrg";
+import ChangePassword from "../screens/Org/ChangePassword";
+import FormSubOrgUpdate from "../screens/Org/FormSubOrg/FormSubOrgUpdate";
 
 
 const Home = createNativeStackNavigator()
@@ -23,6 +25,8 @@ const HomeStackOrg = () => {
        <Home.Screen name="FormSubOrg" component={FormSubOrg} />
        <Home.Screen name="ProfileOrg" component={ProfileOrg} />
        <Home.Screen name="Graphics" component={Graphics} />
+       <Home.Screen name="ChangePassword" component={ChangePassword} />
+       <Home.Screen name="FormSubOrgUpdate" component={FormSubOrgUpdate} />
     </Home.Navigator>
   )
 }

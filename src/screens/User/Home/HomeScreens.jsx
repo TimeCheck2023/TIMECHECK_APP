@@ -40,7 +40,7 @@ const HomeScreens = ({ navigation }) => {
     //almacena el id del comentario seleccionado
     const [commentId, setCommenttId] = useState(null)
     //loading para cargar los eventos
-    const [isloading, setIsloading] = useState(false)    
+    const [isloading, setIsloading] = useState(false)
     //loading para cargar los comentarios
     const [isloadingComent, setIsloadingComent] = useState(true)
 
@@ -71,6 +71,14 @@ const HomeScreens = ({ navigation }) => {
         socket.emit('getComments', eventId);
 
     };
+    
+    // useEffect para ejecutar el loadEvent
+    useFocusEffect(
+        React.useCallback(() => {
+            loadEvent();
+            console.log(isDarkMode);
+        }, []),
+    );
 
 
     useEffect(() => {
@@ -118,11 +126,6 @@ const HomeScreens = ({ navigation }) => {
         // };
     }, [socket])
 
-    // useEffect para ejecutar el loadEvent
-    useEffect(() => {
-        loadEvent();
-        console.log(isDarkMode);
-    }, [])
 
 
     const retryFetch = () => {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Keyboard, ScrollView, Platform, TextInput, Animated, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Keyboard, ScrollView, Platform, TextInput, Animated, ActionSheetIOSStatic, ActivityIndicator } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
@@ -23,7 +23,6 @@ const FormEventUpdate = ({ navigation, route }) => {
     const [Open, setOpen] = useState(false);
     const [visibility, setVisibility] = useState(false);
     const [image, setImage] = useState(item.imagenEvento)
-    const [error, setError] = useState('')
     const [tipo, setTipo] = useState(item.tipoEvento)
     const [tipoNumber, setTipoNumber] = useState(null)
     const [nameEvent, setNameEvent] = useState(item.nombreEvento)
@@ -31,7 +30,11 @@ const FormEventUpdate = ({ navigation, route }) => {
     const [aforo, setAforo] = useState(item.aforoEvento)
     const [precio, setPrecio] = useState(item.valorTotalEvento === 0 ? 'Gratis' : item.valorTotalEvento)
     const [Lugar, setLugar] = useState(item.lugarEvento)
+    const [dateInicial, setDateInicial] = useState(item.fechaInicioEvento);
+    const [dateFinal, setDateFinal] = useState(item.fechaFinalEvento);
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState(false)
 
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -104,10 +107,6 @@ const FormEventUpdate = ({ navigation, route }) => {
     }, [])
 
 
-
-    const [dateInicial, setDateInicial] = useState(item.fechaInicioEvento);
-    const [dateFinal, setDateFinal] = useState(item.fechaFinalEvento);
-
     const showDatePickerInicial = () => {
         setDatePickerVisibility(!isDatePickerVisible);
     };
@@ -154,6 +153,7 @@ const FormEventUpdate = ({ navigation, route }) => {
     };
 
     const handleSelectImage = async () => {
+        setVisibility(true)
         if (image === item.imagenEvento) {
             handleSubmit(image)
             return
@@ -172,7 +172,6 @@ const FormEventUpdate = ({ navigation, route }) => {
                     }
                 );
                 const data = await res.json();
-                console.log(data);
                 if (data.secure_url) {
                     handleSubmit(data.secure_url)
                 }
@@ -185,8 +184,6 @@ const FormEventUpdate = ({ navigation, route }) => {
     }
 
     const handleSubmit = async (image) => {
-
-        console.log(tipoNumber);
 
         const data = {
             nombreEvento: nameEvent,
@@ -201,11 +198,15 @@ const FormEventUpdate = ({ navigation, route }) => {
 
         await updateEvent(data, item.idEvento)
             .then((response) => {
-                console.log("response.data.message");
-                console.log(response.data.message);
+                setVisibility(false)
+                // console.log(response.data.mensaje);
+                setMessage(response.data.mensaje)
+                setError('')
             }).catch((err) => {
-                console.log("err.response");
-                console.log(err.response.data);
+                // console.log(err.response.data)
+                setVisibility(false)
+                setError(err.response.data)
+                setMessage('')
             })
     }
 
@@ -230,6 +231,7 @@ const FormEventUpdate = ({ navigation, route }) => {
             }
 
             <DateTimePickerModal
+                date={new Date(dateInicial)}
                 isVisible={isDatePickerVisible}
                 mode="datetime"
                 onConfirm={handleConfirmInical}
@@ -237,6 +239,7 @@ const FormEventUpdate = ({ navigation, route }) => {
             />
 
             <DateTimePickerModal
+                date={new Date(dateFinal)}
                 isVisible={isDatePickerVisibleFinal}
                 mode="datetime"
                 onConfirm={handleConfirmFinal}
@@ -250,17 +253,12 @@ const FormEventUpdate = ({ navigation, route }) => {
                         <AntDesign name="left" size={24} style={styles.iconHeader} />
                     </TouchableOpacity>
                     <View>
-                        <Text>El teclado está {isKeyboardOpen ? 'abierto' : 'cerrado'}</Text>
-                        {/* <Text style={styles.headerTitle}>Actualizar evento</Text> */}
+                        <Text style={styles.headerTitle}>Actualizar evento</Text>
                     </View>
                     <View style={{ width: 20 }} />
                 </View>
             </SafeAreaView>
             <ScrollView>
-                {
-                    error &&
-                    <Text>{error}</Text>
-                }
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 30 }}>
                     <View style={{ width: 280, height: 250, backgroundColor: light.white, overflow: 'hidden', borderRadius: sizes.radius }}>
                         <Image source={!image ? { uri: 'https://i.pinimg.com/564x/9e/be/af/9ebeaf28bd1fc61efd80803194029806.jpg' } : { uri: image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
@@ -277,6 +275,8 @@ const FormEventUpdate = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
+                {error && <Text style={[styles.textModal, { color: '#d62828' }]}>{error}</Text>}
+                {message && <Text style={[styles.textModal, { color: '#2c6e49' }]}>{message}</Text>}
                 <KeyboardAvoidingView style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 >
@@ -384,7 +384,11 @@ const FormEventUpdate = ({ navigation, route }) => {
             <Animated.View style={[styles.containerSend, { height: heightAnim }]}>
                 <TouchableOpacity style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }} onPress={handleSelectImage}>
                     <Animated.View style={[styles.send, { height: heightAnimated }]} >
-                        <Text style={styles.textSend}>Actualizar evento</Text>
+                        {visibility ?
+                            <ActivityIndicator size="large" color={light.white} />
+                            :
+                            <Text style={styles.textSend}>Actualizar evento</Text>
+                        }
                     </Animated.View>
                 </TouchableOpacity>
             </Animated.View>
@@ -495,6 +499,12 @@ const styles = StyleSheet.create({
         backgroundColor: light.white,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    textModal: {
+        fontSize: 20,
+        fontWeight: '500',
+        textAlign: 'center',
+        marginTop: 15
     },
     send: {
         width: '70%',

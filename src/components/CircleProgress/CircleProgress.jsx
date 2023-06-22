@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Text } from 'react-native';
 import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
 import { Svg, Circle, Text as SvgText } from 'react-native-svg';
+
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 

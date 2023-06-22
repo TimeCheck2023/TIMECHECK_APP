@@ -1,7 +1,7 @@
 import { View, Text, Image, ImageBackground, Linking, TouchableOpacity, Modal, ActivityIndicator, StyleSheet, Animated, Easing, TextInput } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import * as Icon from '@expo/vector-icons';
-import { ConfirmarAsistencias, DeleteAsistencia, getAsistencia, getEventId, saveAsistencia, updateAsistencia } from '../../../api/api';
+import { ConfirmarAsistencias, DeleteAsistencia, getAsistencia, getEventId, saveAsistencia, updateAsistencia, deteleEvent } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -13,6 +13,7 @@ import Loading from '../../../components/Loading/Loading';
 import { light, sizes } from '../../../constants/theme';
 import ModalsOption from './ModalsOption';
 import { useFocusEffect } from '@react-navigation/native';
+import ModalDelete from '../../../components/modals/ModalDelete';
 
 
 const DetailsSub = ({ navigation, route }) => {
@@ -20,6 +21,9 @@ const DetailsSub = ({ navigation, route }) => {
     const [likes, setLikes] = useState(0)
     const [number, setNumber] = useState('')
     const [comments, setComments] = useState(0)
+    const [isloadingDele, setIsloadingDele] = useState(false)
+    const [isloadingDeleText, setIsloadingText] = useState(false)
+    const [mostrarAdvertencia, setMostrarAdvertencia] = useState(false);
     const [dataLikes, setDataLikes] = useState([])
     const [data, setData] = useState([])
     const [prueba, setPrueba] = useState({})
@@ -27,7 +31,8 @@ const DetailsSub = ({ navigation, route }) => {
     const [isActive, setIsActive] = useState(false)
     const [isModalsOpen, setIsModalsOpen] = useState(false)
     const [isModalsOpenC, setIsModalsOpenC] = useState(false)
-    const [error, setError] = useState('')
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState(false)
 
     const { logout, socket, userInfo } = useContext(AuthContext)
 
@@ -61,7 +66,6 @@ const DetailsSub = ({ navigation, route }) => {
 
 
     const getEvents = async () => {
-        console.log("items.idEvento");
         try {
             const response = await getEventId(items.idEvento)
             setData(response.data.response);
@@ -110,16 +114,28 @@ const DetailsSub = ({ navigation, route }) => {
             idEvento: items.idEvento,
             nroDocumentoUsuario: number,
         }
+        if (number === '') {
+            setError('Ingresa un numero de documento para confirmar asistencia')
+            setMessage('')
+            return
+        }
         setIsActive(true)
 
         try {
             const response = await ConfirmarAsistencias(data)
             console.log(response.data);
-            socket.emit('postAsistencia', items.idEvento)
+            if (response.data === 'El número de documento de usuario no existe en la asistencia para el evento especificado.') {
+                setError(response.data)
+                setMessage('');
+            } else {
+                setMessage(response.data)
+                setError('')
+            }
+            socket.emit('getAsistencia', items.idEvento)
             setIsActive(false)
         } catch (error) {
             setError(error.message)
-            // console.log(error.message);
+            console.log(error.message);
             setIsActive(false)
         }
     }
@@ -138,6 +154,31 @@ const DetailsSub = ({ navigation, route }) => {
         }).start()
     }
 
+    const DeleteEvent = async () => {
+        setIsloadingDele(true)
+        try {
+            const response = await deteleEvent(items.idEvento)
+            setIsActive(false)
+            setIsloadingDele(false)
+            setIsloadingText(true)
+            setTimeout(() => {
+                navigation.goBack()
+                setIsloadingText(false)
+            }, 2000)
+        } catch (error) {
+            setError(error.message)
+            console.log(error.message);
+            setIsActive(false)
+            setIsloadingDele(false)
+        }
+    }
+
+    const handleFocus = () => {
+        setMessage('');
+        setError('')
+    };
+
+
     return (
         <>
             {
@@ -147,7 +188,7 @@ const DetailsSub = ({ navigation, route }) => {
                     </View>
                     :
                     <View style={{ flex: 1 }}>
-                        <TouchableOpacity activeOpacity={3} onPress={() =>{ navigation.navigate('ContainerImage', { image: data.imagenEvento }), setIsModalsOpen(!isModalsOpen)}}>
+                        <TouchableOpacity activeOpacity={3} onPress={() => { navigation.navigate('ContainerImage', { image: data.imagenEvento }), setIsModalsOpen(!isModalsOpen) }}>
                             <ImageBackground style={styles.backgroundImage} source={{ uri: data.imagenEvento }} >
                                 <TouchableOpacity activeOpacity={3} style={styles.ImagenButtomBack} >
                                     <Icon.AntDesign name="arrowleft" size={wp('6')} style={{ color: '#6C63FF' }} onPress={navigation.goBack} />
@@ -156,7 +197,7 @@ const DetailsSub = ({ navigation, route }) => {
                                     <Icon.Entypo name='dots-three-vertical' size={wp('6')} style={{ color: '#6C63FF' }} />
                                 </TouchableOpacity>
                                 {/* modal */}
-                                <ModalsOption item={data} isModalsOpen={isModalsOpen} setIsModalsOpen={setIsModalsOpen} scale={scale} navigation={navigation} />
+                                <ModalsOption item={data} isModalsOpen={isModalsOpen} setIsModalsOpen={setIsModalsOpen} scale={scale} navigation={navigation} setMostrarAdvertencia={setMostrarAdvertencia} />
                             </ImageBackground>
                         </TouchableOpacity>
                         <BottomSheet
@@ -271,14 +312,15 @@ const DetailsSub = ({ navigation, route }) => {
                             transparent
                             visible={isModalsOpenC}
                         >
-                            <TouchableOpacity activeOpacity={3} style={styles.containerModal} onPress={() => setIsModalsOpenC(!isModalsOpenC)}>
+                            <TouchableOpacity activeOpacity={3} style={styles.containerModal} onPress={() => { setIsModalsOpenC(!isModalsOpenC), setMessage(''), setError(''), setNumber('') }}>
                                 <View style={styles.modal}>
                                     <View>
                                         <Text style={styles.textTitleModal}>Confirmar Asistencia al Evento</Text>
                                         <Text style={styles.textModal}>Por favor, ingresa el numero de documento el cual quieres confirmar la asistencia al evento</Text>
                                     </View>
-                                    {error && <Text style={styles.textModal}>{error}</Text>}
-                                    <Input value={number} onChangeText={(text) => setNumber(text)} placeholder='Numero de documento' iconName='user' />
+                                    {error && <Text style={[styles.textModal, { color: '#d62828' }]}>{error}</Text>}
+                                    {message && <Text style={[styles.textModal, { color: '#2c6e49' }]}>{message}</Text>}
+                                    <Input value={number} onChangeText={(text) => setNumber(text)} placeholder='Numero de documento' iconName='user' onFocus={handleFocus} />
                                     <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                                         <TouchableOpacity activeOpacity={3} onPress={ConfirmarAsistencia} style={{ backgroundColor: light.purple, paddingHorizontal: 20, paddingVertical: 10, borderRadius: sizes.radius + 10, height: 60, width: 240, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                                             {isActive ?
@@ -291,6 +333,8 @@ const DetailsSub = ({ navigation, route }) => {
                                 </View>
                             </TouchableOpacity>
                         </Modal >
+
+                        <ModalDelete textIsloadin={isloadingDeleText} isloading={isloadingDele} visible={mostrarAdvertencia} setShow={setMostrarAdvertencia} title='¿Estás seguro de que quieres eliminar este evento?' description='¡Atención! Al eliminar el evento, se borrarán todos los datos asociados, incluyendo los likes y comentarios relacionados al evento.' handleDelete={DeleteEvent} />
                     </View >
             }
         </>
@@ -485,7 +529,6 @@ const styles = StyleSheet.create({
     textModal: {
         fontSize: 18,
         fontWeight: '500',
-        color: 'black',
         textAlign: 'center',
         marginTop: 15
     },

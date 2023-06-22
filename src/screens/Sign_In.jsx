@@ -141,6 +141,12 @@ const Sign_In = ({ navigation }) => {
               <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Registrate</Text>
             </TouchableOpacity>
           </View>
+          <View style={{ marginTop: hp('2'), flexDirection: 'row', justifyContent: 'center' }}>
+            <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>Olvidaste tu contraseña?  </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Recuperar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

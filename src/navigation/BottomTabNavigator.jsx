@@ -7,7 +7,7 @@ import HomeScreens from '../screens/User/Home/HomeScreens';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HomeEvent from '../components/HomeEvents/HomeEvent';
 import Profiles from '../screens/User/Profile/Profiles';
-
+import HomeEventAsis from '../screens/User/HomeEventAsis/HomeEventAsis';
 
 
 const Tab = createBottomTabNavigator();
@@ -26,11 +26,12 @@ const BottomTabNavigator = () => {
             nameIcons: 'home',
             Icons: AntDesign
         },
-        // {
-        //     name: 'Profiles',
-        //     screen: Profiles,
-        //     nIcons: 'home',
-        // },
+        {
+            name: 'HomeEventAsis',
+            screen: HomeEventAsis,
+            nameIcons: 'home',
+            Icons: AntDesign
+        },
     ]
 
     userInfo.rol === 0 && tabs.push({
@@ -66,29 +67,11 @@ const BottomTabNavigator = () => {
                                 tabBarShowLabel: false,
                                 tabBarIcon: ({ focused }) => (
                                     <View >
-                                        {nIcons ?
-                                            <View style={{
-                                                width: 50,
-                                                height: 50,
-                                                borderRadius: 50,
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                backgroundColor: 'white',
-                                                elevation: 20,
-                                                bottom: 3,
-                                                shadowColor: '#6C63FF',
-                                                borderColor: focused ? '#7973ED' : 'gray',
-                                                borderWidth: 1,
-                                            }}>
-                                                <Text style={{ color: focused ? '#7973ED' : 'gray', fontSize: 25, fontWeight: 'bold' }}>{userInfo.nombre_completo_usuario.charAt(0).toUpperCase()}</Text>
-                                            </View>
-                                            :
-                                            <Icons
-                                                name={nameIcons}
-                                                size={30}
-                                                color={focused ? '#7973ED' : 'gray'}
-                                            />
-                                        }
+                                        <Icons
+                                            name={nameIcons}
+                                            size={30}
+                                            color={focused ? '#7973ED' : 'gray'}
+                                        />
                                     </View>
                                 )
                             }}

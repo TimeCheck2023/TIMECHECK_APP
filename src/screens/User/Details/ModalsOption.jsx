@@ -6,7 +6,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { light, sizes } from '../../../constants/theme';
 
 
-const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale, navigation, item }) => {
+const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale, navigation, item, setMostrarAdvertencia }) => {
     return (
         <>
             <Modal
@@ -17,11 +17,11 @@ const ModalsOption = ({ isModalsOpen, setIsModalsOpen, scale, navigation, item }
                     <Animated.View style={[styles.cardModal, {
                         transform: [{ scale }]
                     }]}>
-                        <TouchableOpacity style={styles.option} onPress={() => {navigation.navigate('FormEventUpdate', { item: item }), setIsModalsOpen(!isModalsOpen)}}>
+                        <TouchableOpacity style={styles.option} onPress={() => { navigation.navigate('FormEventUpdate', { item: item }), setIsModalsOpen(!isModalsOpen) }}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Editar</Text>
                             <Icon.AntDesign name='edit' size={wp('6')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.option} onPress={() => console.log('delete')}>
+                        <TouchableOpacity style={styles.option} onPress={() => { setMostrarAdvertencia(true), setIsModalsOpen(!isModalsOpen) }}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delete</Text>
                             <Icon.AntDesign name='delete' size={wp('6')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>

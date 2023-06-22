@@ -1,28 +1,24 @@
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getEvent } from '../../api/api'
-import Header from '../Header/Header'
-import { AuthContext } from '../../context/AuthContext'
+import { getEvent, getEventId, getEventPendi } from '../../../api/api'
+import Header from '../../../components/Header/Header'
+import { AuthContext } from '../../../context/AuthContext'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as Icon from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import Loading from '../Loading/Loading';
 const { width, height } = Dimensions.get('window');
 
 const CARD_WIDTH = width / 2 - (24 + 24 / 2)
 const CARD_HEIGHT = 220
 
 
-
-
-const HomeEvent = ({ navigation }) => {
+const HomeEventAsis = ({ navigation }) => {
 
     // estados y contexto que guardan sessiones y conexiones
     const { logout, socket, userInfo } = useContext(AuthContext)
 
     const [data, setData] = useState([])
-    const [isloading, setIsloading] = useState(false)
 
     const [dataLikes, setDataLikes] = useState([])
 
@@ -74,14 +70,11 @@ const HomeEvent = ({ navigation }) => {
     }
 
     const loadEvent = () => {
-        setIsloading(true)
-        getEvent().then((response) => {
-            const eventosDePersona = response.data.response.filter(evento => evento.idSuborganizacion === userInfo.id_suborganizacion);
+        getEventPendi(userInfo.nro_documento_usuario).then((response) => {
+            const eventosDePersona = response.data.response
             setData(eventosDePersona);
             setFilteredData(eventosDePersona);
-            setIsloading(false)
         }).catch((error) => {
-            setIsloading(false)
             console.log("error.response");
         })
     }
@@ -116,63 +109,45 @@ const HomeEvent = ({ navigation }) => {
         }, [])
     );
 
-
-    const URI = 'https://raw.githubusercontent.com/azdravchev/Travel-App/details_screen_bottom_sheet/assets/images/trips/eea622430834cb64b900c2f03e5be6b8.jpeg'
-
-
-
     return (
-
         <SafeAreaView style={{ flex: 1 }}>
             <Header visible={true} navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} handleSelect={handleSelect} userInfo={userInfo} />
 
-            {
-                isloading ?
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
-                        <Loading />
-                    </View>
-                    :
-                    <ScrollView>
-                        <View style={styles.container}>
-                            <TouchableOpacity style={[styles.cardContainer]} onPress={() => navigation.navigate('FromEvents')}>
-                                <View style={[styles.card, { backgroundColor: '#6C63FF', justifyContent: 'center', alignItems: 'center' }]} >
-                                    <Icon.AntDesign name="plussquareo" size={60} color="white" />
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', paddingVertical: 20 }}>Crear Evento</Text>
-                                </View>
-                            </TouchableOpacity>
-                            {filteredData.map((item, index) => {
-                                const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === item.idEvento)
-                                return (
-                                    <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
-                                        <View style={[styles.card, { backgroundColor: 'white' }]} >
-                                            <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('DetailsSub', { items: item })}>
-                                                <Image style={styles.image} source={{ uri: item.imagenEvento }} />
-                                            </TouchableOpacity>
-                                            <View style={styles.footer}>
-                                                <View style={styles.titleBox}>
-                                                    <Text style={styles.title} numberOfLines={1}>{item.nombreEvento}</Text>
-                                                    <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
-                                                </View>
-                                            </View>
-                                            <TouchableOpacity style={styles.favorite} onPress={() => { resultLikes ? DeleteLikes(item.idEvento) : CreateLikes(item.idEvento) }}>
-                                                {resultLikes ?
-                                                    <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                                    :
-                                                    <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                                }
-                                            </TouchableOpacity>
+            <ScrollView>
+                <View style={styles.container}>
+                    {filteredData.map((item, index) => {
+                        const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === item.idEvento)
+                        return (
+                            <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
+                                <View style={[styles.card, { backgroundColor: 'white' }]} >
+                                    <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('Details', { items: item })}>
+                                        <Image style={styles.image} source={{ uri: item.imagenEvento }} />
+                                    </TouchableOpacity>
+                                    <View style={styles.footer}>
+                                        <View style={styles.titleBox}>
+                                            <Text style={styles.title} numberOfLines={1}>{item.nombreEvento}</Text>
+                                            <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
                                         </View>
                                     </View>
-                                )
-                            })}
-                        </View>
-                    </ScrollView>
-            }
+
+                                    <TouchableOpacity style={styles.favorite} onPress={() => { resultLikes ? DeleteLikes(item.idEvento) : CreateLikes(item.idEvento) }}>
+                                        {resultLikes ?
+                                            <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                                            :
+                                            <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                                        }
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        )
+                    })}
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }
 
-export default HomeEvent
+export default HomeEventAsis
 
 const styles = StyleSheet.create({
     container: {

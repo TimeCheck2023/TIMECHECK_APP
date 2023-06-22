@@ -8,7 +8,7 @@ import FormEvents from "../screens/User/FromEvent/FormEvents";
 import ContainerImage from "../components/ContainerImage/ContainerImage";
 import DetailsSub from "../screens/User/Details/DetailsSub";
 import FormEventUpdate from "../screens/User/FromEvent/FormEventUpdate";
-
+import ChangePassword from "../screens/ChangePassword";
 
 const Home = createNativeStackNavigator()
 
@@ -24,6 +24,7 @@ const HomeStack = () => {
       <Home.Screen name="ContainerImage" component={ContainerImage} />
       <Home.Screen name="FromEvents" component={FormEvents} />
       <Home.Screen name="Profiles" component={Profiles} />
+      <Home.Screen name="ChangePassword" component={ChangePassword} />
     </Home.Navigator>
   )
 }
