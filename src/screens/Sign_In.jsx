@@ -25,9 +25,17 @@ const Sign_In = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [button, setButton] = useState(false);
 
+  //estado para controlar los input
+  const [values_us, setValues_us] = useState({
+    emailAddress: '',
+    password: '',
+  });
+
+
   useFocusEffect(
     useCallback(() => {
       checkExpiration();
+
     }, []),
   );
 
@@ -45,13 +53,13 @@ const Sign_In = ({ navigation }) => {
     } else {
       setButton(false)
     }
+    setErrors('')
+    setMessage('')
+    setValues_us({
+      emailAddress: '',
+      password: '',
+    })
   }
-
-  //estado para controlar los input
-  const [values_us, setValues_us] = useState({
-    emailAddress: '',
-    password: '',
-  });
 
   //para capturar los el valor de los input
   const handleOnChageText_us = (value, fieldName) => {
@@ -114,6 +122,13 @@ const Sign_In = ({ navigation }) => {
             {message && <Text style={styles.texMessage}>{message}</Text>}
           </View>
 
+          <View style={{ marginTop: hp('2'), flexDirection: 'row', justifyContent: 'center' }}>
+            <Text style={{ fontSize: hp('2.4'), fontWeight: 'bold' }}>Olvidaste tu contraseña?  </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Recuperar</Text>
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity disabled={isLoading} activeOpacity={0.7}
             style={[styles.buttomSend, { marginTop: hp('3'), }]}
             onPress={validateData}
@@ -139,12 +154,6 @@ const Sign_In = ({ navigation }) => {
             <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>No tienes una cuenta?  </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Sign_Up')}>
               <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Registrate</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ marginTop: hp('2'), flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={{ fontSize: hp('2.7'), fontWeight: 'bold' }}>Olvidaste tu contraseña?  </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-              <Text style={{ fontSize: hp('2.7'), color: light.purple, fontWeight: 'bold' }}>Recuperar</Text>
             </TouchableOpacity>
           </View>
         </View>

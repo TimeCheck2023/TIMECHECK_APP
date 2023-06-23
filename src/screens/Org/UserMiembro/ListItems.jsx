@@ -6,7 +6,7 @@ const ListItems = ({ item, index }) => {
     return (
         <View style={[styles.TaskContainer]}>
             <View style={[styles.task]}>
-                <Image style={styles.image} />
+                <Image style={styles.image} source={{uri: item.image_url}} />
                 <View style={{ flex: 1, }}>
                     <Text style={styles.textName} numberOfLines={1}>{item.nombre_completo_usuario}</Text>
                     <Text style={styles.textEmail} >{item.correo_usuario}</Text>

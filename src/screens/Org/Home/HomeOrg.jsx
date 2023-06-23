@@ -16,6 +16,8 @@ import Loading from '../../../components/Loading/Loading';
 import CardPlay from '../../../components/CardPlay/CardPlay';
 import { light, sizes } from '../../../constants/theme';
 import ModalDelete from '../../../components/modals/ModalDelete';
+import Header from '../../../components/Header/Header';
+
 
 const HomeOrg = ({ items }) => {
   const { logout, userInfo } = useContext(AuthContext);
@@ -69,7 +71,8 @@ const HomeOrg = ({ items }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
 
-      <HeaderOrg SearchFilter={SearchFilter} search={search} />
+      {/* <HeaderOrg SearchFilter={SearchFilter} search={search} /> */}
+      <Header handleSearch={SearchFilter} search={search} userInfo={userInfo} estado={false}/>
 
 
 
@@ -84,18 +87,18 @@ const HomeOrg = ({ items }) => {
               <CardPlay navigation={navigation} text='Por el momento no tienes suborganizaciónes creadas' />
               :
               filteredData.map((item, index) => (
-                <TouchableOpacity key={item.id_suborganizacion} style={styles.containerCard} onPress={() => {
+                <TouchableOpacity activeOpacity={1} key={item.id_suborganizacion} style={styles.containerCard} onPress={() => {
                   navigation.navigate('BottomTabNavigator',
                     { id: item.id_suborganizacion })
                 }}>
                   <ImageBackground source={fondoHeader} style={[styles.card]} >
                     <View style={styles.containerAccion}>
-                      <TouchableOpacity style={[styles.iconComment, { backgroundColor: '#6C63FF', }]} onPress={() => navigation.navigate('FormSubOrgUpdate', { item: item })}>
+                      <TouchableOpacity activeOpacity={1} style={[styles.iconComment, { backgroundColor: '#6C63FF', }]} onPress={() => navigation.navigate('FormSubOrgUpdate', { item: item })}>
                         <Icon.AntDesign name='edit' size={24} style={{ color: 'white' }} />
                       </TouchableOpacity>
-                      <TouchableOpacity style={[styles.iconComment, { backgroundColor: 'red', }]} onPress={() => { setIdSubOrg(item.id_suborganizacion), setMostrarAdvertencia(true) }}>
+                      {/* <TouchableOpacity style={[styles.iconComment, { backgroundColor: 'red', }]} onPress={() => { setIdSubOrg(item.id_suborganizacion), setMostrarAdvertencia(true) }}>
                         <Icon.AntDesign name='delete' size={24} style={{ color: 'white' }} />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </View>
                     <View style={{ paddingHorizontal: 20, paddingVertical: 20, marginRight: 40 }}>
                       <Text style={{ fontSize: 40, fontWeight: 'bold', color: 'white' }}>{item.nombre_suborganizacion}</Text>
@@ -229,10 +232,11 @@ const styles = StyleSheet.create({
   },
   containerAccion: {
     width: 90,
-    height: 200,
+    height: 90,
     backgroundColor: light.white,
     position: 'absolute',
     right: 1,
+    top: 1,
     borderRadius: sizes.radius,
     // borderBottomLeftRadius: sizes.radius,
     padding: 20,

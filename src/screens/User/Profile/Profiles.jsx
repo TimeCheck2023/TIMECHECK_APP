@@ -122,19 +122,19 @@ const Profiles = ({ navigation }) => {
                         <TouchableOpacity style={styles.contentCard} onPress={() => navigation.navigate('ChangePassword')}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={styles.iconCard}>
-                                    <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: light.white }} />
+                                    <Icon.Feather name="lock" size={wp('8')} style={{ color: light.white }} />
                                 </View>
                                 <Text style={{ left: 15, fontSize: 20 }}>Cambiar Contraseña</Text>
                             </View>
                             <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.contentCard} onPress={() => setIsModalOpen(!isModalOpen)}>
+                        <TouchableOpacity style={styles.contentCard} onPress={() => logout()}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={styles.iconCard}>
-                                    <Icon.AntDesign name="setting" size={wp('8')} style={{ color: light.white }} />
+                                    <Icon.Ionicons name="log-in-outline" size={wp('8')} style={{ color: light.white }} />
                                 </View>
-                                <Text style={{ left: 15, fontSize: 20 }}>Configuraciones</Text>
+                                <Text style={{ left: 15, fontSize: 20 }}>cerrar session</Text>
                             </View>
                             <Icon.AntDesign name="right" size={wp('8')} style={{ color: '#6C63FF' }} />
                         </TouchableOpacity>

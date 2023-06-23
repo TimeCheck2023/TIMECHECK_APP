@@ -1,6 +1,6 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, ActivityIndicator, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import imgGame from "../../../assets/Sing_Up.png";
+import imgGame from "../../../assets/image/ForgotPassword.png";
 import Input from '../../components/Input/Input';
 import { useState, useContext, useEffect, useCallback, useRef, } from 'react'
 import * as Icon from '@expo/vector-icons';
@@ -179,7 +179,7 @@ const ForgotPassword = ({ navigation }) => {
 
                         {isLoading ?
                             <ActivityIndicator size="large" color='#ffff' /> :
-                            <Text className='text-xl font-bold text-center text-white'>Login</Text>
+                            <Text className='text-xl font-bold text-center text-white'>Verificar</Text>
                         }
 
                     </TouchableOpacity>

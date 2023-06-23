@@ -94,7 +94,7 @@ const FormSubOrgUpdate = ({navigation, route}) => {
                     <TouchableOpacity disabled={isLoading} activeOpacity={0.7} className={`mt-10 py-4 rounded-xl bg-[#6C5CE7] shadow-xl`} onPress={validateForm}>
                         {isLoading ?
                             <ActivityIndicator size="large" color='#ffff' /> :
-                            <Text className='text-xl font-bold text-center text-white'>Registro</Text>
+                            <Text className='text-xl font-bold text-center text-white'>Actualizar subOrganizacion</Text>
                         }
                     </TouchableOpacity>
                 </View>

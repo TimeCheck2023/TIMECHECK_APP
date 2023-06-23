@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const isLoggedIn = async () => {
-        // AsyncStorage.removeItem("userToken")
+        // AsyncStorage.removeItem("expirationTime")
         // AsyncStorage.removeItem("userInfo")
         try {
             setIsLoading(true)

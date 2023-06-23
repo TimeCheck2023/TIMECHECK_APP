@@ -7,12 +7,12 @@ import fondoHeader from '../../../assets/image/fondoHeader.png'
 const CardPlay = ({ navigation, text }) => {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity style={styles.containerCard}>
+            <TouchableOpacity activeOpacity={1} style={styles.containerCard}>
                 <ImageBackground source={fondoHeader} style={[styles.card]} >
                     <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
                         <Text style={{ fontSize: 40, fontWeight: 'bold', color: 'white' }}>{text}</Text>
                     </View>
-                    <TouchableOpacity style={[styles.Buttom]} onPress={() => navigation.navigate('JuegoMemoria')}>
+                    <TouchableOpacity activeOpacity={1} style={[styles.Buttom]} onPress={() => navigation.navigate('JuegoMemoria')}>
                         <Text style={{ fontSize: 20, color: '#5458F7', lineHeight: 18, fontWeight: 'bold' }}>Jugar</Text>
                     </TouchableOpacity>
                 </ImageBackground>

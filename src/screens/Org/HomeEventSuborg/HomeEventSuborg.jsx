@@ -10,6 +10,7 @@ import fondoHeader from '../../../../assets/image/fondoHeader.png'
 import CardPlay from '../../../components/CardPlay/CardPlay';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Loading from '../../../components/Loading/Loading';
+import Header from '../../../components/Header/Header';
 
 
 
@@ -68,7 +69,9 @@ const HomeEventSuborg = ({ route, navigation }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderOrg search={search} SearchFilter={SearchFilter} />
+            {/* <HeaderOrg search={search} SearchFilter={SearchFilter} /> */}
+            <Header handleSearch={SearchFilter} search={search} userInfo={userInfo} estado={false}/>
+
 
             <ScrollView>
                 <View style={styles.container}>
@@ -91,9 +94,9 @@ const HomeEventSuborg = ({ route, navigation }) => {
                                                     <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
                                                 </View>
                                             </View>
-                                            <View style={styles.favorite}>
+                                            {/* <View style={styles.favorite}>
                                                 <AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                            </View>
+                                            </View> */}
                                         </View>
                                     </View>
                                 )

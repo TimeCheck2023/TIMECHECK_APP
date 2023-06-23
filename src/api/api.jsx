@@ -297,3 +297,29 @@ export const deteleEvent = async (id) => {
     })
     return result;
 }
+
+// asistencias
+
+export const getAsistenciaPen = async (id) => {
+    const result = await axios({
+        url: `${API_C}/api/Attendance/GetPendingAttendees?idEvento=${id}`,
+        method: 'GET',
+    })
+    return result;
+}
+
+
+export const getAsistenciaCon = async (id) => {
+    const result = await axios({
+        url: `${API_C}/api/Attendance/GetConfirmedAttendees?idEvento=${id}`,
+        method: 'GET',
+    })
+    return result;
+}
+export const getAsistenciaNoAsis = async (id) => {
+    const result = await axios({
+        url: `${API_C}/api/Attendance/GetNonAttendingAttendees?idEvento=${id}`,
+        method: 'GET',
+    })
+    return result;
+}

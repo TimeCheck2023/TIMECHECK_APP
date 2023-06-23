@@ -7,6 +7,8 @@ import { AuthContext } from '../../../context/AuthContext'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as Icon from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import Loading from '../../../components/Loading/Loading';
+import CardPlay from '../../../components/CardPlay/CardPlay';
 const { width, height } = Dimensions.get('window');
 
 const CARD_WIDTH = width / 2 - (24 + 24 / 2)
@@ -21,6 +23,7 @@ const HomeEventAsis = ({ navigation }) => {
     const [data, setData] = useState([])
 
     const [dataLikes, setDataLikes] = useState([])
+    const [isloading, setIsloading] = useState(false)
 
     const [filteredData, setFilteredData] = useState([])
     //almacena el la busqueda
@@ -70,12 +73,16 @@ const HomeEventAsis = ({ navigation }) => {
     }
 
     const loadEvent = () => {
+        setIsloading(true)
         getEventPendi(userInfo.nro_documento_usuario).then((response) => {
             const eventosDePersona = response.data.response
+            console.log(eventosDePersona);
             setData(eventosDePersona);
             setFilteredData(eventosDePersona);
+            setIsloading(false)
         }).catch((error) => {
             console.log("error.response");
+            setIsloading(false)
         })
     }
 
@@ -111,38 +118,47 @@ const HomeEventAsis = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Header visible={true} navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} handleSelect={handleSelect} userInfo={userInfo} />
+            <Header visible={true} navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} handleSelect={handleSelect} userInfo={userInfo} estado={true} />
+            {
+                isloading ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+                        <Loading />
+                    </View>
+                    :
+                    filteredData.length === 0 ?
+                        <CardPlay navigation={navigation} text='Por el momento no tienes eventos pendientes' />
+                        :
+                        <ScrollView>
+                            <View style={styles.container}>
+                                {filteredData.map((item, index) => {
+                                    const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === item.idEvento)
+                                    return (
+                                        <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
+                                            <View style={[styles.card, { backgroundColor: 'white' }]} >
+                                                <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('Details', { items: item })}>
+                                                    <Image style={styles.image} source={{ uri: item.imagenEvento }} />
+                                                </TouchableOpacity>
+                                                <View style={styles.footer}>
+                                                    <View style={styles.titleBox}>
+                                                        <Text style={styles.title} numberOfLines={1}>{item.nombreEvento}</Text>
+                                                        <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
+                                                    </View>
+                                                </View>
 
-            <ScrollView>
-                <View style={styles.container}>
-                    {filteredData.map((item, index) => {
-                        const resultLikes = dataLikes.some((like) => like.nro_documento_usuario3 === userInfo.nro_documento_usuario && like.id_evento5 === item.idEvento)
-                        return (
-                            <View key={item.idEvento} style={[styles.cardContainer, { paddingTop: index === 1 ? 0 : 24 }]}>
-                                <View style={[styles.card, { backgroundColor: 'white' }]} >
-                                    <TouchableOpacity style={styles.ImageBox} onPress={() => navigation.navigate('Details', { items: item })}>
-                                        <Image style={styles.image} source={{ uri: item.imagenEvento }} />
-                                    </TouchableOpacity>
-                                    <View style={styles.footer}>
-                                        <View style={styles.titleBox}>
-                                            <Text style={styles.title} numberOfLines={1}>{item.nombreEvento}</Text>
-                                            <Text style={styles.location} numberOfLines={1}>{item.lugarEvento}</Text>
+                                                <TouchableOpacity style={styles.favorite} onPress={() => { resultLikes ? DeleteLikes(item.idEvento) : CreateLikes(item.idEvento) }}>
+                                                    {resultLikes ?
+                                                        <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                                                        :
+                                                        <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
+                                                    }
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
-                                    </View>
-
-                                    <TouchableOpacity style={styles.favorite} onPress={() => { resultLikes ? DeleteLikes(item.idEvento) : CreateLikes(item.idEvento) }}>
-                                        {resultLikes ?
-                                            <Icon.AntDesign name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                            :
-                                            <Icon.Feather name='heart' size={wp('6')} style={{ color: '#6C63FF' }} />
-                                        }
-                                    </TouchableOpacity>
-                                </View>
+                                    )
+                                })}
                             </View>
-                        )
-                    })}
-                </View>
-            </ScrollView>
+                        </ScrollView>
+            }
         </SafeAreaView>
     )
 }

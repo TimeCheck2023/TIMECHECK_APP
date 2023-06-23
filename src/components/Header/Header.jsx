@@ -7,7 +7,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { light, sizes } from "../../constants/theme";
 
 
-const header = ({ navigation, search, handleSearch, Category, select, setSelect, handleSelect, userInfo }) => {
+const header = ({ navigation, estado, search, handleSearch, Category, select, setSelect, handleSelect, userInfo }) => {
 
     const [isVisible, setIsVisible] = useState(false)
     const animation = useRef(new Animated.Value(0)).current
@@ -91,12 +91,12 @@ const header = ({ navigation, search, handleSearch, Category, select, setSelect,
                     <Image source={{ uri: userInfo.image_url }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
                 </TouchableOpacity>
                 <View style={{ flex: 1 }}>
-                    <Text style={styles.headerTextOne} numberOfLines={1}>{userInfo.nombre_completo_usuario}</Text>
+                    <Text style={styles.headerTextOne} numberOfLines={1}>{userInfo.nombre_completo_usuario || userInfo.nombre_organizacion}</Text>
                     <Text style={styles.headerTextTwo} numberOfLines={1}>{userInfo.correo}</Text>
                 </View>
-                <TouchableOpacity style={styles.headerIcon} onPress={() => navigation.navigate('Notifications')}>
+                {/* <TouchableOpacity style={styles.headerIcon} onPress={() => navigation.navigate('Notifications')}>
                     <Icon.Ionicons name='notifications-sharp' color='#7560EE' size={24} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             {/* shearch */}
@@ -113,31 +113,35 @@ const header = ({ navigation, search, handleSearch, Category, select, setSelect,
                         onChangeText={handleSearch}
                     />
                 </Animated.View>
-                <Pressable style={styles.filtre} onPress={handleFiltre}>
-                    <Icon.Ionicons name='md-filter' size={25} color={light.lightGray} style={{ opacity: 0.9 }} />
-                </Pressable>
+                {estado &&
+                    <Pressable style={styles.filtre} onPress={handleFiltre}>
+                        <Icon.Ionicons name='md-filter' size={25} color={light.lightGray} style={{ opacity: 0.9 }} />
+                    </Pressable>
+                }
             </View>
 
 
             {/* category */}
-            <View>
-                <Animated.ScrollView horizontal
-                    style={[styles.CategoryListContainer, {
-                        height: animation,
-                    }]}
-                    contentContainerStyle={{ justifyContent: 'space-between', alignItems: 'center', gap: 15 }}
-                    showsHorizontalScrollIndicator={false}>
-                    {
-                        Category.map((item, index) => (
-                            <Pressable key={index} onPress={() => { handleSelect(item) }}>
-                                <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
-                                    {item}
-                                </Text>
-                            </Pressable>
-                        ))
-                    }
-                </Animated.ScrollView>
-            </View>
+            {Category &&
+                <View>
+                    <Animated.ScrollView horizontal
+                        style={[styles.CategoryListContainer, {
+                            height: animation,
+                        }]}
+                        contentContainerStyle={{ justifyContent: 'space-between', alignItems: 'center', gap: 15 }}
+                        showsHorizontalScrollIndicator={false}>
+                        {
+                            Category.map((item, index) => (
+                                <Pressable key={index} onPress={() => { handleSelect(item) }}>
+                                    <Text style={[styles.CategoryListText, (item == select && styles.activeCategory)]}>
+                                        {item}
+                                    </Text>
+                                </Pressable>
+                            ))
+                        }
+                    </Animated.ScrollView>
+                </View>
+            }
         </View>
     )
 }

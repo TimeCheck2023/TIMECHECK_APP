@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import moment from 'moment';
 import { saveEvent } from '../../../api/api';
 import { AuthContext } from '../../../context/AuthContext';
+import imageEvent from '../../../../assets/addImageEvents.png'
 
 
 const FormEvents = ({ navigation }) => {
@@ -252,10 +253,10 @@ const FormEvents = ({ navigation }) => {
                 }
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 30 }}>
                     <View style={{ width: 280, height: 250, backgroundColor: light.white, overflow: 'hidden', borderRadius: sizes.radius }}>
-                        <Image source={!image ? { uri: 'https://i.pinimg.com/564x/9e/be/af/9ebeaf28bd1fc61efd80803194029806.jpg' } : { uri: image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                        <Image source={!image ? imageEvent : { uri: image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.containerButtom}>
+                        <TouchableOpacity style={styles.containerButtom} onPress={() => navigation.navigate('ContainerImage', { image: image })}>
                             <Entypo name="eye" size={24} color={light.lightGray} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.containerButtom} onPress={openImagePicker}>

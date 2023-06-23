@@ -9,6 +9,8 @@ import ContainerImage from "../components/ContainerImage/ContainerImage";
 import DetailsSub from "../screens/User/Details/DetailsSub";
 import FormEventUpdate from "../screens/User/FromEvent/FormEventUpdate";
 import ChangePassword from "../screens/ChangePassword";
+import JuegoMemoria from "../components/JuegoMemoria/JuegoMemoria";
+
 
 const Home = createNativeStackNavigator()
 
@@ -17,6 +19,7 @@ const HomeStack = () => {
     <Home.Navigator screenOptions={{ headerShown: false }} initialRouteName="BottomTabNavigator">
       <Home.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
       <Home.Screen name="Details" component={Details} />
+      <Home.Screen name="JuegoMemoria" component={JuegoMemoria} />
       <Home.Screen name="DetailsSub" component={DetailsSub} />
       <Home.Screen name="Notifications" component={Notifications} />
       <Home.Screen name="FormUpdateUSer" component={FormUpdateUSer} />

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, ScrollView, Image, Modal, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AntDesign, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
 import { getUsers, saveMiembro } from '../../../api/api';
@@ -8,6 +8,8 @@ import fondoHeader from '../../../../assets/image/fondoHeader.png'
 import HeaderOrg from '../../../components/HeaderOrg/HeaderOrg';
 import Loading from '../../../components/Loading/Loading';
 import CardPlay from '../../../components/CardPlay/CardPlay';
+import Header from '../../../components/Header/Header';
+import { AuthContext } from '../../../context/AuthContext';
 
 
 const ModalUP = ({ visible, dataRol, setVisible, handleAdd }) => {
@@ -53,6 +55,7 @@ const ModalUP = ({ visible, dataRol, setVisible, handleAdd }) => {
 const Search = ({ route, navigation }) => {
 
     const { parametro } = route.params;
+    const { userInfo } = useContext(AuthContext)
 
     const inset = useSafeAreaInsets();
 
@@ -74,6 +77,7 @@ const Search = ({ route, navigation }) => {
         try {
             const responde = await getUsers()
             setData(responde.data.message)
+            console.log(responde.data.message)
             setFilteredData(responde.data.message)
             setSearch('')
             setIsLoadingData(false)
@@ -120,7 +124,9 @@ const Search = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <HeaderOrg SearchFilter={SearchFilter} search={search} />
+            {/* <HeaderOrg SearchFilter={SearchFilter} search={search} /> */}
+            <Header handleSearch={SearchFilter} search={search} userInfo={userInfo} estado={false} />
+
 
             <ScrollView>
                 <View style={{ flex: 1, width: '100%', alignItems: 'center', paddingVertical: 40 }}>
@@ -129,7 +135,7 @@ const Search = ({ route, navigation }) => {
                             <Loading />
                             : filteredData.length < 0 ? <CardPlay /> : filteredData.map((item, index) => (
                                 <TouchableOpacity style={styles.contentCard} key={index} onPress={() => handleSubmit(item)}>
-                                    <Image style={styles.image} />
+                                    <Image style={styles.image} source={{ uri: item.image_url }} />
                                     <View style={{ flex: 1, }}>
                                         <Text style={styles.textName} numberOfLines={1}>{item.nombre_completo_usuario}</Text>
                                         <Text style={styles.textEmail} >{item.correo_usuario}</Text>

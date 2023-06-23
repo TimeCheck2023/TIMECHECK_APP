@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { Dimensions, Image, View, Animated, StyleSheet, Text } from 'react-native';
 import { useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
@@ -29,16 +29,18 @@ const BottomTabNavigator = () => {
         {
             name: 'HomeEventAsis',
             screen: HomeEventAsis,
-            nameIcons: 'home',
-            Icons: AntDesign
+            nameIcons: 'event',
+            Icons: MaterialIcons
         },
     ]
+
+    // <FontAwesome name="calendar-plus-o" size={24} color="black" />
 
     userInfo.rol === 0 && tabs.push({
         name: 'HomeEvents',
         screen: HomeEvent,
-        nameIcons: 'event',
-        Icons: MaterialIcons,
+        nameIcons: 'calendar-plus-o',
+        Icons: FontAwesome,
     },)
 
 

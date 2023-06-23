@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { ScrollView } from 'react-native'
 import { deleteMiembro, getUserMiembro, getUsers, updateUserRol } from '../../../api/api'
 import { Swipeable } from 'react-native-gesture-handler';
@@ -13,6 +13,9 @@ import { AntDesign, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native';
 import Loading from '../../../components/Loading/Loading';
 import CardPlay from '../../../components/CardPlay/CardPlay';
+import Header from '../../../components/Header/Header';
+import { AuthContext } from '../../../context/AuthContext';
+import ModalDelete from '../../../components/modals/ModalDelete';
 
 
 const ModalUP = ({ visible, dataRol, setVisible, handleUpdate, rol, setRol }) => {
@@ -58,12 +61,17 @@ const UserMiembro = ({ route, navigation }) => {
 
     const { parametro } = route.params;
 
+    const { userInfo } = useContext(AuthContext)
+
     const swipeableRef = useRef([]);
     const [data, setData] = useState([])
     const [dataRol, setDataRol] = useState([])
     const [filteredData, setFilteredData] = useState([])
     const [visible, setVisible] = useState(false)
     const [search, setSearch] = useState('')
+    const [id, setId] = useState(null)
+    const [index, setIndex] = useState(null)
+    const [mostrarAdvertencia, setMostrarAdvertencia] = useState(false);
     const [isloadingData, setIsLoadingData] = useState(false)
     const [rol, setRol] = useState(null);
 
@@ -94,13 +102,18 @@ const UserMiembro = ({ route, navigation }) => {
         setDataRol(items)
         setRol(items.rol)
     }
-    const handleSubmitDelete = async (items) => {
-        const objeto = { nroDocumentoUsuario: items, idSuborganizacion: parametro }
+
+
+    const handleSubmitDelete = async () => {  
+        const objeto = { nroDocumentoUsuario: id, idSuborganizacion: parametro }
         try {
             await deleteMiembro(objeto)
             fetchDatausers();
+            setMostrarAdvertencia(false)
+            handleCloseCard(index)
         } catch (error) {
             console.log(error);
+            setMostrarAdvertencia(false)
         }
     }
 
@@ -153,7 +166,8 @@ const UserMiembro = ({ route, navigation }) => {
                 <TouchableOpacity style={[styles.iconContainerDelete]} onPress={() => { handleCloseCard(index), handleSubmit(item) }}>
                     <Icon.AntDesign name='edit' size={70 * 0.4} color={'white'} />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.iconContainerUpdate]} onPress={() => { handleCloseCard(index), handleSubmitDelete(item.nro_documento_usuario) }}>
+                {/* handleCloseCard(index), handleSubmitDelete(item.nro_documento_usuario) */}
+                <TouchableOpacity style={[styles.iconContainerUpdate]} onPress={() => { setMostrarAdvertencia(true), setId(item.nro_documento_usuario), setIndex(index)  }}>
                     <Icon.FontAwesome5 name={'trash-alt'} size={70 * 0.4} color={'white'} />
                 </TouchableOpacity>
             </View>
@@ -163,7 +177,9 @@ const UserMiembro = ({ route, navigation }) => {
     return (
         <View style={{ flex: 1 }}>
 
-            <HeaderOrg SearchFilter={SearchFilter} search={search} />
+            {/* <HeaderOrg SearchFilter={SearchFilter} search={search} /> */}
+            <Header handleSearch={SearchFilter} search={search} userInfo={userInfo} estado={false} />
+
 
             <ScrollView style={{ flex: 1 }}>
                 {
@@ -198,6 +214,16 @@ const UserMiembro = ({ route, navigation }) => {
                 />
             </TouchableOpacity>
             <ModalUP visible={visible} rol={rol} setRol={setRol} handleUpdate={handleUpdate} dataRol={dataRol} setVisible={setVisible} />
+            <ModalDelete
+                // textIsloadin={isloadingDeleText}
+                // isloading={isloadingDele}
+                visible={mostrarAdvertencia}
+                setShow={setMostrarAdvertencia}
+                title='¿Estás seguro de que quieres eliminar este Usuario de la subOrganización?'
+                // description='¡Atención! Al eliminar el evento, se borrarán todos los datos asociados, incluyendo los likes y comentarios relacionados al evento.'
+                handleDelete={handleSubmitDelete}
+            />
+
         </View>
     )
 }

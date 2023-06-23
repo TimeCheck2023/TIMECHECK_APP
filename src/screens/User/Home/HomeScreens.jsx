@@ -257,7 +257,7 @@ const HomeScreens = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {/* header, search, selector */}
-            <Header navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} setSelect={setSelect} handleSelect={handleSelect} userInfo={userInfo} />
+            <Header navigation={navigation} search={search} handleSearch={handleSearch} Category={Category} select={select} setSelect={setSelect} handleSelect={handleSelect} userInfo={userInfo} estado={true} />
             {
                 isloadingData ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
